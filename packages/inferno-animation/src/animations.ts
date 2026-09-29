@@ -1,16 +1,26 @@
 import {
   addClassName,
-  clearDimensions,
-  clearTransform,
   forceReflow,
   getDimensions,
   getGeometry,
+  hasBox,
+  IDENTITY,
+  type Linear,
+  markApplied,
+  matrix,
+  multiply,
+  ownLinear,
+  parentSpace,
   registerTransitionListener,
   removeClassName,
   resetDisplay,
+  restoreStyles,
+  type SavedStyle,
+  saveStyles,
   setDimensions,
   setDisplay,
   setTransform,
+  solve,
 } from './utils';
 import {
   addGlobalAnimationSource,
@@ -55,48 +65,99 @@ function getAnimationClass(
   return animCls;
 }
 
-export function componentDidAppear(dom: HTMLElement | SVGElement, props): void {
-  entering.add(dom);
+type AnimatedElement = HTMLElement | SVGElement;
+
+interface Enter {
+  cls: AnimationClass;
+  // The inline display that the enter hides until its first phase
+  display: string;
+  // The enter has started its transitions: until then nothing of the element has been visible
+  activated: boolean;
+  // A leave has taken over, and the phases that have not run yet do nothing
+  cancelled: boolean;
+  // Removes the transition listener
+  stop?: () => void;
+  // The application's inline width and height, and transform and origin of a global animation
+  sizes: SavedStyle[];
+  transforms: SavedStyle[];
+}
+
+interface Leave {
+  cls: AnimationClass;
+  dimensions: { x: number; y: number; width: number; height: number };
+  // Measured with the other leaves once the commit's writes are done
+  deferred: boolean;
+  // The enter that the leave interrupts, the values that the enter's transitions had reached, and
+  // the inline declarations that holding them replaced
+  enter: Enter | null;
+  reached: Array<[string, string]>;
+  held: SavedStyle[];
+  // The application's inline width and height
+  sizes: SavedStyle[];
+  // Keeps the element where its running move has brought it
+  hold: Hold | null;
+}
+
+// An inline declaration that keeps an element at the offset that its move has reached
+interface Hold {
+  property: string;
+  value: string;
+  priority: string;
+}
+
+export function componentDidAppear(dom: AnimatedElement, props): void {
   // Get dimensions and unpack class names
   const cls = getAnimationClass(props.animation, '-enter');
 
   // Moved measuring to pre_initialize. It causes a reflow for each component beacuse of the setDisplay of previous component.
   const dimensions = {};
-  const display = setDisplay(dom, 'none');
+  const enter: Enter = {
+    cls,
+    display: setDisplay(dom, 'none'),
+    activated: false,
+    cancelled: false,
+    sizes: [],
+    transforms: [],
+  };
+  entering.set(dom, enter);
   const sourceState =
     props.globalAnimationKey === undefined
       ? null
       : consumeGlobalAnimationSource(props.globalAnimationKey);
   queueAnimation((phase: AnimationPhase) => {
-    _didAppear(phase, dom, cls, dimensions, display, sourceState);
+    if (!enter.cancelled) {
+      _didAppear(phase, dom, enter, dimensions, sourceState);
+    }
   }, dom.parentNode);
 }
 
-function _getDidAppearTransitionCallback(dom, cls) {
-  return () => {
-    entering.delete(dom);
-    // 5. Remove the element
-    clearDimensions(dom);
-    removeClassName(dom, cls.active + ' ' + cls.end);
-    // 6. Call callback to allow stuff to happen
-    // Not currently used but this is where one could
-    // add a call to something like this.didAppearDone
-  };
+function _finishEnter(dom: AnimatedElement, enter: Enter): void {
+  entering.delete(dom);
+  // 5. Restore the application's width and height
+  restoreStyles(dom.style, enter.sizes);
+  removeClassName(dom, enter.cls.active + ' ' + enter.cls.end);
+  // 6. Call callback to allow stuff to happen
+  // Not currently used but this is where one could
+  // add a call to something like this.didAppearDone
 }
 
 function _didAppear(
   phase: AnimationPhase,
-  dom: HTMLElement | SVGElement,
-  cls: AnimationClass,
+  dom: AnimatedElement,
+  enter: Enter,
   dimensions,
-  display: string,
   sourceState: GlobalAnimationState | null,
 ): void {
+  const cls = enter.cls;
+  const fromSource =
+    !isNullOrUndef(sourceState) &&
+    dimensions.width !== 0 &&
+    dimensions.height !== 0;
   switch (phase) {
     case AnimationPhase.INITIALIZE:
       // Needs to be done in a single pass to avoid reflows
       // We set display: none whilst waiting for an animation frame to avoid flicker
-      resetDisplay(dom, display);
+      resetDisplay(dom, enter.display);
       return;
     case AnimationPhase.MEASURE:
       // In case of img element that hasn't been loaded, just trigger reflow
@@ -112,18 +173,19 @@ function _didAppear(
       return;
     case AnimationPhase.SET_START_STATE:
       // 1. Set start of animation
-      if (
-        !isNullOrUndef(sourceState) &&
-        dimensions.width !== 0 &&
-        dimensions.height !== 0
-      ) {
+      if (fromSource) {
         // const diffX = (sourceState.width - dimensions.width) / 2;
         // const diffY = (sourceState.height - dimensions.height) / 2;
         const dx = sourceState.x - dimensions.x;
         const dy = sourceState.y - dimensions.y;
         const scaleX = sourceState.width / dimensions.width;
         const scaleY = sourceState.height / dimensions.height;
+        enter.transforms = saveStyles(dom.style, [
+          'transform',
+          'transform-origin',
+        ]);
         setTransform(dom, dx, dy, scaleX, scaleY);
+        markApplied(dom.style, enter.transforms);
       }
       addClassName(dom, cls.start);
       return;
@@ -133,48 +195,111 @@ function _didAppear(
       return;
     case AnimationPhase.ACTIVATE_ANIMATION:
       // 4. Activate target state (called async via requestAnimationFrame)
-      if (
-        !isNullOrUndef(sourceState) &&
-        dimensions.width !== 0 &&
-        dimensions.height !== 0
-      ) {
-        clearTransform(dom);
-      }
+      enter.activated = true;
+      // A global animation transitions to the application's transform
+      restoreStyles(dom.style, enter.transforms);
+      enter.sizes = saveStyles(dom.style, ['width', 'height']);
       setDimensions(dom, dimensions.width, dimensions.height);
+      markApplied(dom.style, enter.sizes);
       removeClassName(dom, cls.start);
       addClassName(dom, cls.end);
       break;
     case AnimationPhase.REGISTER_LISTENERS:
       // Start the timeout after activation; zero-duration transitions must not
       // clean up before the following frame installs the target styles.
-      registerTransitionListener(
-        [dom],
-        _getDidAppearTransitionCallback(dom, cls),
+      enter.stop = registerTransitionListener([dom], () =>
+        _finishEnter(dom, enter),
       );
   }
 }
 
+// The values that the running transitions of dom have reached, except its width and height
+function reachedValues(dom: AnimatedElement): Array<[string, string]> {
+  const reached: Array<[string, string]> = [];
+  let style: CSSStyleDeclaration | null = null;
+  for (const animation of dom.getAnimations?.() || []) {
+    if (
+      'transitionProperty' in animation &&
+      (animation.playState === 'running' || animation.playState === 'paused')
+    ) {
+      const property = (animation as CSSTransition).transitionProperty;
+      if (property !== 'width' && property !== 'height') {
+        style ??= window.getComputedStyle(dom);
+        reached.push([property, style.getPropertyValue(property)]);
+      }
+    }
+  }
+  return reached;
+}
+
+// The leave takes over from the enter it interrupts: the element keeps the values that the enter's
+// transitions have reached, until the leave activates its own. Removing the enter's classes
+// cancels those transitions within this animation pass, before the leave listens for transitions.
+function _interruptEnter(dom: AnimatedElement, leave: Leave): void {
+  const enter = leave.enter!;
+  const style = dom.style;
+  removeClassName(
+    dom,
+    enter.cls.start + ' ' + enter.cls.active + ' ' + enter.cls.end,
+  );
+  restoreStyles(style, enter.transforms);
+  restoreStyles(style, enter.sizes);
+  leave.held = saveStyles(
+    style,
+    leave.reached.map(([property]) => property),
+  );
+  for (const [property, value] of leave.reached) {
+    style.setProperty(property, value);
+  }
+  markApplied(style, leave.held);
+}
+
 export function componentWillDisappear(
-  dom: HTMLElement | SVGElement,
+  dom: AnimatedElement,
   props,
   callback: () => void,
 ): void {
+  const enter = entering.get(dom);
+  if (enter !== undefined) {
+    entering.delete(dom);
+    enter.cancelled = true;
+    enter.stop?.();
+    // Nothing of the element has been visible, so there is nothing to animate
+    if (!enter.activated) {
+      callback();
+      return;
+    }
+  }
   leaving.add(dom);
-  const cls = getAnimationClass(props.animation, '-leave');
+  // A move that ended with its list in this commit
+  const hold = released.get(dom);
+  if (hold !== undefined) {
+    released.delete(dom);
+    holdOffset(dom, hold);
+  }
   // A leave is measured with the others once the commit's writes are done: a read between them
   // would lay the document out again for every leaving element. A global animation hands its
   // source to an element that may enter in another pass, so it is measured now.
   const deferred = props.globalAnimationKey === undefined;
-  const dimensions = deferred
-    ? { x: 0, y: 0, width: 0, height: 0 }
-    : getDimensions(dom);
+  const leave: Leave = {
+    cls: getAnimationClass(props.animation, '-leave'),
+    dimensions: deferred
+      ? { x: 0, y: 0, width: 0, height: 0 }
+      : getDimensions(dom),
+    deferred,
+    enter: enter ?? null,
+    reached: [],
+    held: [],
+    sizes: [],
+    hold: null,
+  };
   queueAnimation((phase) => {
-    _willDisappear(phase, dom, callback, cls, dimensions, deferred);
+    _willDisappear(phase, dom, callback, leave);
   }, dom.parentNode);
   if (!deferred) {
     addGlobalAnimationSource(
       props.globalAnimationKey,
-      dimensions as GlobalAnimationState,
+      leave.dimensions as GlobalAnimationState,
     );
     dom.style.setProperty('visibility', 'hidden');
   }
@@ -182,26 +307,37 @@ export function componentWillDisappear(
 
 function _willDisappear(
   phase: AnimationPhase,
-  dom: HTMLElement | SVGElement,
+  dom: AnimatedElement,
   callback: () => void,
-  cls: AnimationClass,
-  dimensions,
-  deferred: boolean,
+  leave: Leave,
 ): void {
+  const { cls, dimensions } = leave;
+  const style = dom.style;
+  const move = moving.get(dom);
   switch (phase) {
     case AnimationPhase.MEASURE_LEAVES:
-      if (deferred) {
+      if (leave.deferred) {
         const measured = getDimensions(dom);
         dimensions.x = measured.x;
         dimensions.y = measured.y;
         dimensions.width = measured.width;
         dimensions.height = measured.height;
       }
+      if (leave.enter !== null) leave.reached = reachedValues(dom);
+      if (move !== undefined) leave.hold = reachedOffset(move);
       return;
     case AnimationPhase.INITIALIZE:
+      // The element stays where its move has brought it
+      if (move !== undefined) {
+        finishMove(move);
+        if (leave.hold !== null) holdOffset(dom, leave.hold);
+      }
+      if (leave.enter !== null) _interruptEnter(dom, leave);
       // Write leave styles before the shared measurement phases.
       // 1. Set animation start state and dimensions
+      leave.sizes = saveStyles(style, ['width', 'height']);
       setDimensions(dom, dimensions.width, dimensions.height);
+      markApplied(style, leave.sizes);
       addClassName(dom, cls.start);
       return;
     case AnimationPhase.ACTIVATE_TRANSITIONS:
@@ -212,36 +348,39 @@ function _willDisappear(
       // 4. Activate target state (called async via requestAnimationFrame)
       addClassName(dom, cls.end);
       removeClassName(dom, cls.start);
-      clearDimensions(dom);
+      restoreStyles(style, leave.sizes);
+      restoreStyles(style, leave.held);
       break;
     case AnimationPhase.REGISTER_LISTENERS:
       registerTransitionListener([dom], callback);
   }
 }
 
-type AnimatedElement = HTMLElement | SVGElement;
-interface TransitionStyle {
-  property: string;
-  value: string;
-  priority: string;
-  applied: string;
-  appliedPriority: string;
-}
 interface MoveItem {
   batch: MoveBatch;
   done: boolean;
   node: AnimatedElement;
+  // The source position, and the offset from the target to it, in viewport pixels
   x: number;
   y: number;
   dx: number;
   dy: number;
+  // The element's own rotate and scale, which apply to an offset in its transform
+  linear: Linear;
+  // Carries the offset: transform, or translate while a keyframe animation sets the transform
+  property: 'transform' | 'translate';
   baseTransform: string;
-  transform: string;
-  transformPriority: string;
-  transitions: TransitionStyle[];
-  appliedTransform: string | null;
+  // The element's own translate property; an offset in translate would replace it
+  translate: string;
+  // The inline declaration of property, and the value that the move wrote
+  offset: SavedStyle[];
+  transitions: SavedStyle[];
+  // Declarations that the move replaces while it runs
+  overrides: SavedStyle[];
   initialized: boolean;
   addedClasses: string;
+  // Starts with an offset in the current animation pass, which carries the moves inside it along
+  starting: boolean;
   // No transition can run on the element before the move's classes are added
   instant: boolean;
   // Another item moves the element now
@@ -266,15 +405,22 @@ interface MoveBatch {
   // Items that take over an element's running move, and whether any item moved
   retargets: number;
   moved: boolean;
-  // Elements with an author transition, when read before measuring
+  // Elements with an author transition, and elements whose transform a keyframe animation sets,
+  // when read before measuring
   authors: Set<AnimatedElement> | null;
+  keyframed: Set<AnimatedElement> | null;
+  // How the transforms around the parent map offsets to the viewport, once something moves
+  space: Linear | null;
   cancel?: () => void;
 }
 
 const moveBatches = new WeakMap<Node, MoveBatch>();
 const moving = new WeakMap<AnimatedElement, MoveItem>();
-const entering = new WeakSet<AnimatedElement>();
+const entering = new WeakMap<AnimatedElement, Enter>();
 const leaving = new WeakSet<AnimatedElement>();
+// The offsets of the moves that ended with their list in the current task: the leaves of their
+// elements, which the commit starts after it has unmounted the list, hold them
+const released = new Map<AnimatedElement, Hold>();
 const transitionProperties = [
   'transition-property',
   'transition-duration',
@@ -295,26 +441,65 @@ function transitionTarget(
   const target = (animation.effect as KeyframeEffect | null)?.target;
   return target?.parentNode === parent ? (target as AnimatedElement) : null;
 }
-function authorTransitions(parent: Node): Set<AnimatedElement> {
+function animatesTransform(animation: Animation): boolean {
+  const effect = animation.effect as KeyframeEffect | null;
+  return Boolean(
+    effect?.getKeyframes?.().some((keyframe) => 'transform' in keyframe),
+  );
+}
+// The children of parent that run an author transition. Those whose transform a keyframe animation
+// sets are added to keyframed; an animation that has finished sets it while it fills forwards.
+function authorTransitions(
+  parent: Node,
+  keyframed: Set<AnimatedElement> | null,
+): Set<AnimatedElement> {
   const authors = new Set<AnimatedElement>();
   for (const animation of parentTransitions(parent)) {
-    if (
-      !('transitionProperty' in animation) ||
-      animation.playState === 'finished' ||
-      animation.playState === 'idle'
-    )
-      continue;
     const node = transitionTarget(animation, parent);
-    if (node) {
+    if (node === null) continue;
+    if ('transitionProperty' in animation) {
       const item = moving.get(node);
       if (
+        animation.playState !== 'finished' &&
+        animation.playState !== 'idle' &&
         animation !== item?.ownedTransition &&
         animation !== item?.previous?.ownedTransition
       )
         authors.add(node);
+    } else if (keyframed !== null && animatesTransform(animation)) {
+      keyframed.add(node);
     }
   }
   return authors;
+}
+function readChildAnimations(batch: MoveBatch): void {
+  batch.keyframed = new Set();
+  batch.authors = authorTransitions(batch.parent, batch.keyframed);
+}
+
+// How far the patch in progress has shifted the children of parent. Their list is patched after
+// the items before it in the list around it, whose removal shifts it. The shift is that of the
+// nearest element around them whose position was read before the patch.
+function sourceDrift(parent: Node): { x: number; y: number } | null {
+  for (
+    let node = parent, outer = node.parentNode;
+    outer !== null;
+    node = outer, outer = node.parentNode
+  ) {
+    const batch = moveBatches.get(outer);
+    if (batch !== undefined && !batch.initialized) {
+      const item = moving.get(node as AnimatedElement);
+      const index = batch.nodes.indexOf(node as AnimatedElement);
+      const retargeted = item !== undefined && item.batch === batch;
+      if (!retargeted && index === -1) return null;
+      const geometry = getGeometry(node as AnimatedElement);
+      return {
+        x: geometry.x - (retargeted ? item.x : batch.xs[index]),
+        y: geometry.y - (retargeted ? item.y : batch.ys[index]),
+      };
+    }
+  }
+  return null;
 }
 
 export function componentWillMove(
@@ -360,12 +545,14 @@ export function componentWillMove(
     retargets: 0,
     moved: false,
     authors: null,
+    keyframed: null,
+    space: null,
     animation,
     activeClasses: cls.active.split(' ').filter((name) => name !== ''),
     ownerClasses: null,
   };
   const skipped: MoveItem[] = [];
-  const authors = authorTransitions(parent);
+  const authors = authorTransitions(parent, null);
   for (
     let child = parent.firstChild;
     child !== null;
@@ -374,12 +561,16 @@ export function componentWillMove(
     if (child.nodeType !== 1) continue;
     const node = child as AnimatedElement;
     const previous = moving.get(node);
-    if (entering.has(node) || leaving.has(node) || authors.has(node)) {
+    if (leaving.has(node)) continue; // Its leave ends its move
+    if (entering.has(node) || authors.has(node)) {
       if (previous) skipped.push(previous);
       continue;
     }
     const geometry = getGeometry(node);
-    if (previous === undefined) {
+    // A hidden element has no source position
+    if (!hasBox(node, geometry)) {
+      if (previous) skipped.push(previous);
+    } else if (previous === undefined) {
       batch.nodes.push(node);
       batch.xs.push(geometry.x);
       batch.ys.push(geometry.y);
@@ -391,6 +582,17 @@ export function componentWillMove(
   // Finish skipped old moves only after all new source positions were read.
   for (const item of skipped) finishMove(item);
   if (batch.items.length === 0 && batch.nodes.length === 0) return;
+  const drift = sourceDrift(parent);
+  if (drift !== null) {
+    for (let i = 0; i < batch.xs.length; i++) {
+      batch.xs[i] -= drift.x;
+      batch.ys[i] -= drift.y;
+    }
+    for (const item of batch.items) {
+      item.x -= drift.x;
+      item.y -= drift.y;
+    }
+  }
   pending?.cancel?.();
   moveBatches.set(parent, batch);
   batch.cancel = queueAnimation((phase) => runMove(phase, batch), parent);
@@ -412,13 +614,16 @@ function addMoveItem(
     y,
     dx: 0,
     dy: 0,
+    linear: IDENTITY,
+    property: 'transform',
     baseTransform: '',
-    transform: '',
-    transformPriority: '',
+    translate: 'none',
+    offset: [],
     transitions: [],
-    appliedTransform: null,
+    overrides: [],
     initialized: false,
     addedClasses: '',
+    starting: false,
     instant: false,
     superseded: false,
     previous,
@@ -439,13 +644,7 @@ function isZeroTime(value: string): boolean {
 
 function disableTransitions(item: MoveItem): void {
   const style = item.node.style;
-  item.transitions = transitionProperties.map((property) => ({
-    property,
-    value: style.getPropertyValue(property),
-    priority: style.getPropertyPriority(property),
-    applied: '',
-    appliedPriority: '',
-  }));
+  item.transitions = saveStyles(style, transitionProperties);
   // A declaration that the shorthand serializes is written back as it was read: longhands written
   // one by one make the values it left out explicit, which older WebKit then includes in the
   // shorthand. Pending-substitution shorthands (and minimal DOM implementations) may not expose
@@ -454,36 +653,21 @@ function disableTransitions(item: MoveItem): void {
     style.getPropertyValue('transition') ||
     item.transitions.every((entry) => !entry.value)
   ) {
-    item.transitions = [
-      {
-        property: 'transition',
-        value: style.getPropertyValue('transition'),
-        priority: style.getPropertyPriority('transition'),
-        applied: '',
-        appliedPriority: '',
-      },
-    ];
+    item.transitions = saveStyles(style, ['transition']);
   }
   // Only displaced elements without an author transition reach this write.
   style.setProperty('transition', 'none', 'important');
-  for (const entry of item.transitions) {
-    entry.applied = style.getPropertyValue(entry.property);
-    entry.appliedPriority = style.getPropertyPriority(entry.property);
-  }
+  markApplied(style, item.transitions);
 }
 function restoreTransitions(item: MoveItem): void {
+  restoreStyles(item.node.style, item.transitions);
+}
+// Writes the offset and records it, so that cleanup restores only a value the move wrote
+function writeOffset(item: MoveItem, value: string): void {
   const style = item.node.style;
-  for (const entry of item.transitions) {
-    if (
-      style.getPropertyValue(entry.property) === entry.applied &&
-      style.getPropertyPriority(entry.property) === entry.appliedPriority
-    ) {
-      if (entry.value)
-        style.setProperty(entry.property, entry.value, entry.priority);
-      else style.removeProperty(entry.property);
-    }
-  }
-  item.transitions = [];
+  const saved = item.offset[0];
+  style.setProperty(saved.property, value, saved.priority);
+  markApplied(style, item.offset);
 }
 function restoreMoveStyles(item: MoveItem): void {
   item.cancel?.();
@@ -492,22 +676,11 @@ function restoreMoveStyles(item: MoveItem): void {
     item.previous = undefined;
   }
   if (!item.initialized) return;
-  const { node } = item;
-  if (
-    item.appliedTransform !== null &&
-    node.style.transform === item.appliedTransform &&
-    node.style.getPropertyPriority('transform') === item.transformPriority
-  ) {
-    if (item.transform)
-      node.style.setProperty(
-        'transform',
-        item.transform,
-        item.transformPriority,
-      );
-    else node.style.removeProperty('transform');
-  }
+  const style = item.node.style;
+  restoreStyles(style, item.offset);
+  restoreStyles(style, item.overrides);
   restoreTransitions(item);
-  removeClassName(node, item.addedClasses);
+  removeClassName(item.node, item.addedClasses);
 }
 function disposeMove(item: MoveItem): void {
   if (item.done) return;
@@ -525,22 +698,92 @@ function finishMove(item: MoveItem): void {
     moving.delete(item.node);
   }
 }
+// The declaration that keeps the element of item at the offset that its running move has reached.
+// An offset in the transform is held in translate where possible, so that the leave can animate
+// the transform; the element's own rotate and scale apply to the one but not to the other.
+function reachedOffset(item: MoveItem): Hold | null {
+  const running = item.initialized ? item : item.previous;
+  if (running === undefined || !running.initialized) return null;
+  const { node, property, linear } = running;
+  const reached = window.getComputedStyle(node).getPropertyValue(property);
+  if (!reached || reached === 'none') return null;
+  if (
+    property === 'transform' &&
+    running.translate === 'none' &&
+    'translate' in node.style
+  ) {
+    const to = matrix(reached);
+    const from = matrix(running.baseTransform);
+    const x = to[4] - from[4];
+    const y = to[5] - from[5];
+    return {
+      property: 'translate',
+      value: `${linear[0] * x + linear[2] * y}px ${linear[1] * x + linear[3] * y}px`,
+      priority: '',
+    };
+  }
+  return { property, value: reached, priority: running.offset[0].priority };
+}
+function holdOffset(node: AnimatedElement, hold: Hold): void {
+  node.style.setProperty(hold.property, hold.value, hold.priority);
+}
+function isCurrent(item: MoveItem): boolean {
+  return !item.done && moving.get(item.node) === item;
+}
+function isLeaving(item: MoveItem): boolean {
+  return isCurrent(item) && leaving.has(item.node);
+}
+// Finishes the moves of elements that leave, or that may leave in this commit: they stay where the
+// moves have brought them. Every offset is read before the first move is finished.
+function finishHeld(items: MoveItem[]): void {
+  const holds = items.map(reachedOffset);
+  for (let i = 0; i < items.length; i++) {
+    const node = items[i].node;
+    const hold = holds[i];
+    finishMove(items[i]);
+    if (hold === null) continue;
+    if (leaving.has(node)) {
+      holdOffset(node, hold);
+    } else {
+      if (released.size === 0) {
+        queueMicrotask(() => {
+          released.clear();
+        });
+      }
+      released.set(node, hold);
+    }
+  }
+}
 function cancelMoves(parent: Node): void {
   const batch = moveBatches.get(parent);
   if (!batch) return;
   batch.cancel?.();
-  for (const item of batch.items) finishMove(item);
+  finishHeld(batch.items.filter(isCurrent));
   moveBatches.delete(parent);
 }
 
-function measureMove(item: MoveItem, geometry: DOMRect): void {
+// An item moves when its element is displaced, or when an element around it starts a move that
+// carries it along (carried): an element that ends where it was moves against that one
+function measureMove(
+  item: MoveItem,
+  geometry: DOMRect,
+  carried: boolean,
+): void {
+  // A hidden element has no target position
+  if (!hasBox(item.node, geometry)) {
+    item.dx = item.dy = 0;
+    return;
+  }
   item.dx = item.x - geometry.x;
   item.dy = item.y - geometry.y;
-  if (item.dx !== 0 || item.dy !== 0) {
+  if (item.dx !== 0 || item.dy !== 0 || carried) {
+    item.starting = true;
     item.batch.moved = true;
     const style = window.getComputedStyle(item.node);
     const transform = style.transform;
     item.baseTransform = transform === 'none' ? '' : transform;
+    item.translate = style.translate || 'none';
+    item.linear = ownLinear(style);
     item.instant =
       item.transitions.length === 0 &&
       isZeroTime(style.transitionDuration) &&
@@ -549,7 +792,7 @@ function measureMove(item: MoveItem, geometry: DOMRect): void {
 }
 
 // The elements without a running move that moved get an item
-function measureNodes(batch: MoveBatch): void {
+function measureNodes(batch: MoveBatch, carried: boolean): void {
   const { nodes, xs, ys } = batch;
   batch.nodes = [];
   batch.xs = [];
@@ -567,10 +810,79 @@ function measureNodes(batch: MoveBatch): void {
       continue;
     }
     const geometry = getGeometry(node);
-    if (geometry.x !== xs[i] || geometry.y !== ys[i]) {
-      measureMove(addMoveItem(batch, node, xs[i], ys[i], undefined), geometry);
+    if (
+      (carried || geometry.x !== xs[i] || geometry.y !== ys[i]) &&
+      hasBox(node, geometry)
+    ) {
+      measureMove(
+        addMoveItem(batch, node, xs[i], ys[i], undefined),
+        geometry,
+        carried,
+      );
     }
   }
+}
+
+// The nearest element around parent that starts a move in this animation pass
+function startingAncestor(parent: Node): MoveItem | null {
+  for (let node: Node | null = parent; node !== null; node = node.parentNode) {
+    const item = moving.get(node as AnimatedElement);
+    if (item !== undefined && item.starting && !item.done) return item;
+  }
+  return null;
+}
+
+// Writes the start state of an item that moves, or finishes it when its offset disappears
+function startMove(item: MoveItem, outer: MoveItem | null): void {
+  const { node, batch } = item;
+  // A moving ancestor carries the item along with its own offset
+  const dx = outer === null ? item.dx : item.dx - outer.dx;
+  const dy = outer === null ? item.dy : item.dy - outer.dy;
+  // The offset in the element's coordinates. Its own rotate and scale apply to an offset in its
+  // transform, but not to one in translate, which applies before them.
+  const offset = solve(
+    item.property === 'translate'
+      ? batch.space!
+      : multiply(batch.space!, item.linear),
+    dx,
+    dy,
+  );
+  if (
+    offset === null ||
+    (Math.abs(offset.x) < 0.01 && Math.abs(offset.y) < 0.01)
+  ) {
+    restoreTransitions(item);
+    finishMove(item);
+    return;
+  }
+  item.offset = saveStyles(node.style, [item.property]);
+  item.initialized = true;
+  // Without a transition the start offset applies at once
+  if (!item.transitions.length && !item.instant) {
+    disableTransitions(item);
+  }
+  writeOffset(
+    item,
+    item.property === 'translate'
+      ? `${offset.x}px ${offset.y}px`
+      : `translate(${offset.x}px,${offset.y}px) ${item.baseTransform}`,
+  );
+}
+
+// The move classes transition the transform, which the keyframe animation sets: the move's
+// transition applies to translate instead
+function transitionTranslate(item: MoveItem): void {
+  const style = item.node.style;
+  const properties = window.getComputedStyle(item.node).transitionProperty;
+  const list = properties.split(',').map((name) => name.trim());
+  if (!list.includes('transform')) return;
+  item.overrides = saveStyles(style, ['transition-property']);
+  style.setProperty(
+    'transition-property',
+    list.map((name) => (name === 'transform' ? 'translate' : name)).join(', '),
+    'important',
+  );
+  markApplied(style, item.overrides);
 }
 
 function runMove(phase: AnimationPhase, batch: MoveBatch): void {
@@ -587,29 +899,41 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
     phase === AnimationPhase.READ_MOVES ||
     phase === AnimationPhase.ACTIVATE_ANIMATION;
   let live = 0;
-  // Author transitions exclude an element from the move. Before a running move is reset they are
-  // read in READ_MOVES; otherwise once after measuring, and only when something moved.
-  let authors: Set<AnimatedElement> | null = null;
+  // Author transitions exclude an element from the move, and a keyframe animation of its transform
+  // moves it with translate. Before a running move is reset they are read in READ_MOVES;
+  // otherwise once after measuring, and only when something moved.
   if (phase === AnimationPhase.READ_MOVES) {
-    if (batch.retargets !== 0) {
-      authors = batch.authors = authorTransitions(batch.parent);
-    }
+    if (batch.retargets !== 0) readChildAnimations(batch);
   } else if (
-    phase === AnimationPhase.SET_MOVE_START_STATE &&
+    phase === AnimationPhase.SELECT_MOVES &&
     batch.authors === null &&
     batch.moved
   ) {
-    authors = authorTransitions(batch.parent);
+    readChildAnimations(batch);
+  }
+  // Nested moves subtract the offset of the element around them that carries them. The elements
+  // that start a move are known once they are measured, and those that an author transition
+  // excludes have dropped out when every batch of the pass has completed SELECT_MOVES.
+  const outer =
+    phase === AnimationPhase.MEASURE_MOVES ||
+    phase === AnimationPhase.SET_MOVE_START_STATE
+      ? startingAncestor(batch.parent)
+      : null;
+  if (verify) {
+    const leavers = batch.items.filter(isLeaving);
+    if (leavers.length !== 0) finishHeld(leavers);
   }
   if (phase === AnimationPhase.REGISTER_LISTENERS) {
     for (const animation of parentTransitions(batch.parent)) {
-      if (
-        'transitionProperty' in animation &&
-        animation.transitionProperty === 'transform'
-      ) {
+      if ('transitionProperty' in animation) {
         const node = transitionTarget(animation, batch.parent);
         const item = node && moving.get(node);
-        if (item && item.batch === batch) item.ownedTransition = animation;
+        if (
+          item &&
+          item.batch === batch &&
+          animation.transitionProperty === item.property
+        )
+          item.ownedTransition = animation;
       }
     }
   }
@@ -624,8 +948,7 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
       if (
         node.parentNode !== batch.parent ||
         !node.isConnected ||
-        entering.has(node) ||
-        leaving.has(node)
+        entering.has(node)
       ) {
         finishMove(item);
         continue;
@@ -635,44 +958,42 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
     switch (phase) {
       case AnimationPhase.READ_MOVES:
         // A patch may have started a new author transition since the source read.
-        if (authors !== null && authors.has(node)) finishMove(item);
+        if (batch.authors !== null && batch.authors.has(node)) finishMove(item);
         break;
       case AnimationPhase.RESET_MOVES:
         if (item.previous) {
-          // Only our own running transform is interrupted for retargeting.
+          // Only our own running move is interrupted for retargeting.
           item.previous.cancel?.();
+          restoreStyles(node.style, item.previous.overrides);
           disableTransitions(item);
           disposeMove(item.previous);
           item.previous = undefined;
         }
         break;
       case AnimationPhase.MEASURE_MOVES:
-        measureMove(item, getGeometry(node));
+        measureMove(item, getGeometry(node), outer !== null);
         break;
-      case AnimationPhase.SET_MOVE_START_STATE:
+      case AnimationPhase.SELECT_MOVES:
         if (
-          (item.dx === 0 && item.dy === 0) ||
-          (authors !== null && authors.has(node))
+          !item.starting ||
+          (batch.authors !== null && batch.authors.has(node))
         ) {
           restoreTransitions(item);
           finishMove(item);
-        } else {
-          item.transform = node.style.transform;
-          item.transformPriority = node.style.getPropertyPriority('transform');
-          item.initialized = true;
-          // Without a transition the start transform applies at once
-          if (!item.transitions.length && !item.instant) {
-            disableTransitions(item);
-          }
-          node.style.setProperty(
-            'transform',
-            `translate(${item.dx}px,${item.dy}px) ${item.baseTransform}`,
-            item.transformPriority,
-          );
-          item.appliedTransform = node.style.transform;
+        } else if (
+          // An offset in translate would replace the element's own translate
+          batch.keyframed?.has(node) &&
+          item.translate === 'none' &&
+          'translate' in node.style
+        ) {
+          item.property = 'translate';
         }
         break;
+      case AnimationPhase.SET_MOVE_START_STATE:
+        startMove(item, outer);
+        break;
       case AnimationPhase.ACTIVATE_TRANSITIONS: {
+        item.starting = false;
         restoreTransitions(item);
         let added = '';
         for (const name of batch.ownerClasses?.get(node) ??
@@ -683,15 +1004,16 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
           }
         }
         item.addedClasses = added;
+        if (item.property === 'translate') transitionTranslate(item);
         break;
       }
       case AnimationPhase.ACTIVATE_ANIMATION:
-        node.style.setProperty(
-          'transform',
-          item.baseTransform || 'translate(0px,0px)',
-          item.transformPriority,
+        writeOffset(
+          item,
+          item.property === 'translate'
+            ? '0px 0px'
+            : item.baseTransform || 'translate(0px,0px)',
         );
-        item.appliedTransform = node.style.transform;
         break;
       case AnimationPhase.REGISTER_LISTENERS:
         item.cancel = registerTransitionListener([node], () =>
@@ -701,7 +1023,9 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
     }
   }
   if (phase === AnimationPhase.MEASURE_MOVES) {
-    measureNodes(batch);
+    measureNodes(batch, outer !== null);
+    // Read with the measurements, before any move of the pass writes its start state
+    if (batch.moved) batch.space = parentSpace(batch.parent);
     if (batch.remaining === 0) {
       batch.cancel?.();
       moveBatches.delete(batch.parent);

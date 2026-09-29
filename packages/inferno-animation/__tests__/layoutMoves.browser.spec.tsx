@@ -1,9 +1,6 @@
 import { render } from 'inferno';
-import {
-  AnimatedAllComponent,
-  AnimatedMoveComponent,
-  hasPendingAnimations,
-} from 'inferno-animation';
+import { AnimatedAllComponent, AnimatedMoveComponent } from 'inferno-animation';
+import { browserHelpers, frame, until } from './helpers/browser';
 
 // Geometry and transition progress require an actual layout engine.
 const browserDescribe = global.usingJSDOM ? xdescribe : describe;
@@ -11,6 +8,7 @@ const browserDescribe = global.usingJSDOM ? xdescribe : describe;
 browserDescribe('layout moves in a browser', () => {
   let container: HTMLDivElement;
   let styles: HTMLStyleElement;
+  const { card, seekMoves, settle } = browserHelpers(() => container);
 
   function View({ id }) {
     return <li data-id={id}>{id}</li>;
@@ -25,53 +23,6 @@ browserDescribe('layout moves in a browser', () => {
       return <View id={this.props.id} />;
     }
   }
-  const frame = () =>
-    new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-  async function until(predicate: () => boolean) {
-    for (let i = 0; i < 120; i++) {
-      if (predicate()) return;
-      await frame();
-    }
-    throw new Error('Animation condition did not settle');
-  }
-  async function settle() {
-    await until(() => {
-      for (const node of Array.from(container.querySelectorAll('li'))) {
-        for (const animation of node.getAnimations()) animation.finish();
-      }
-      return (
-        !hasPendingAnimations() &&
-        !container.querySelector('[class*="-active"]')
-      );
-    });
-  }
-  async function seekMoves(fraction: number) {
-    await until(() =>
-      Array.from(container.querySelectorAll('li')).some((node) =>
-        node
-          .getAnimations()
-          .some(
-            (a) =>
-              'transitionProperty' in a && a.transitionProperty === 'transform',
-          ),
-      ),
-    );
-    // Seeking a paused animation completes the pause at once. Awaiting ready, a frame for each
-    // move, could outlast a move's fallback timeout on a slow machine, which cancels the move.
-    for (const node of Array.from(container.querySelectorAll('li'))) {
-      for (const animation of node.getAnimations()) {
-        if (
-          'transitionProperty' in animation &&
-          animation.transitionProperty === 'transform'
-        ) {
-          animation.pause();
-          const timing = animation.effect!.getTiming();
-          animation.currentTime =
-            (timing.delay || 0) + Number(timing.duration) * fraction;
-        }
-      }
-    }
-  }
   function list(order: string[], Item = MoveCard, animation = 'LayoutTest') {
     return (
       <ul>
@@ -80,9 +31,6 @@ browserDescribe('layout moves in a browser', () => {
         ))}
       </ul>
     );
-  }
-  function card(id: string): HTMLElement {
-    return container.querySelector('[data-id="' + id + '"]')!;
   }
   function positions(): Record<string, number> {
     const result: Record<string, number> = {};

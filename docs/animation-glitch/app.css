@@ -82,3 +82,241 @@ h3 {
   transition: transform 1.5s ease;
   z-index: 1;
 }
+
+/* Edge cases 5-15: inferno-animation classes for animation="Glitch" */
+h1.part {
+  margin-top: 48px;
+}
+
+.Glitch-move-active {
+  transition: transform 1.5s ease;
+  z-index: 1;
+}
+
+.card.Glitch-enter,
+.card.Glitch-leave-end {
+  opacity: 0;
+  height: 0;
+  margin-bottom: 0;
+}
+
+.card.Glitch-enter-active,
+.card.Glitch-leave-active {
+  overflow: hidden;
+  transition:
+    height 1.5s ease,
+    margin-bottom 1.5s ease,
+    opacity 1.5s ease;
+}
+
+.buttons label {
+  margin-right: 8px;
+}
+
+/* 5. Transformed coordinate spaces */
+.scaled {
+  transform: scale(0.6);
+  transform-origin: 0 0;
+  height: 130px;
+}
+
+.cards .card.shrunk {
+  scale: 0.6;
+}
+
+.svg-card {
+  fill: #f39c3c;
+}
+
+.svg-list text {
+  font: bold 9px sans-serif;
+  fill: #fff;
+}
+
+/* 6. Hidden card */
+.card.hidden {
+  display: none;
+}
+
+/* 7. Keyframe animation on transform */
+@keyframes glitch-pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.04);
+  }
+}
+
+.card.pulse {
+  animation: glitch-pulse 0.6s ease-in-out infinite alternate;
+}
+
+@keyframes glitch-pop {
+  from {
+    transform: scale(0.8);
+  }
+  to {
+    transform: scale(0.96);
+  }
+}
+
+.card.pop {
+  animation: glitch-pop 0.3s forwards;
+}
+
+/* 8. Leaves that slide out: inferno-animation classes for animation="Slide" */
+.Slide-move-active {
+  transition: transform 1.5s ease;
+  z-index: 1;
+}
+
+.card.Slide-enter,
+.card.Slide-leave-end {
+  opacity: 0;
+  height: 0;
+  margin-bottom: 0;
+}
+
+.card.Slide-leave-end {
+  transform: translateX(120px);
+}
+
+.card.Slide-enter-active,
+.card.Slide-leave-active {
+  overflow: hidden;
+  transition:
+    transform 1.5s ease,
+    height 1.5s ease,
+    margin-bottom 1.5s ease,
+    opacity 1.5s ease;
+}
+
+/* 10. Nested lists */
+.groups {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 270px;
+}
+
+.group {
+  border: 1px solid #bbb;
+  border-radius: 6px;
+  padding: 8px 8px 2px;
+  margin-bottom: 10px;
+  background: #fafafa;
+}
+
+.group-title {
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+/* Groups without a box of their own: a group is as high as its cards */
+.groups.tight .group {
+  border: 0;
+  border-radius: 0;
+  padding: 0;
+  margin: 0;
+  background: none;
+}
+
+.groups.tight .group-title {
+  display: none;
+}
+
+/* 11. An author transition; the move keeps its own transition as well */
+.card.highlightable {
+  transition: background-color 1s;
+}
+
+.card.highlightable.Glitch-move-active {
+  transition:
+    transform 1.5s ease,
+    background-color 1s;
+}
+
+.card.highlightable.highlight {
+  background: #2d8cf0;
+}
+
+/* 12. Sized boxes */
+.card.sized {
+  overflow: hidden;
+}
+
+/* 13. Global animation */
+.global .pane {
+  position: relative;
+  height: 140px;
+  border: 1px dashed #bbb;
+}
+
+.logo {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  width: 80px;
+  height: 80px;
+  border-radius: 40px;
+  background: #c0392b;
+  color: #fff;
+  font-weight: bold;
+  line-height: 80px;
+  text-align: center;
+}
+
+#global-right .logo {
+  top: 60px;
+  left: auto;
+  right: 20px;
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  line-height: 50px;
+}
+
+.logo.Glitch-enter-active {
+  transition: transform 1.5s ease;
+}
+
+.logo.Glitch-leave-active {
+  transition: opacity 0.3s;
+}
+
+.logo.Glitch-leave-end {
+  opacity: 0;
+}
+
+/* 14. Inline transform after a global animation */
+.tile {
+  position: absolute;
+  top: 30px;
+  left: 30px;
+  width: 70px;
+  height: 70px;
+  background: #8e44ad;
+  color: #fff;
+  font-weight: bold;
+  line-height: 70px;
+  text-align: center;
+}
+
+#tilt-right .tile {
+  top: 40px;
+  left: auto;
+  right: 40px;
+}
+
+.tile.Glitch-enter-active {
+  transition: transform 1.5s ease;
+}
+
+.tile.Glitch-leave-active {
+  transition: opacity 0.3s;
+}
+
+.tile.Glitch-leave-end {
+  opacity: 0;
+}

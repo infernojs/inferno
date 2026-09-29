@@ -5,13 +5,11 @@ import {
   type AnimationClass,
   hasPendingAnimations,
 } from 'inferno-animation';
+import { fakeFrames, type Frames, idle } from './helpers/frames';
 
 describe('coordinated layout moves', () => {
   let container: HTMLDivElement;
-  let frames: Map<number, FrameRequestCallback>;
-  let frameId: number;
-  let originalCancelRAF: typeof cancelAnimationFrame;
-  let originalRAF: typeof requestAnimationFrame;
+  let frames: Frames;
   let reads: number;
 
   class Card extends AnimatedMoveComponent<{ id: string }, unknown> {
@@ -31,9 +29,7 @@ describe('coordinated layout moves', () => {
   }
 
   function frame() {
-    const callbacks = Array.from(frames.values());
-    frames.clear();
-    for (const callback of callbacks) callback(0);
+    frames.frame();
   }
 
   function card(id: string): HTMLElement {
@@ -65,44 +61,26 @@ describe('coordinated layout moves', () => {
     }
   }
 
-  beforeEach((done) => {
-    function start() {
-      if (hasPendingAnimations()) {
-        setTimeout(start, 5);
-        return;
-      }
-      container = document.createElement('div');
-      document.body.appendChild(container);
-      frames = new Map();
-      frameId = 0;
-      reads = 0;
-      originalRAF = window.requestAnimationFrame;
-      originalCancelRAF = window.cancelAnimationFrame;
-      window.requestAnimationFrame = (callback) => {
-        frames.set(++frameId, callback);
-        return frameId;
-      };
-      window.cancelAnimationFrame = (id) => {
-        frames.delete(id);
-      };
-      render(list(['A', 'B', 'C', 'D']), container);
-      measureRows();
-      done();
-    }
-    start();
+  beforeEach(async () => {
+    await idle();
+    container = document.createElement('div');
+    document.body.appendChild(container);
+    frames = fakeFrames();
+    reads = 0;
+    render(list(['A', 'B', 'C', 'D']), container);
+    measureRows();
   });
 
   afterEach(async () => {
     await Promise.resolve();
-    while (frames.size) frame();
+    frames.drain();
     for (const node of Array.from(container.querySelectorAll('li'))) {
       node.dispatchEvent(new Event('transitionend'));
     }
     render(null, container);
     await Promise.resolve();
-    while (frames.size) frame();
-    window.requestAnimationFrame = originalRAF;
-    window.cancelAnimationFrame = originalCancelRAF;
+    frames.drain();
+    frames.restore();
     container.remove();
   });
 
@@ -221,7 +199,7 @@ describe('coordinated layout moves', () => {
     const old = card('A');
     render(null, container);
     await Promise.resolve();
-    while (frames.size) frame();
+    frames.drain();
     expect(old.style.transform).toBe('');
     expect(hasPendingAnimations()).toBe(false);
   });
@@ -375,7 +353,7 @@ describe('coordinated layout moves', () => {
     expect((other.firstChild as HTMLElement).style.display).toBe('');
     // Avoid introducing a leave transition in this scheduling-only fixture.
     render(null, other);
-    while (frames.size) frame();
+    frames.drain();
     other.firstChild?.dispatchEvent(new Event('transitionend'));
     other.remove();
   });
@@ -510,7 +488,7 @@ describe('coordinated layout moves', () => {
     render(null, container);
     render(items(['A', 'B', 'C', 'D', 'E']), container);
     await Promise.resolve();
-    while (frames.size) frame();
+    frames.drain();
     for (const node of Array.from(container.querySelectorAll('li'))) {
       node.dispatchEvent(new Event('transitionend'));
     }

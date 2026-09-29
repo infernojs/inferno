@@ -109,6 +109,167 @@ export function getGeometry(node: HTMLElement | SVGElement): DOMRect {
   return node.getBoundingClientRect();
 }
 
+// Whether the element has a box: a hidden one measures as an empty box at the viewport origin
+export function hasBox(
+  node: HTMLElement | SVGElement,
+  geometry: DOMRect,
+): boolean {
+  return (
+    geometry.width !== 0 ||
+    geometry.height !== 0 ||
+    node.getClientRects().length !== 0
+  );
+}
+
+/**
+ * A 2D transform [a, b, c, d, e, f]. Its linear part [a, b, c, d] maps an offset (x, y) to
+ * (a * x + c * y, b * x + d * y); e and f are its translation, which products leave out.
+ */
+export type Linear = readonly number[];
+
+export const IDENTITY: Linear = [1, 0, 0, 1, 0, 0];
+
+export function multiply(m: Linear, n: Linear): Linear {
+  return [
+    m[0] * n[0] + m[2] * n[1],
+    m[1] * n[0] + m[3] * n[1],
+    m[0] * n[2] + m[2] * n[3],
+    m[1] * n[2] + m[3] * n[3],
+  ];
+}
+
+// The offset that m maps to (x, y), or null when m flattens the plane
+export function solve(
+  m: Linear,
+  x: number,
+  y: number,
+): { x: number; y: number } | null {
+  const determinant = m[0] * m[3] - m[1] * m[2];
+  if (Math.abs(determinant) < 1e-9) return null;
+  return {
+    x: (m[3] * x - m[2] * y) / determinant,
+    y: (m[0] * y - m[1] * x) / determinant,
+  };
+}
+
+// A computed transform, which is a matrix or none
+export function matrix(value: string | undefined): Linear {
+  const match = /^matrix(3d)?\(([^)]*)\)$/.exec(value || '');
+  if (match === null) return IDENTITY;
+  const v = match[2].split(',').map(Number);
+  return match[1] ? [v[0], v[1], v[4], v[5], v[12], v[13]] : v;
+}
+
+// The computed rotate property, when it rotates around the z axis. Computed angles are in degrees.
+function rotateLinear(value: string | undefined): Linear {
+  const match = /^(?:z |0 0 1 )?(-?[\d.e+-]+)deg$/.exec(value || '');
+  if (match === null) return IDENTITY;
+  const angle = (Number(match[1]) * Math.PI) / 180;
+  const cos = Math.cos(angle);
+  const sin = Math.sin(angle);
+  return [cos, sin, -sin, cos];
+}
+
+function scaleLinear(value: string | undefined): Linear {
+  if (!value || value === 'none') return IDENTITY;
+  const [x, y = x] = value.split(' ').map(Number);
+  return Number.isFinite(x) && Number.isFinite(y) ? [x, 0, 0, y] : IDENTITY;
+}
+
+/**
+ * The linear part of the individual rotate and scale properties, which apply before the transform
+ * property, so they also apply to an offset written into the transform.
+ */
+export function ownLinear(style: CSSStyleDeclaration): Linear {
+  return multiply(rotateLinear(style.rotate), scaleLinear(style.scale));
+}
+
+/**
+ * How the transforms around the children of parent map their offsets to the viewport. For SVG the
+ * screen CTM includes the viewBox, the SVG transforms and the CSS transforms of HTML ancestors.
+ * The parent may be a shadow root or a document fragment, and the elements around a shadow root
+ * are those around its host.
+ */
+export function parentSpace(parent: Node): Linear {
+  let space = IDENTITY;
+  for (
+    let node: Node | null = parent;
+    node !== null;
+    node = node.parentNode || (node as ShadowRoot).host || null
+  ) {
+    if (node.nodeType !== 1) continue;
+    if (typeof (node as SVGGraphicsElement).getScreenCTM === 'function') {
+      const ctm = (node as SVGGraphicsElement).getScreenCTM();
+      return ctm === null
+        ? space
+        : multiply([ctm.a, ctm.b, ctm.c, ctm.d], space);
+    }
+    const style = window.getComputedStyle(node as Element);
+    space = multiply(
+      multiply(ownLinear(style), matrix(style.transform)),
+      space,
+    );
+  }
+  return space;
+}
+
+/**
+ * An inline declaration saved before an animation writes the property, and the value the
+ * animation wrote.
+ */
+export interface SavedStyle {
+  property: string;
+  value: string;
+  priority: string;
+  applied: string;
+  appliedPriority: string;
+}
+
+export function saveStyles(
+  style: CSSStyleDeclaration,
+  properties: string[],
+): SavedStyle[] {
+  return properties.map((property) => ({
+    property,
+    value: style.getPropertyValue(property),
+    priority: style.getPropertyPriority(property),
+    applied: '',
+    appliedPriority: '',
+  }));
+}
+
+// Records the values the animation has written
+export function markApplied(
+  style: CSSStyleDeclaration,
+  saved: SavedStyle[],
+): void {
+  for (const entry of saved) {
+    entry.applied = style.getPropertyValue(entry.property);
+    entry.appliedPriority = style.getPropertyPriority(entry.property);
+  }
+}
+
+/**
+ * Restores the saved declarations and empties saved. A property the application changed after
+ * the animation wrote it keeps the application's value.
+ */
+export function restoreStyles(
+  style: CSSStyleDeclaration,
+  saved: SavedStyle[],
+): void {
+  for (const entry of saved) {
+    if (
+      style.getPropertyValue(entry.property) === entry.applied &&
+      style.getPropertyPriority(entry.property) === entry.appliedPriority
+    ) {
+      if (entry.value)
+        style.setProperty(entry.property, entry.value, entry.priority);
+      else style.removeProperty(entry.property);
+    }
+  }
+  saved.length = 0;
+}
+
 export function setTransform(
   node: HTMLElement | SVGElement,
   x: number,
@@ -123,11 +284,6 @@ export function setTransform(
   } else {
     node.style.transform = `translate(${x}px,${y}px)`;
   }
-}
-
-export function clearTransform(node: HTMLElement | SVGElement): void {
-  node.style.transform = '';
-  node.style.transformOrigin = '';
 }
 
 export function setDimensions(

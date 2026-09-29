@@ -27,244 +27,6 @@
   function isUndefined$1(o) {
     return o === void 0;
   }
-
-  // Keep the committed list, rather than callbacks closing over props from the
-  // render that started a leave animation. Several renders may precede its end.
-  const lists = new WeakMap();
-  const parents = new WeakMap();
-  const owners = new WeakSet();
-  let ownerCount = 0;
-  // Ordinary applications need no list traversal for animation discovery.
-  function registerMoveHook(owner, hook) {
-    if (isFunction$1(hook)) {
-      if (!owners.has(owner)) {
-        owners.add(owner);
-        ownerCount++;
-      }
-    } else if (ownerCount > 0 && owners.delete(owner)) {
-      ownerCount--;
-    }
-  }
-  function findMoveElement(vNode, covered) {
-    while (!isNullOrUndef$2(vNode)) {
-      const flags = vNode.flags;
-      const children = vNode.children;
-      if (flags & 481 /* VNodeFlags.Element */) {
-        if (covered && vNode.dom) covered.add(vNode.dom);
-        return vNode.dom;
-      }
-      if (flags & 4 /* VNodeFlags.ComponentClass */) {
-        vNode = children && !children.$UN ? children.$LI : null;
-      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
-        vNode = children;
-      } else if (flags & 8192 /* VNodeFlags.Fragment */) {
-        if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
-          vNode = children;
-        } else {
-          let first = null;
-          for (let i = 0; i < children.length; i++) {
-            const dom = findMoveElement(children[i], covered);
-            if (dom !== null) {
-              if (!covered) return dom;
-              if (first === null) first = dom;
-            }
-          }
-          return first;
-        }
-      } else {
-        // Text, void nodes and portal placeholders are not animation targets.
-        return null;
-      }
-    }
-    return null;
-  }
-  function visitMoveHooks(vNode, parentVNode, parent, invoke, covered) {
-    while (!isNullOrUndef$2(vNode)) {
-      const flags = vNode.flags;
-      const children = vNode.children;
-      let owner;
-      let hook;
-      if (flags & 4 /* VNodeFlags.ComponentClass */) {
-        if (!children || children.$UN) return false;
-        owner = children;
-        hook = owner.componentWillMove;
-      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
-        owner = vNode.ref;
-        hook = owner && owner.onComponentWillMove;
-      } else if (flags & 8192 /* VNodeFlags.Fragment */) {
-        if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
-          vNode = children;
-          continue;
-        }
-        let found = false;
-        for (let i = 0; i < children.length; i++) {
-          if (visitMoveHooks(children[i], parentVNode, parent, invoke, covered)) {
-            found = true;
-            if (!invoke) break;
-          }
-        }
-        return found;
-      } else {
-        return false;
-      }
-      if (isFunction$1(hook)) {
-        const dom = findMoveElement(vNode);
-        if (dom !== null && dom.parentNode === parent) {
-          if (invoke) {
-            if (covered?.has(dom)) return true;
-            findMoveElement(vNode, covered);
-            if (flags & 4 /* VNodeFlags.ComponentClass */) {
-              hook.call(owner, parentVNode, parent, dom);
-            } else {
-              hook.call(owner, parentVNode, parent, dom, vNode.props);
-            }
-          }
-          return true;
-        }
-        return false;
-      }
-      vNode = flags & 4 /* VNodeFlags.ComponentClass */ ? children.$LI : children;
-    }
-    return false;
-  }
-  function trackMoveAnimations(vNode, parent) {
-    if (ownerCount === 0 || vNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */ || lists.has(vNode)) return;
-    const children = vNode.children;
-    for (let i = 0; i < children.length; i++) {
-      if (visitMoveHooks(children[i], vNode, parent, false)) {
-        const list = {
-          vNode,
-          parent,
-          patching: false
-        };
-        lists.set(vNode, list);
-        let siblings = parents.get(parent);
-        if (!siblings) parents.set(parent, siblings = new Set());
-        siblings.add(list);
-        return;
-      }
-    }
-  }
-  function forgetMoveAnimations(vNode) {
-    if (vNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) return;
-    const list = lists.get(vNode);
-    if (list) {
-      lists.delete(vNode);
-      const siblings = parents.get(list.parent);
-      siblings.delete(list);
-      if (siblings.size === 0) parents.delete(list.parent);
-    }
-  }
-  function prepareMoveAnimations(lastVNode, nextVNode, parent, animations) {
-    if (lastVNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) return undefined;
-    // A wrapper can enable a nested hook through setState without patching its
-    // enclosing list. Discover it before the first subsequent layout change.
-    trackMoveAnimations(lastVNode, parent);
-    const list = lists.get(lastVNode);
-    if (!list) return undefined;
-    // Key-based preparation only applies while both lists remain keyed.
-    if (nextVNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) {
-      forgetMoveAnimations(lastVNode);
-      return undefined;
-    }
-    const lastChildren = lastVNode.children;
-    const nextChildren = nextVNode.children;
-    const nextByKey = new Map(nextChildren.map(child => [child.key, child]));
-    list.patching = true;
-    list.commit = animations;
-    const covered = animations.$MP || (animations.$MP = new Set());
-    try {
-      for (let i = 0; i < lastChildren.length; i++) {
-        const child = lastChildren[i];
-        const next = nextByKey.get(child.key);
-        if (next && next.type === child.type && !((child.flags ^ next.flags) & ~81920 /* VNodeFlags.InUseOrNormalized */) && !(next.flags & 2048 /* VNodeFlags.ReCreate */) && child.flags & 16384 /* VNodeFlags.InUse */) {
-          visitMoveHooks(child, lastVNode, parent, true, covered);
-        }
-      }
-    } catch (error) {
-      list.patching = false;
-      throw error;
-    } finally {
-      list.commit = undefined;
-    }
-    return list;
-  }
-  function finishMoveAnimations(list, nextVNode, parent, succeeded) {
-    if (list) {
-      list.patching = false;
-      if (succeeded) {
-        if (nextVNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) {
-          forgetMoveAnimations(list.vNode);
-          return;
-        }
-        lists.delete(list.vNode);
-        list.vNode = nextVNode;
-        lists.set(nextVNode, list);
-      }
-    } else if (succeeded) {
-      trackMoveAnimations(nextVNode, parent);
-    }
-  }
-  function collectNestedLists(vNode, nested) {
-    while (!isNullOrUndef$2(vNode)) {
-      const flags = vNode.flags;
-      const children = vNode.children;
-      if (flags & 4 /* VNodeFlags.ComponentClass */) {
-        vNode = children && !children.$UN ? children.$LI : null;
-      } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
-        vNode = children;
-      } else if (flags & 8192 /* VNodeFlags.Fragment */) {
-        const list = lists.get(vNode);
-        if (list) {
-          nested.add(list);
-          return;
-        }
-        if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
-          vNode = children;
-        } else {
-          for (let i = 0; i < children.length; i++) {
-            collectNestedLists(children[i], nested);
-          }
-          return;
-        }
-      } else {
-        return;
-      }
-    }
-  }
-  function prepareForDeferredRemoval(parent) {
-    const siblings = parents.get(parent);
-    if (siblings) {
-      const commit = {};
-      // Nested keyed fragments share their enclosing list's physical parent.
-      // Visit from the outer lists so ownership does not depend on mount order.
-      const nested = new Set();
-      if (siblings.size > 1) {
-        for (const list of siblings) {
-          const children = list.vNode.children;
-          for (let i = 0; i < children.length; i++) {
-            collectNestedLists(children[i], nested);
-          }
-        }
-      }
-      for (const list of siblings) {
-        // Synchronous leave callbacks already have a pre-patch measurement.
-        if (!list.patching && !nested.has(list) && list.vNode.childFlags === 8 /* ChildFlags.HasKeyedChildren */) {
-          const children = list.vNode.children;
-          list.commit = commit;
-          try {
-            for (let i = 0; i < children.length; i++) {
-              visitMoveHooks(children[i], list.vNode, parent, true, commit.$MP || (commit.$MP = new Set()));
-            }
-          } finally {
-            list.commit = undefined;
-          }
-        }
-      }
-      return commit.$CM;
-    }
-    return undefined;
-  }
   // object.event should always be function, otherwise its badly created object.
   function isLinkEventObject(o) {
     return !isNull(o) && typeof o === 'object';
@@ -275,17 +37,37 @@
   const EMPTY_OBJ = {};
   // @ts-expect-error hack for fragment type
   const Fragment = '$F';
-  class AnimationQueues {
-    constructor() {
-      this.componentDidAppear = [];
-      this.componentWillDisappear = [];
-      this.componentWillMove = [];
-      /** Internal post-commit work for layout animations; allocated only on demand. */
-      this.$CM = void 0;
-      /** DOM roots already covered by an outer move hook in this update. */
-      this.$MP = void 0;
+  // The adapter while inferno-animation is installed, and while it is active. The reconciler tests
+  // these variables: a null check of a variable is the cheapest test in every JIT tier, and a bundler
+  // that sees no call to setMoveAnimations removes the tests altogether.
+  let moveAnimations = null;
+  let activeMoveAnimations = null;
+  // A patched function component has a move hook, which it may not have had before
+  function updateMoveHooks(lastVNode, nextVNode) {
+    const lastRef = lastVNode.ref;
+    if (isNullOrUndef$2(lastRef) || typeof lastRef.onComponentWillMove !== 'function') {
+      moveAnimations.updateHooks(lastRef, nextVNode.ref);
     }
   }
+  // Returns false when another copy of inferno-animation is installed already
+  function setMoveAnimations(adapter, active) {
+    if (moveAnimations !== null && moveAnimations !== adapter) {
+      return false;
+    }
+    moveAnimations = adapter;
+    activeMoveAnimations = active ? adapter : null;
+    return true;
+  }
+  // One per commit. The arrays are created by the first hook queued in them.
+  class AnimationQueues {
+    constructor() {
+      this.componentDidAppear = null;
+      this.componentWillDisappear = null;
+    }
+  }
+  // Given to the children of a component that animates its own appearance or removal: their appear
+  // and leave hooks do not run. Nothing is ever queued in it.
+  const NO_ANIMATIONS = new AnimationQueues();
   function normalizeEventName(name) {
     return name.substring(2).toLowerCase();
   }
@@ -338,7 +120,36 @@
     }
     return null;
   }
+  // The first Element of a vNode's rendered output, or null when that output starts with text, a
+  // placeholder or a portal. Appear, leave and move animations need an element to animate.
+  function findElementFromVNode(vNode) {
+    while (!isNullOrUndef$2(vNode)) {
+      const flags = vNode.flags;
+      if (flags & 481 /* VNodeFlags.Element */) {
+        return vNode.dom;
+      }
+      if (flags & 1521 /* VNodeFlags.DOMRef */) {
+        return null;
+      }
+      if (flags & 8192 /* VNodeFlags.Fragment */ && vNode.childFlags & 12 /* ChildFlags.MultipleChildren */) {
+        const children = vNode.children;
+        for (let i = 0; i < children.length; i++) {
+          const dom = findElementFromVNode(children[i]);
+          if (dom !== null) {
+            return dom;
+          }
+        }
+        return null;
+      }
+      vNode = findChildVNode(vNode, true, flags);
+    }
+    return null;
+  }
   function callAllAnimationHooks(animationQueue, callback) {
+    if (animationQueue === null) {
+      return;
+    }
+    let synchronous = true;
     let animationsLeft = animationQueue.length;
     // Picking from the top because it is faster, invocation order should be irrelevant
     // since all animations are to be run, and we can't predict the order in which they complete.
@@ -346,15 +157,16 @@
     while ((fn = animationQueue.pop()) !== undefined) {
       fn(() => {
         if (--animationsLeft <= 0 && isFunction$1(callback)) {
-          callback();
+          callback(synchronous);
         }
       });
     }
+    synchronous = false;
   }
   function clearVNodeDOM(vNode, parentDOM, deferredRemoval) {
     while (!isNullOrUndef$2(vNode)) {
       const flags = vNode.flags;
-      if ((flags & 1521 /* VNodeFlags.DOMRef */) !== 0) {
+      if (flags & 1521 /* VNodeFlags.DOMRef */) {
         // On deferred removals the node might disappear because of later operations
         if (!deferredRemoval || vNode.dom.parentNode === parentDOM) {
           removeChild(parentDOM, vNode.dom);
@@ -408,21 +220,28 @@
     }
   }
   function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
-    return function () {
-      const dom = findDOMFromVNode(vNode, true);
-      let commit;
-      if (dom && dom.parentNode === parentDOM) {
-        commit = prepareForDeferredRemoval(parentDOM);
+    return deferRemoval(parentDOM, () => clearVNodeDOM(vNode, parentDOM, true));
+  }
+  // A completion may be invoked more than once, or after a later patch removed its DOM.
+  function deferRemoval(parent, callback) {
+    let completed = false;
+    return synchronous => {
+      if (completed) return;
+      completed = true;
+      if (!synchronous && activeMoveAnimations !== null) {
+        activeMoveAnimations.remove(parent, callback);
+      } else {
+        callback();
       }
-      // Mark removal as deferred to trigger check that node still exists
-      clearVNodeDOM(vNode, parentDOM, true);
-      if (commit) callAll(commit);
     };
   }
   function removeVNodeDOM(vNode, parentDOM, animations) {
-    if (animations.componentWillDisappear.length > 0) {
+    const hooks = animations.componentWillDisappear;
+    if (hooks !== null) {
+      // The leave hooks queued while unmounting vNode belong to this removal.
       // Wait until animations are finished before removing actual dom nodes
-      callAllAnimationHooks(animations.componentWillDisappear, createDeferComponentClassRemovalCallback(vNode, parentDOM));
+      animations.componentWillDisappear = null;
+      callAllAnimationHooks(hooks, createDeferComponentClassRemovalCallback(vNode, parentDOM));
     } else {
       clearVNodeDOM(vNode, parentDOM, false);
     }
@@ -1127,7 +946,6 @@
     removeVNodeDOM(vNode, parentDOM, animations);
   }
   function unmount(vNode, animations) {
-    forgetMoveAnimations(vNode);
     const flags = vNode.flags;
     const children = vNode.children;
     let ref;
@@ -1146,41 +964,51 @@
         }
       }
       if (childFlags & 12 /* ChildFlags.MultipleChildren */) {
+        if (childFlags === 8 /* ChildFlags.HasKeyedChildren */) {
+          if (activeMoveAnimations !== null) {
+            activeMoveAnimations.unmountList(vNode);
+          }
+        }
         unmountAllChildren(children, animations);
       } else if (childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
         unmount(children, animations);
       }
     } else if (children) {
       if (flags & 4 /* VNodeFlags.ComponentClass */) {
-        registerMoveHook(children, null);
         if (isFunction$1(children.componentWillUnmount)) {
           // TODO: Possible entrypoint
           children.componentWillUnmount();
         }
-        // If we have a componentWillDisappear on this component, block children from animating
+        // A component that animates its own removal does not let its children animate. Inside such a
+        // component animations is NO_ANIMATIONS, and its hook does not run either.
         let childAnimations = animations;
-        if (isFunction$1(children.componentWillDisappear)) {
-          childAnimations = new AnimationQueues();
-          addDisappearAnimationHook(animations, children, findDOMFromVNode(children.$LI, true), flags, undefined);
+        if (isFunction$1(children.componentWillDisappear) && animations !== NO_ANIMATIONS) {
+          childAnimations = NO_ANIMATIONS;
+          addDisappearAnimationHook(animations, children, findElementFromVNode(children.$LI), flags, undefined);
+        }
+        if (activeMoveAnimations !== null && typeof children.componentWillMove === 'function') {
+          activeMoveAnimations.unmountClass(children);
         }
         unmountRef(vNode.ref);
         children.$UN = true;
         unmount(children.$LI, childAnimations);
       } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
-        registerMoveHook(vNode, null);
         // If we have a onComponentWillDisappear on this component, block children from animating
         let childAnimations = animations;
         ref = vNode.ref;
         if (!isNullOrUndef$2(ref)) {
-          let domEl = null;
+          let domEl;
           if (isFunction$1(ref.onComponentWillUnmount)) {
             domEl = findDOMFromVNode(vNode, true);
             ref.onComponentWillUnmount(domEl, vNode.props || EMPTY_OBJ);
           }
-          if (isFunction$1(ref.onComponentWillDisappear)) {
-            childAnimations = new AnimationQueues();
-            domEl = domEl || findDOMFromVNode(vNode, true);
+          if (isFunction$1(ref.onComponentWillDisappear) && animations !== NO_ANIMATIONS) {
+            childAnimations = NO_ANIMATIONS;
+            domEl = findElementFromVNode(vNode);
             addDisappearAnimationHook(animations, ref, domEl, flags, vNode.props);
+          }
+          if (activeMoveAnimations !== null && typeof ref.onComponentWillMove === 'function') {
+            activeMoveAnimations.updateHooks(ref, null);
           }
         }
         unmount(children, childAnimations);
@@ -1188,6 +1016,9 @@
         remove(children, vNode.ref, animations);
       } else if (flags & 8192 /* VNodeFlags.Fragment */) {
         if (vNode.childFlags & 12 /* ChildFlags.MultipleChildren */) {
+          if (activeMoveAnimations !== null && vNode.childFlags === 8 /* ChildFlags.HasKeyedChildren */) {
+            activeMoveAnimations.unmountList(vNode);
+          }
           unmountAllChildren(children, animations);
         } else {
           unmount(children, animations);
@@ -1201,23 +1032,24 @@
     }
   }
   function createClearAllCallback(children, parentDOM) {
-    return function () {
+    return deferRemoval(parentDOM, () => {
       // We need to remove children one by one because elements can be added during animation
       if (parentDOM) {
-        const commit = prepareForDeferredRemoval(parentDOM);
         for (let i = 0; i < children.length; i++) {
           const vNode = children[i];
           clearVNodeDOM(vNode, parentDOM, true);
         }
-        if (commit) callAll(commit);
       }
-    };
+    });
   }
   function clearDOM(parentDOM, children, animations) {
-    if (animations.componentWillDisappear.length > 0) {
+    const hooks = animations.componentWillDisappear;
+    if (hooks !== null) {
+      // The leave hooks queued while unmounting children belong to this removal.
       // Wait until animations are finished before removing actual dom nodes
       // Be aware that the element could be removed by a later operation
-      callAllAnimationHooks(animations.componentWillDisappear, createClearAllCallback(children, parentDOM));
+      animations.componentWillDisappear = null;
+      callAllAnimationHooks(hooks, createClearAllCallback(children, parentDOM));
     } else {
       // Optimization for clearing dom
       parentDOM.textContent = '';
@@ -1233,8 +1065,10 @@
   }
   // Only add animations to queue in browser
   function addDisappearAnimationHook(animations, instanceOrRef, dom, flags, props) {
+    if (dom === null) return;
+    const queue = animations.componentWillDisappear || (animations.componentWillDisappear = []);
     // @ts-expect-error TODO: Here is something weird check this behavior
-    animations.componentWillDisappear.push(callback => {
+    queue.push(callback => {
       if (flags & 4 /* VNodeFlags.ComponentClass */) {
         instanceOrRef.componentWillDisappear(dom, callback);
       } else if (flags & 8 /* VNodeFlags.ComponentFunction */) {
@@ -1292,16 +1126,17 @@
       }
     }
   }
-  function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations) {
+  function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom) {
     const lastHtml = lastValue?.__html || '';
     const nextHtml = nextValue?.__html || '';
     if (lastHtml !== nextHtml) {
       if (!isNullOrUndef$2(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
         if (!isNull(lastVNode)) {
+          // innerHTML replaces the children at once: their leave hooks have nothing to animate
           if (lastVNode.childFlags & 12 /* ChildFlags.MultipleChildren */) {
-            unmountAllChildren(lastVNode.children, animations);
+            unmountAllChildren(lastVNode.children, NO_ANIMATIONS);
           } else if (lastVNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
-            unmount(lastVNode.children, animations);
+            unmount(lastVNode.children, NO_ANIMATIONS);
           }
         }
         dom.innerHTML = nextHtml;
@@ -1317,7 +1152,7 @@
     }
   }
   // Returns true when innerHTML replaced the previous children.
-  function patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode, animations) {
+  function patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode) {
     switch (prop) {
       case 'children':
       case 'childrenType':
@@ -1364,7 +1199,7 @@
         patchStyle(lastValue, nextValue, dom);
         break;
       case 'dangerouslySetInnerHTML':
-        return patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations);
+        return patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom);
       default:
         if (syntheticEvents[prop]) {
           handleSyntheticEvent(prop, lastValue, nextValue, dom);
@@ -1383,7 +1218,7 @@
     }
     return false;
   }
-  function mountProps(vNode, flags, props, dom, isSVG, animations) {
+  function mountProps(vNode, flags, props, dom, isSVG) {
     let hasControlledValue = false;
     const isFormElement = (flags & 448 /* VNodeFlags.FormElement */) > 0;
     if (isFormElement) {
@@ -1394,7 +1229,7 @@
     }
     for (const prop in props) {
       // do not add a hasOwnProperty check here, it affects performance
-      patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null, animations);
+      patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null);
     }
     if (isFormElement) {
       processElement(flags, vNode, dom, props, true, hasControlledValue);
@@ -1494,7 +1329,6 @@
     } else {
       mountArrayChildren(children, parentDOM, context, isSVG, nextNode, lifecycle, animations);
     }
-    if (parentDOM !== null) trackMoveAnimations(vNode, parentDOM);
   }
   function mountText(vNode, parentDOM, nextNode) {
     const dom = vNode.dom = document.createTextNode(vNode.children);
@@ -1532,12 +1366,11 @@
     // Props are set before the element enters the document: attribute changes on a connected element cost
     // style invalidation, and autofocus only works when the attribute is there on insertion.
     if (!isNull(props)) {
-      mountProps(vNode, flags, props, dom, isSVG, animations);
+      mountProps(vNode, flags, props, dom, isSVG);
     }
     if (!isNull(parentDOM)) {
       insertOrAppend(parentDOM, dom, nextNode);
     }
-    trackMoveAnimations(vNode, dom);
     mountRef(vNode.ref, dom, lifecycle);
   }
   function mountArrayChildren(children, dom, context, isSVG, nextNode, lifecycle, animations) {
@@ -1551,47 +1384,65 @@
   }
   function mountClassComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
     const instance = createClassComponentInstance(vNode, vNode.type, vNode.props || EMPTY_OBJ, context, isSVG, lifecycle);
-    // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+    // A component that animates its own appearance does not let its children animate. Inside such a
+    // component animations is NO_ANIMATIONS already, so childAnimations stays equal to it.
     let childAnimations = animations;
-    if (isFunction$1(instance.componentDidAppear)) {
-      childAnimations = new AnimationQueues();
+    if (typeof instance.componentDidAppear === 'function') {
+      childAnimations = NO_ANIMATIONS;
     }
     mount(instance.$LI, parentDOM, instance.$CX, isSVG, nextNode, lifecycle, childAnimations);
-    mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
+    mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
+    if (childAnimations !== animations) {
+      addAppearAnimationHookClass(animations, instance);
+    }
   }
   function mountFunctionalComponent(vNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
     const ref = vNode.ref;
-    // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+    // A component that animates its own appearance does not let its children animate
     let childAnimations = animations;
     if (!isNullOrUndef$2(ref) && isFunction$1(ref.onComponentDidAppear)) {
-      childAnimations = new AnimationQueues();
+      childAnimations = NO_ANIMATIONS;
     }
     mount(vNode.children = normalizeRoot(renderFunctionalComponent(vNode, context)), parentDOM, context, isSVG, nextNode, lifecycle, childAnimations);
-    mountFunctionalComponentCallbacks(vNode, lifecycle, animations);
+    mountFunctionalComponentCallbacks(vNode, lifecycle);
+    if (childAnimations !== animations) {
+      addAppearAnimationHookFunctional(animations, vNode);
+    }
   }
   function createClassMountCallback(instance) {
     return () => {
       instance.componentDidMount();
+      // A move hook assigned in componentDidMount still counts
+      if (moveAnimations !== null && typeof instance.componentWillMove === 'function') {
+        moveAnimations.mountClass(instance);
+      }
     };
   }
-  function addAppearAnimationHookClass(animations, instance, dom) {
-    animations.componentDidAppear.push(() => {
-      instance.componentDidAppear(dom);
-    });
+  function addAppearAnimationHookClass(animations, instance) {
+    const dom = findElementFromVNode(instance.$LI);
+    if (dom !== null) {
+      (animations.componentDidAppear || (animations.componentDidAppear = [])).push(() => {
+        instance.componentDidAppear(dom);
+      });
+    }
   }
-  function addAppearAnimationHookFunctional(animations, ref, dom, props) {
-    animations.componentDidAppear.push(() => {
-      ref.onComponentDidAppear(dom, props);
-    });
+  function addAppearAnimationHookFunctional(animations, vNode) {
+    const dom = findElementFromVNode(vNode);
+    const ref = vNode.ref;
+    const props = vNode.props;
+    if (dom !== null) {
+      (animations.componentDidAppear || (animations.componentDidAppear = [])).push(() => {
+        ref.onComponentDidAppear(dom, props);
+      });
+    }
   }
-  function mountClassComponentCallbacks(ref, instance, lifecycle, animations) {
-    registerMoveHook(instance, instance.componentWillMove);
+  function mountClassComponentCallbacks(ref, instance, lifecycle) {
+    if (moveAnimations !== null && typeof instance.componentWillMove === 'function') {
+      moveAnimations.mountClass(instance);
+    }
     mountRef(ref, instance, lifecycle);
     if (isFunction$1(instance.componentDidMount)) {
       lifecycle.push(createClassMountCallback(instance));
-    }
-    if (isFunction$1(instance.componentDidAppear)) {
-      addAppearAnimationHookClass(animations, instance, findDOMFromVNode(instance.$LI, true));
     }
   }
   function createOnMountCallback(ref, vNode) {
@@ -1599,22 +1450,22 @@
       ref.onComponentDidMount(findDOMFromVNode(vNode, true), vNode.props || EMPTY_OBJ);
     };
   }
-  function mountFunctionalComponentCallbacks(vNode, lifecycle, animations) {
+  function mountFunctionalComponentCallbacks(vNode, lifecycle) {
     const ref = vNode.ref;
-    registerMoveHook(vNode, ref && ref.onComponentWillMove);
     if (!isNullOrUndef$2(ref)) {
+      if (moveAnimations !== null && typeof ref.onComponentWillMove === 'function') {
+        moveAnimations.updateHooks(null, ref);
+      }
       safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);
       if (isFunction$1(ref.onComponentDidMount)) {
         lifecycle.push(createOnMountCallback(ref, vNode));
-      }
-      if (isFunction$1(ref.onComponentDidAppear)) {
-        addAppearAnimationHookFunctional(animations, ref, findDOMFromVNode(vNode, true), vNode.props);
       }
     }
   }
   function replaceWithNewNode(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations) {
     unmount(lastVNode, animations);
-    if ((nextVNode.flags & lastVNode.flags & 1521 /* VNodeFlags.DOMRef */) !== 0) {
+    // One replaceChild, unless leave hooks inside lastVNode have to animate out before its removal
+    if (nextVNode.flags & lastVNode.flags & 1521 /* VNodeFlags.DOMRef */ && animations.componentWillDisappear === null) {
       mount(nextVNode, null, context, isSVG, null, lifecycle, animations);
       // Single DOM operation, when we have dom references available
       replaceChild(parentDOM, nextVNode.dom, lastVNode.dom);
@@ -1663,44 +1514,36 @@
     }
   }
   function patchFragment(lastVNode, nextVNode, parentDOM, context, isSVG, lifecycle, animations) {
-    const moveParent = parentDOM;
-    const moveList = prepareMoveAnimations(lastVNode, nextVNode, moveParent, animations);
-    let succeeded = false;
-    try {
-      const lastChildren = lastVNode.children;
-      let nextChildren = nextVNode.children;
-      const lastChildFlags = lastVNode.childFlags;
-      let nextChildFlags = nextVNode.childFlags;
-      let nextNode = null;
-      // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
-      // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
-      if (nextChildFlags & 12 /* ChildFlags.MultipleChildren */ && nextChildren.length === 0) {
-        nextChildFlags = nextVNode.childFlags = 2 /* ChildFlags.HasVNodeChildren */;
-        nextChildren = nextVNode.children = createVoidVNode();
-      }
-      const nextIsSingle = (nextChildFlags & 2 /* ChildFlags.HasVNodeChildren */) !== 0;
-      if (nextIsSingle && mustCloneVNode(nextChildren, lastChildren)) {
-        nextChildren = nextVNode.children = directClone(nextChildren);
-      }
-      if (lastChildFlags & 12 /* ChildFlags.MultipleChildren */) {
-        const lastLen = lastChildren.length;
-        // We need to know Fragment's edge node when
-        if (
-        // It uses keyed algorithm
-        lastChildFlags & 8 /* ChildFlags.HasKeyedChildren */ && nextChildFlags & 8 /* ChildFlags.HasKeyedChildren */ ||
-        // It transforms from many to single
-        nextIsSingle ||
-        // It will append more nodes
-        !nextIsSingle && nextChildren.length > lastLen) {
-          // When fragment has multiple children there is always at least one vNode
-          nextNode = findDOMFromVNode(lastChildren[lastLen - 1], false).nextSibling;
-        }
-      }
-      patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle, animations);
-      succeeded = true;
-    } finally {
-      finishMoveAnimations(moveList, nextVNode, moveParent, succeeded);
+    const lastChildren = lastVNode.children;
+    let nextChildren = nextVNode.children;
+    const lastChildFlags = lastVNode.childFlags;
+    let nextChildFlags = nextVNode.childFlags;
+    let nextNode = null;
+    // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
+    // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
+    if (nextChildFlags & 12 /* ChildFlags.MultipleChildren */ && nextChildren.length === 0) {
+      nextChildFlags = nextVNode.childFlags = 2 /* ChildFlags.HasVNodeChildren */;
+      nextChildren = nextVNode.children = createVoidVNode();
     }
+    const nextIsSingle = (nextChildFlags & 2 /* ChildFlags.HasVNodeChildren */) !== 0;
+    if (nextIsSingle && mustCloneVNode(nextChildren, lastChildren)) {
+      nextChildren = nextVNode.children = directClone(nextChildren);
+    }
+    if (lastChildFlags & 12 /* ChildFlags.MultipleChildren */) {
+      const lastLen = lastChildren.length;
+      // We need to know Fragment's edge node when
+      if (
+      // It uses keyed algorithm
+      lastChildFlags & 8 /* ChildFlags.HasKeyedChildren */ && nextChildFlags & 8 /* ChildFlags.HasKeyedChildren */ ||
+      // It transforms from many to single
+      nextIsSingle ||
+      // It will append more nodes
+      !nextIsSingle && nextChildren.length > lastLen) {
+        // When fragment has multiple children there is always at least one vNode
+        nextNode = findDOMFromVNode(lastChildren[lastLen - 1], false).nextSibling;
+      }
+    }
+    patchChildren(lastChildFlags, nextChildFlags, lastChildren, nextChildren, parentDOM, context, isSVG, nextNode, lastVNode, lifecycle, animations);
   }
   function patchPortal(lastVNode, nextVNode, context, lifecycle, animations) {
     const lastContainer = lastVNode.ref;
@@ -1713,88 +1556,90 @@
     nextVNode.dom = lastVNode.dom;
     if (lastContainer !== nextContainer && !isInvalid(nextChildren)) {
       appendVNodeDOM(nextChildren, nextContainer);
+      if (activeMoveAnimations !== null) {
+        activeMoveAnimations.reparent(nextChildren, nextContainer);
+      }
     }
   }
   function patchElement(lastVNode, nextVNode, context, isSVG, lifecycle, animations) {
-    const moveParent = lastVNode.dom;
-    const moveList = prepareMoveAnimations(lastVNode, nextVNode, moveParent, animations);
-    let succeeded = false;
-    try {
-      const dom = nextVNode.dom = lastVNode.dom;
-      let lastChildren = lastVNode.children;
-      let lastChildFlags = lastVNode.childFlags;
-      const lastProps = lastVNode.props;
-      const nextProps = nextVNode.props;
-      const nextFlags = nextVNode.flags;
-      let isFormElement = false;
-      let hasControlledValue = false;
-      let nextPropsOrEmpty;
-      isSVG = isSVG || (nextFlags & 32 /* VNodeFlags.SvgElement */) > 0;
-      // inlined patchProps  -- starts --
-      if (lastProps !== nextProps) {
-        const lastPropsOrEmpty = lastProps || EMPTY_OBJ;
-        nextPropsOrEmpty = nextProps || EMPTY_OBJ;
-        if (nextPropsOrEmpty !== EMPTY_OBJ) {
-          isFormElement = (nextFlags & 448 /* VNodeFlags.FormElement */) > 0;
-          if (isFormElement) {
-            hasControlledValue = isControlledFormElement(nextPropsOrEmpty);
-          }
-          for (const prop in nextPropsOrEmpty) {
-            const lastValue = lastPropsOrEmpty[prop];
-            const nextValue = nextPropsOrEmpty[prop];
-            if (lastValue !== nextValue) {
-              if (patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode, animations)) {
-                // Keep the reusable vNode intact after innerHTML unmounts its children.
-                lastChildren = null;
-                lastChildFlags = 1 /* ChildFlags.HasInvalidChildren */;
-              }
-            }
-          }
+    const dom = nextVNode.dom = lastVNode.dom;
+    let lastChildren = lastVNode.children;
+    let lastChildFlags = lastVNode.childFlags;
+    // The move hooks of a keyed list measure its items before anything changes, props included.
+    // The local test goes first, so that optimized code reads the variable only for keyed lists, and
+    // a bundler that knows the variable stays null removes both.
+    if (lastChildFlags === 8 /* ChildFlags.HasKeyedChildren */) {
+      if (activeMoveAnimations !== null) {
+        activeMoveAnimations.prepare(lastVNode, nextVNode, dom, animations);
+      }
+    }
+    const lastProps = lastVNode.props;
+    const nextProps = nextVNode.props;
+    const nextFlags = nextVNode.flags;
+    let isFormElement = false;
+    let hasControlledValue = false;
+    let nextPropsOrEmpty;
+    isSVG = isSVG || (nextFlags & 32 /* VNodeFlags.SvgElement */) > 0;
+    // inlined patchProps  -- starts --
+    if (lastProps !== nextProps) {
+      const lastPropsOrEmpty = lastProps || EMPTY_OBJ;
+      nextPropsOrEmpty = nextProps || EMPTY_OBJ;
+      if (nextPropsOrEmpty !== EMPTY_OBJ) {
+        isFormElement = (nextFlags & 448 /* VNodeFlags.FormElement */) > 0;
+        if (isFormElement) {
+          hasControlledValue = isControlledFormElement(nextPropsOrEmpty);
         }
-        if (lastPropsOrEmpty !== EMPTY_OBJ) {
-          for (const prop in lastPropsOrEmpty) {
-            if (isNullOrUndef$2(nextPropsOrEmpty[prop]) && !isNullOrUndef$2(lastPropsOrEmpty[prop])) {
-              if (patchProp(prop, lastPropsOrEmpty[prop], null, dom, isSVG, hasControlledValue, lastVNode, animations)) {
-                lastChildren = null;
-                lastChildFlags = 1 /* ChildFlags.HasInvalidChildren */;
-              }
+        for (const prop in nextPropsOrEmpty) {
+          const lastValue = lastPropsOrEmpty[prop];
+          const nextValue = nextPropsOrEmpty[prop];
+          if (lastValue !== nextValue) {
+            if (patchProp(prop, lastValue, nextValue, dom, isSVG, hasControlledValue, lastVNode)) {
+              // Keep the reusable vNode intact after innerHTML unmounts its children.
+              lastChildren = null;
+              lastChildFlags = 1 /* ChildFlags.HasInvalidChildren */;
             }
           }
         }
       }
-      let nextChildren = nextVNode.children;
-      const nextClassName = nextVNode.className;
-      // inlined patchProps  -- ends --
-      if (lastVNode.className !== nextClassName) {
-        if (isNullOrUndef$2(nextClassName)) {
-          dom.removeAttribute('class');
-        } else if (isSVG) {
-          dom.setAttribute('class', nextClassName);
-        } else {
-          dom.className = nextClassName;
+      if (lastPropsOrEmpty !== EMPTY_OBJ) {
+        for (const prop in lastPropsOrEmpty) {
+          if (isNullOrUndef$2(nextPropsOrEmpty[prop]) && !isNullOrUndef$2(lastPropsOrEmpty[prop])) {
+            if (patchProp(prop, lastPropsOrEmpty[prop], null, dom, isSVG, hasControlledValue, lastVNode)) {
+              lastChildren = null;
+              lastChildFlags = 1 /* ChildFlags.HasInvalidChildren */;
+            }
+          }
         }
       }
-      if ("production" !== 'production') ;
-      if (nextFlags & 4096 /* VNodeFlags.ContentEditable */) {
-        patchContentEditableChildren(dom, nextChildren);
+    }
+    let nextChildren = nextVNode.children;
+    const nextClassName = nextVNode.className;
+    // inlined patchProps  -- ends --
+    if (lastVNode.className !== nextClassName) {
+      if (isNullOrUndef$2(nextClassName)) {
+        dom.removeAttribute('class');
+      } else if (isSVG) {
+        dom.setAttribute('class', nextClassName);
       } else {
-        if (nextVNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */ && mustCloneVNode(nextChildren, lastChildren)) {
-          nextChildren = nextVNode.children = directClone(nextChildren);
-        }
-        patchChildren(lastChildFlags, nextVNode.childFlags, lastChildren, nextChildren, dom, context, isSVG && nextVNode.type !== 'foreignObject', null, lastVNode, lifecycle, animations);
+        dom.className = nextClassName;
       }
-      if (isFormElement) {
-        processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
+    }
+    if (nextFlags & 4096 /* VNodeFlags.ContentEditable */) {
+      patchContentEditableChildren(dom, nextChildren);
+    } else {
+      if (nextVNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */ && mustCloneVNode(nextChildren, lastChildren)) {
+        nextChildren = nextVNode.children = directClone(nextChildren);
       }
-      const nextRef = nextVNode.ref;
-      const lastRef = lastVNode.ref;
-      if (lastRef !== nextRef) {
-        unmountRef(lastRef);
-        mountRef(nextRef, dom, lifecycle);
-      }
-      succeeded = true;
-    } finally {
-      finishMoveAnimations(moveList, nextVNode, moveParent, succeeded);
+      patchChildren(lastChildFlags, nextVNode.childFlags, lastChildren, nextChildren, dom, context, isSVG && nextVNode.type !== 'foreignObject', null, lastVNode, lifecycle, animations);
+    }
+    if (isFormElement) {
+      processElement(nextFlags, nextVNode, dom, nextPropsOrEmpty, false, hasControlledValue);
+    }
+    const nextRef = nextVNode.ref;
+    const lastRef = lastVNode.ref;
+    if (lastRef !== nextRef) {
+      unmountRef(lastRef);
+      mountRef(nextRef, dom, lifecycle);
     }
   }
   function replaceOneVNodeWithMultipleVNodes(lastChildren, nextChildren, parentDOM, context, isSVG, lifecycle, animations) {
@@ -1829,7 +1674,7 @@
             remove(lastChildren, parentDOM, animations);
             break;
           case 16 /* ChildFlags.HasTextChildren */:
-            unmount(lastChildren, animations);
+            unmount(lastChildren, NO_ANIMATIONS);
             setTextContent(parentDOM, nextChildren);
             break;
           default:
@@ -1858,22 +1703,28 @@
             patchSingleTextChild(lastChildren, nextChildren, parentDOM);
             break;
           case 2 /* ChildFlags.HasVNodeChildren */:
-            clearDOM(parentDOM, lastChildren, animations);
+            setTextContent(parentDOM, '');
             mount(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
             break;
           case 1 /* ChildFlags.HasInvalidChildren */:
-            clearDOM(parentDOM, lastChildren, animations);
+            setTextContent(parentDOM, '');
             break;
           default:
-            clearDOM(parentDOM, lastChildren, animations);
+            setTextContent(parentDOM, '');
             mountArrayChildren(nextChildren, parentDOM, context, isSVG, nextNode, lifecycle, animations);
             break;
         }
         break;
       default:
+        // A keyed fragment's move hooks measure its items before any of them change
+        if (lastChildFlags === 8 /* ChildFlags.HasKeyedChildren */) {
+          if (activeMoveAnimations !== null && (parentVNode.flags & 8192 /* VNodeFlags.Fragment */) !== 0) {
+            activeMoveAnimations.prepareFragment(parentVNode, nextChildFlags === 8 /* ChildFlags.HasKeyedChildren */ ? nextChildren : null, parentDOM, animations);
+          }
+        }
         switch (nextChildFlags) {
           case 16 /* ChildFlags.HasTextChildren */:
-            unmountAllChildren(lastChildren, animations);
+            unmountAllChildren(lastChildren, NO_ANIMATIONS);
             setTextContent(parentDOM, nextChildren);
             break;
           case 2 /* ChildFlags.HasVNodeChildren */:
@@ -1966,30 +1817,31 @@
     }
   }
   function patchFunctionalComponent(lastVNode, nextVNode, parentDOM, context, isSVG, nextNode, lifecycle, animations) {
-    let shouldUpdate = true;
     const nextProps = nextVNode.props || EMPTY_OBJ;
     const nextRef = nextVNode.ref;
     const lastProps = lastVNode.props;
     const nextHooksDefined = !isNullOrUndef$2(nextRef);
     const lastInput = lastVNode.children;
-    if (nextHooksDefined && isFunction$1(nextRef.onComponentShouldUpdate)) {
-      shouldUpdate = nextRef.onComponentShouldUpdate(lastProps, nextProps);
-    }
-    if (shouldUpdate) {
-      if (nextHooksDefined && isFunction$1(nextRef.onComponentWillUpdate)) {
+    if (nextHooksDefined) {
+      // A move hook that a patch adds is counted; one that a patch removes is not, which only keeps
+      // inferno-animation active
+      if (moveAnimations !== null && typeof nextRef.onComponentWillMove === 'function') {
+        updateMoveHooks(lastVNode, nextVNode);
+      }
+      if (typeof nextRef.onComponentShouldUpdate === 'function' && !nextRef.onComponentShouldUpdate(lastProps, nextProps)) {
+        nextVNode.children = lastInput;
+        return;
+      }
+      if (typeof nextRef.onComponentWillUpdate === 'function') {
         nextRef.onComponentWillUpdate(lastProps, nextProps);
       }
-      const nextInput = normalizeRoot(renderFunctionalComponent(nextVNode, context), lastInput);
-      patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle, animations);
-      nextVNode.children = nextInput;
-      if (nextHooksDefined && isFunction$1(nextRef.onComponentDidUpdate)) {
-        nextRef.onComponentDidUpdate(lastProps, nextProps);
-      }
-    } else {
-      nextVNode.children = lastInput;
     }
-    registerMoveHook(lastVNode, null);
-    registerMoveHook(nextVNode, nextRef && nextRef.onComponentWillMove);
+    const nextInput = normalizeRoot(renderFunctionalComponent(nextVNode, context), lastInput);
+    patch(lastInput, nextInput, parentDOM, context, isSVG, nextNode, lifecycle, animations);
+    nextVNode.children = nextInput;
+    if (nextHooksDefined && typeof nextRef.onComponentDidUpdate === 'function') {
+      nextRef.onComponentDidUpdate(lastProps, nextProps);
+    }
   }
   function patchText(lastVNode, nextVNode) {
     const nextText = nextVNode.children;
@@ -2129,18 +1981,57 @@
     let moved = false;
     let pos = 0;
     let patched = 0;
-    // When sizes are small, just loop them through
-    if (bLength < 4 || (aLeft | bLeft) < 32) {
-      for (i = aStart; i <= aEnd; ++i) {
-        aNode = a[i];
-        if (patched < bLeft) {
-          for (j = bStart; j <= bEnd; j++) {
-            bNode = b[j];
-            if (aNode.key === bNode.key) {
-              sources[j - bStart] = i + 1;
+    try {
+      // When sizes are small, just loop them through
+      if (bLength < 4 || (aLeft | bLeft) < 32) {
+        for (i = aStart; i <= aEnd; ++i) {
+          aNode = a[i];
+          if (patched < bLeft) {
+            for (j = bStart; j <= bEnd; j++) {
+              bNode = b[j];
+              if (aNode.key === bNode.key) {
+                if (canRemoveWholeContent) {
+                  canRemoveWholeContent = false;
+                  while (aStart < i) {
+                    remove(a[aStart++], dom, animations);
+                  }
+                }
+                if (pos > j) {
+                  moved = true;
+                } else {
+                  pos = j;
+                }
+                if (mustCloneVNode(bNode, aNode)) {
+                  b[j] = bNode = directClone(bNode);
+                }
+                patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
+                sources[j - bStart] = i + 1;
+                ++patched;
+                break;
+              }
+            }
+            if (!canRemoveWholeContent && j > bEnd) {
+              remove(aNode, dom, animations);
+            }
+          } else if (!canRemoveWholeContent) {
+            remove(aNode, dom, animations);
+          }
+        }
+      } else {
+        const keyIndex = {};
+        // Map keys by their index
+        for (i = bStart; i <= bEnd; ++i) {
+          keyIndex[b[i].key] = i;
+        }
+        // Try to patch same keys
+        for (i = aStart; i <= aEnd; ++i) {
+          aNode = a[i];
+          if (patched < bLeft) {
+            j = keyIndex[aNode.key];
+            if (j !== void 0) {
               if (canRemoveWholeContent) {
                 canRemoveWholeContent = false;
-                while (aStart < i) {
+                while (i > aStart) {
                   remove(a[aStart++], dom, animations);
                 }
               }
@@ -2149,99 +2040,67 @@
               } else {
                 pos = j;
               }
+              bNode = b[j];
               if (mustCloneVNode(bNode, aNode)) {
                 b[j] = bNode = directClone(bNode);
               }
               patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
+              sources[j - bStart] = i + 1;
               ++patched;
-              break;
+            } else if (!canRemoveWholeContent) {
+              remove(aNode, dom, animations);
             }
-          }
-          if (!canRemoveWholeContent && j > bEnd) {
-            remove(aNode, dom, animations);
-          }
-        } else if (!canRemoveWholeContent) {
-          remove(aNode, dom, animations);
-        }
-      }
-    } else {
-      const keyIndex = {};
-      // Map keys by their index
-      for (i = bStart; i <= bEnd; ++i) {
-        keyIndex[b[i].key] = i;
-      }
-      // Try to patch same keys
-      for (i = aStart; i <= aEnd; ++i) {
-        aNode = a[i];
-        if (patched < bLeft) {
-          j = keyIndex[aNode.key];
-          if (j !== void 0) {
-            if (canRemoveWholeContent) {
-              canRemoveWholeContent = false;
-              while (i > aStart) {
-                remove(a[aStart++], dom, animations);
-              }
-            }
-            sources[j - bStart] = i + 1;
-            if (pos > j) {
-              moved = true;
-            } else {
-              pos = j;
-            }
-            bNode = b[j];
-            if (mustCloneVNode(bNode, aNode)) {
-              b[j] = bNode = directClone(bNode);
-            }
-            patch(aNode, bNode, dom, context, isSVG, outerEdge, lifecycle, animations);
-            ++patched;
           } else if (!canRemoveWholeContent) {
             remove(aNode, dom, animations);
           }
-        } else if (!canRemoveWholeContent) {
-          remove(aNode, dom, animations);
         }
       }
-    }
-    // fast-path: if nothing patched remove all old and add all new
-    if (canRemoveWholeContent) {
-      removeAllChildren(dom, parentVNode, a, animations);
-      mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle, animations);
-    } else if (moved) {
-      const seq = lisAlgorithm(sources);
-      j = seq.length - 1;
-      for (i = bLeft - 1; i >= 0; i--) {
-        if (sources[i] === 0) {
-          pos = i + bStart;
-          bNode = b[pos];
-          if (mustCloneVNode(bNode, null)) {
-            b[pos] = bNode = directClone(bNode);
+      // fast-path: if nothing patched remove all old and add all new
+      if (canRemoveWholeContent) {
+        removeAllChildren(dom, parentVNode, a, animations);
+        mountArrayChildren(b, dom, context, isSVG, outerEdge, lifecycle, animations);
+      } else if (moved) {
+        const seq = lisAlgorithm(sources);
+        j = seq.length - 1;
+        for (i = bLeft - 1; i >= 0; i--) {
+          if (sources[i] === 0) {
+            pos = i + bStart;
+            bNode = b[pos];
+            if (mustCloneVNode(bNode, null)) {
+              b[pos] = bNode = directClone(bNode);
+            }
+            nextPos = pos + 1;
+            mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
+          } else if (j < 0 || i !== seq[j]) {
+            pos = i + bStart;
+            bNode = b[pos];
+            nextPos = pos + 1;
+            // --- the DOM-node is moved by a call to insertAppend
+            moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge);
+          } else {
+            j--;
           }
-          nextPos = pos + 1;
-          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
-        } else if (j < 0 || i !== seq[j]) {
-          pos = i + bStart;
-          bNode = b[pos];
-          nextPos = pos + 1;
-          // --- the DOM-node is moved by a call to insertAppend
-          moveVNodeDOM(bNode, dom, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge);
-        } else {
-          j--;
         }
-      }
-    } else if (patched !== bLeft) {
-      // when patched count doesn't match b length we need to insert those new ones
-      // loop backwards so we can use insertBefore
-      for (i = bLeft - 1; i >= 0; i--) {
-        if (sources[i] === 0) {
-          pos = i + bStart;
-          bNode = b[pos];
-          if (mustCloneVNode(bNode, null)) {
-            b[pos] = bNode = directClone(bNode);
+      } else if (patched !== bLeft) {
+        // when patched count doesn't match b length we need to insert those new ones
+        // loop backwards so we can use insertBefore
+        for (i = bLeft - 1; i >= 0; i--) {
+          if (sources[i] === 0) {
+            pos = i + bStart;
+            bNode = b[pos];
+            if (mustCloneVNode(bNode, null)) {
+              b[pos] = bNode = directClone(bNode);
+            }
+            nextPos = pos + 1;
+            mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
           }
-          nextPos = pos + 1;
-          mount(bNode, dom, context, isSVG, nextPos < bLength ? findDOMFromVNode(b[nextPos], true) : outerEdge, lifecycle, animations);
         }
       }
+    } catch (error) {
+      for (let k = 0; k < bLeft; k++) {
+        if (sources[k] !== 0) a[sources[k] - 1] = b[k + bStart];
+      }
+      throw error;
     }
   }
   let result;
@@ -2341,7 +2200,6 @@
     }
     callAll(lifecycle);
     callAllAnimationHooks(animations.componentDidAppear);
-    if (animations.$CM) callAll(animations.$CM);
     renderCheck.v = false;
     if (isFunction$1(callback)) {
       callback();
@@ -2433,7 +2291,6 @@
       }, component.props, findDOMFromVNode(component.$LI, true).parentNode, component.context, component.$SVG, force, null, lifecycle, animations);
       callAll(lifecycle);
       callAllAnimationHooks(animations.componentDidAppear);
-      if (animations.$CM) callAll(animations.$CM);
       renderCheck.v = false;
     } else {
       component.state = component.$PS;
@@ -2644,27 +2501,60 @@
     }
   }
   function getDimensions(node) {
-    const tmpDisplay = node.style.getPropertyValue('display');
+    let rect = node.getBoundingClientRect();
     // The `display: none;` workaround was added to support Bootstrap animations in
     // https://github.com/jhsware/inferno-bootstrap/blob/be4a17bff5e785b993a66a2927846cd463fecae3/src/Modal/AnimateModal.js
     // we should consider deprecating this, or providing a different solution for
-    // those who only do normal animations.
-    const isDisplayNone = window.getComputedStyle(node).getPropertyValue('display') === 'none';
-    if (isDisplayNone) {
+    // those who only do normal animations. Only an element without a box can be hidden that way.
+    if (rect.width === 0 && rect.height === 0 && window.getComputedStyle(node).getPropertyValue('display') === 'none') {
+      const tmpDisplay = node.style.getPropertyValue('display');
       node.style.setProperty('display', 'block');
-    }
-    const tmp = node.getBoundingClientRect();
-    if (isDisplayNone) {
-      // node.style.display = tmpDisplay
+      rect = node.getBoundingClientRect();
       node.style.setProperty('display', tmpDisplay);
       _cleanStyle(node);
     }
     return {
-      height: tmp.height,
-      width: tmp.width,
-      x: tmp.x,
-      y: tmp.y
+      height: rect.height,
+      width: rect.width,
+      x: rect.x,
+      y: rect.y
     };
+  }
+  const IDENTITY = [1, 0, 0, 1, 0, 0];
+  // A computed transform, which is a matrix or none
+  function matrix(value) {
+    const match = /^matrix(3d)?\(([^)]*)\)$/.exec(value || '');
+    if (match === null) return IDENTITY;
+    const v = match[2].split(',').map(Number);
+    return match[1] ? [v[0], v[1], v[4], v[5], v[12], v[13]] : v;
+  }
+  function saveStyles(style, properties) {
+    return properties.map(property => ({
+      property,
+      value: style.getPropertyValue(property),
+      priority: style.getPropertyPriority(property),
+      applied: '',
+      appliedPriority: ''
+    }));
+  }
+  // Records the values the animation has written
+  function markApplied(style, saved) {
+    for (const entry of saved) {
+      entry.applied = style.getPropertyValue(entry.property);
+      entry.appliedPriority = style.getPropertyPriority(entry.property);
+    }
+  }
+  /**
+   * Restores the saved declarations and empties saved. A property the application changed after
+   * the animation wrote it keeps the application's value.
+   */
+  function restoreStyles(style, saved) {
+    for (const entry of saved) {
+      if (style.getPropertyValue(entry.property) === entry.applied && style.getPropertyPriority(entry.property) === entry.appliedPriority) {
+        if (entry.value) style.setProperty(entry.property, entry.value, entry.priority);else style.removeProperty(entry.property);
+      }
+    }
+    saved.length = 0;
   }
   function setTransform(node, x, y, scaleX = 1, scaleY = 1) {
     const doScale = scaleX !== 1 || scaleY !== 1;
@@ -2675,16 +2565,9 @@
       node.style.transform = `translate(${x}px,${y}px)`;
     }
   }
-  function clearTransform(node) {
-    node.style.transform = '';
-    node.style.transformOrigin = '';
-  }
   function setDimensions(node, width, height) {
     node.style.width = width + 'px';
     node.style.height = height + 'px';
-  }
-  function clearDimensions(node) {
-    node.style.width = node.style.height = '';
   }
   function _getMaxTransitionDuration(nodes) {
     let nrofTransitions = 0;
@@ -2806,102 +2689,548 @@
   }
   var AnimationPhase;
   (function (AnimationPhase) {
-    AnimationPhase[AnimationPhase["INITIALIZE"] = 0] = "INITIALIZE";
-    AnimationPhase[AnimationPhase["MEASURE"] = 1] = "MEASURE";
-    AnimationPhase[AnimationPhase["SET_START_STATE"] = 2] = "SET_START_STATE";
-    AnimationPhase[AnimationPhase["MEASURE_MOVES"] = 3] = "MEASURE_MOVES";
-    AnimationPhase[AnimationPhase["SET_MOVE_START_STATE"] = 4] = "SET_MOVE_START_STATE";
-    AnimationPhase[AnimationPhase["ACTIVATE_TRANSITIONS"] = 5] = "ACTIVATE_TRANSITIONS";
-    AnimationPhase[AnimationPhase["REGISTER_LISTENERS"] = 6] = "REGISTER_LISTENERS";
-    AnimationPhase[AnimationPhase["ACTIVATE_ANIMATION"] = 7] = "ACTIVATE_ANIMATION";
-    AnimationPhase[AnimationPhase["length"] = 8] = "length";
+    // Leaving elements are measured before any animation of the pass writes
+    AnimationPhase[AnimationPhase["MEASURE_LEAVES"] = 0] = "MEASURE_LEAVES";
+    AnimationPhase[AnimationPhase["INITIALIZE"] = 1] = "INITIALIZE";
+    AnimationPhase[AnimationPhase["MEASURE"] = 2] = "MEASURE";
+    AnimationPhase[AnimationPhase["SET_START_STATE"] = 3] = "SET_START_STATE";
+    AnimationPhase[AnimationPhase["READ_MOVES"] = 4] = "READ_MOVES";
+    AnimationPhase[AnimationPhase["RESET_MOVES"] = 5] = "RESET_MOVES";
+    AnimationPhase[AnimationPhase["MEASURE_MOVES"] = 6] = "MEASURE_MOVES";
+    // Moves that do not happen drop out before any move writes its start state
+    AnimationPhase[AnimationPhase["SELECT_MOVES"] = 7] = "SELECT_MOVES";
+    AnimationPhase[AnimationPhase["SET_MOVE_START_STATE"] = 8] = "SET_MOVE_START_STATE";
+    AnimationPhase[AnimationPhase["ACTIVATE_TRANSITIONS"] = 9] = "ACTIVATE_TRANSITIONS";
+    AnimationPhase[AnimationPhase["ACTIVATE_ANIMATION"] = 10] = "ACTIVATE_ANIMATION";
+    AnimationPhase[AnimationPhase["REGISTER_LISTENERS"] = 11] = "REGISTER_LISTENERS";
   })(AnimationPhase || (AnimationPhase = {}));
-  const _globalAnimationSources = {};
-  function _globalAnimationGC() {
-    let entriesLeft = false;
-    for (const key in _globalAnimationSources) {
-      if (--_globalAnimationSources[key].ticks < 0) {
-        delete _globalAnimationSources[key];
-      } else entriesLeft = true;
-    }
-    if (entriesLeft) {
-      requestAnimationFrame(_globalAnimationGC);
+  // How long an element that enters can start from the box of one that left with its key, in
+  // milliseconds: long enough for a page that loads before it mounts
+  const SOURCE_LIFETIME = 1000;
+  const sources = {};
+  let sourceTimer;
+  // Sources that no element used do not stay in memory
+  function expireSources() {
+    sourceTimer = undefined;
+    const now = performance.now();
+    for (const key in sources) {
+      if (sources[key].expires > now) {
+        sourceTimer ??= setTimeout(expireSources, SOURCE_LIFETIME);
+      } else {
+        delete sources[key];
+      }
     }
   }
   function addGlobalAnimationSource(key, state) {
-    state.ticks = 5;
-    _globalAnimationSources[key] = state;
-    if (_globalAnimationGC === null) {
-      requestAnimationFrame(_globalAnimationGC);
-    }
+    state.expires = performance.now() + SOURCE_LIFETIME;
+    sources[key] = state;
+    sourceTimer ??= setTimeout(expireSources, SOURCE_LIFETIME);
   }
   function consumeGlobalAnimationSource(key) {
-    const tmp = _globalAnimationSources[key];
-    if (tmp !== undefined) {
-      delete _globalAnimationSources[key];
-    }
-    return tmp;
+    const source = sources[key];
+    if (source === undefined) return null;
+    delete sources[key];
+    return source.expires > performance.now() ? source : null;
   }
-  let _animationQueue = [];
-  let _animationActivationQueue = [];
-  const IDLE = 0;
-  let _nextAnimationFrame = IDLE;
-  let _nextActivateAnimationFrame = IDLE;
-  function _runActivateAnimationPhase() {
-    _nextActivateAnimationFrame = IDLE;
-    // Get animations to execute
-    const animationQueue = _animationActivationQueue;
-    // Clear global queue
-    _animationActivationQueue = [];
-    for (let i = 0; i < animationQueue.length; i++) {
-      animationQueue[i](7 /* AnimationPhase.ACTIVATE_ANIMATION */);
+  let animationQueue = [];
+  let activationQueue = [];
+  let nextFrame = 0;
+  let activationFrame = 0;
+  function activate() {
+    activationFrame = 0;
+    const queue = activationQueue;
+    activationQueue = [];
+    for (const phase of [10 /* AnimationPhase.ACTIVATE_ANIMATION */, 11 /* AnimationPhase.REGISTER_LISTENERS */]) {
+      for (const item of queue) if (!item.cancelled) item.callback(phase);
     }
   }
-  function _runAnimationPhases() {
-    _nextAnimationFrame = IDLE;
-    // Get animations to execute
-    const animationQueue = _animationQueue;
-    // Clear global queue
-    _animationQueue = [];
-    // So what this does is run the animation phases in order. Most of the phases are invoked
-    // by a simple call to all the registered callbacks. However:
-    //
-    // - ACTIVATE_TRANSITIONS require a reflow in order to not
-    // interfere with the previous setting of the animation start class
-    //
-    // - ACTIVATE_ANIMATION needs to be called async so the transitions actually fire,
-    // we choose to use an animation frame.
-    //
-    for (let i = 0; i < 8 /* AnimationPhase.length */; i++) {
-      const phase = i;
-      switch (phase) {
-        case 7 /* AnimationPhase.ACTIVATE_ANIMATION */:
-          // Final phase - Activate animations
-          // This is a special case and is executed differently from others
-          _animationActivationQueue = _animationActivationQueue.concat(animationQueue);
-          if (_nextActivateAnimationFrame === IDLE) {
-            // Animations are activated on the next animation frame
-            _nextActivateAnimationFrame = requestAnimationFrame(_runActivateAnimationPhase);
+  function prepare(queue) {
+    if (!queue.length) return;
+    for (let phase = 0 /* AnimationPhase.MEASURE_LEAVES */; phase <= 9 /* AnimationPhase.ACTIVATE_TRANSITIONS */; phase++) {
+      if (phase === 9 /* AnimationPhase.ACTIVATE_TRANSITIONS */ && queue.some(item => !item.cancelled)) forceReflow();
+      for (const item of queue) if (!item.cancelled) item.callback(phase);
+    }
+    activationQueue.push(...queue.filter(item => !item.cancelled));
+    if (activationQueue.length && !activationFrame) activationFrame = requestAnimationFrame(activate);
+  }
+  function prepareFrame() {
+    nextFrame = 0;
+    const queue = animationQueue;
+    animationQueue = [];
+    prepare(queue);
+  }
+  function queueAnimation(callback, parent) {
+    const item = {
+      callback,
+      parent,
+      cancelled: false
+    };
+    animationQueue.push(item);
+    if (!nextFrame) nextFrame = requestAnimationFrame(prepareFrame);
+    return () => {
+      item.cancelled = true;
+      animationQueue = animationQueue.filter(entry => entry !== item);
+      activationQueue = activationQueue.filter(entry => entry !== item);
+      if (!animationQueue.length && nextFrame) {
+        cancelAnimationFrame(nextFrame);
+        nextFrame = 0;
+      }
+      if (!activationQueue.length && activationFrame) {
+        cancelAnimationFrame(activationFrame);
+        activationFrame = 0;
+      }
+    };
+  }
+  let removals = new Map();
+  let removalFrame = 0;
+  function hasQueuedRemoval(parent) {
+    return removals.has(parent);
+  }
+  function drainRemovals() {
+    removalFrame = 0;
+    const batch = removals;
+    removals = new Map();
+    let error;
+    let failed = false;
+    const run = callback => {
+      try {
+        callback();
+      } catch (caught) {
+        if (!failed) error = caught;
+        failed = true;
+      }
+    };
+    // Read every source layout before any parent is changed. A custom hook that
+    // throws must not strand completed leaves or another parent's callbacks.
+    for (const entry of batch.values()) run(entry.prepare);
+    for (const entry of batch.values()) for (const callback of entry.callbacks) run(callback);
+    if (failed) throw error;
+  }
+  function queueRemoval(parent, prepareRemoval, callback) {
+    let batch = removals.get(parent);
+    if (!batch) removals.set(parent, batch = {
+      prepare: prepareRemoval,
+      callbacks: new Set()
+    });
+    batch.callbacks.add(callback);
+    if (!removalFrame) removalFrame = requestAnimationFrame(drainRemovals);
+  }
+  function cancelRemovals(parent) {
+    const batch = removals.get(parent);
+    if (!batch) return;
+    removals.delete(parent);
+    // The last tracked list is gone, so no survivor animation is necessary.
+    for (const callback of batch.callbacks) callback();
+    if (!removals.size && removalFrame) {
+      cancelAnimationFrame(removalFrame);
+      removalFrame = 0;
+    }
+  }
+
+  // The registry and all discovery work belong to this optional package. An element list is keyed
+  // by its element, which stays the same across patches. A keyed fragment has no element of its
+  // own, so its list is keyed by the children array it currently renders. A list is registered when
+  // it is first prepared.
+  let elementLists = new WeakMap();
+  let fragmentLists = new WeakMap();
+  // Active lists by physical parent, for preparing survivors when a leave animation completes
+  let parents = new WeakMap();
+  // Elements prepared in a commit through a fragment: a keyed fragment list shares its parent with
+  // the list around it, whose owners prepare those elements first
+  const coverage = new WeakMap();
+  // Bumped by every owner change: a list looks for hooks again when it is prepared next
+  let topologyVersion = 0;
+  // Mounted move hook owners: class instances that have componentWillMove by the end of their mount,
+  // and function component hooks objects with onComponentWillMove. The reconciler reports keyed
+  // patches, list unmounts and removals only while there is at least one.
+  let owners = 0;
+  const classOwners = new WeakSet();
+  function changeOwners(adapter, delta) {
+    const before = owners;
+    // A hooks object changed in place can report an owner it did not add
+    owners = Math.max(owners + delta, 0);
+    topologyVersion++;
+    if (before === 0) {
+      if (owners !== 0) setMoveAnimations(adapter, true);
+    } else if (owners === 0) {
+      // Nothing is prepared until an owner mounts again, and lists register again then
+      elementLists = new WeakMap();
+      fragmentLists = new WeakMap();
+      parents = new WeakMap();
+      setMoveAnimations(adapter, false);
+    }
+  }
+  function hasMoveHook(ref) {
+    return ref != null && typeof ref.onComponentWillMove === 'function' ? 1 : 0;
+  }
+  function input(vNode) {
+    return vNode.flags & 4 /* VNodeFlags.ComponentClass */ ? vNode.children.$LI : vNode.children;
+  }
+  function hasCandidates(vNode) {
+    const flags = vNode.flags;
+    if (flags & 4 /* VNodeFlags.ComponentClass */) {
+      return typeof vNode.children.componentWillMove === 'function' || hasCandidates(input(vNode));
+    }
+    if (flags & 8 /* VNodeFlags.ComponentFunction */) {
+      return hasMoveHook(vNode.ref) !== 0 || hasCandidates(input(vNode));
+    }
+    if (flags & 8192 /* VNodeFlags.Fragment */) {
+      return vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */ ? hasCandidates(input(vNode)) : vNode.children.some(hasCandidates);
+    }
+    return false;
+  }
+  function coverRoots(vNode, covered) {
+    const flags = vNode.flags;
+    if (flags & 481 /* VNodeFlags.Element */) covered.add(vNode.dom);else if (flags & 14 /* VNodeFlags.Component */) coverRoots(input(vNode), covered);else if (flags & 8192 /* VNodeFlags.Fragment */) {
+      if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) coverRoots(input(vNode), covered);else for (const child of vNode.children) coverRoots(child, covered);
+    }
+  }
+  function visit(vNode, list, covered) {
+    const flags = vNode.flags;
+    if (flags & 14 /* VNodeFlags.Component */) {
+      const isClass = Boolean(flags & 4 /* VNodeFlags.ComponentClass */);
+      const owner = isClass ? vNode.children : vNode.ref;
+      if (isClass && (!owner || owner.$UN)) return false;
+      const hook = owner && (isClass ? owner.componentWillMove : owner.onComponentWillMove);
+      if (typeof hook === 'function') {
+        const dom = findElementFromVNode(vNode);
+        if (!dom || dom.parentNode !== list.parent) return false;
+        if (covered && !covered.has(dom)) {
+          coverRoots(vNode, covered);
+          try {
+            if (isClass) hook.call(owner, list.owner, list.parent, dom);else hook.call(owner, list.owner, list.parent, dom, vNode.props);
+          } finally {
           }
-          break;
-        default:
-          if (phase === 5 /* AnimationPhase.ACTIVATE_TRANSITIONS */) {
-            // Force reflow before executing ACTIVATE_TRANSITIONS
-            forceReflow();
+        }
+        return true;
+      }
+      return visit(input(vNode), list, covered);
+    }
+    if (flags & 8192 /* VNodeFlags.Fragment */) {
+      if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) return visit(input(vNode), list, covered);
+      let found = false;
+      for (const child of vNode.children) {
+        if (visit(child, list, covered)) {
+          found = true;
+          if (!covered) break;
+        }
+      }
+      return found;
+    }
+    return false;
+  }
+  function attach(list, parent) {
+    list.parent = parent;
+    let siblings = parents.get(parent);
+    if (!siblings) parents.set(parent, siblings = new Set());
+    siblings.add(list);
+  }
+  function detach(list) {
+    const siblings = parents.get(list.parent);
+    siblings?.delete(list);
+    if (siblings?.size === 0) {
+      parents.delete(list.parent);
+      cancelRemovals(list.parent);
+    }
+  }
+  function refresh(list) {
+    list.active = list.children.some(hasCandidates);
+    list.version = topologyVersion;
+    if (list.active) attach(list, list.parent);else detach(list);
+  }
+  function fragmentListOf(vNode) {
+    return vNode.flags & 8192 /* VNodeFlags.Fragment */ && vNode.childFlags === 8 /* ChildFlags.HasKeyedChildren */ ? fragmentLists.get(vNode.children) : undefined;
+  }
+  // The list of a keyed element or fragment, synced to vNode: created when missing, rescanned for
+  // hooks when owner changes happened since, or when its children are not the ones last seen (a
+  // patch that threw keeps the old vNode and its written-back children).
+  function track(vNode, parent) {
+    if (vNode.childFlags !== 8 /* ChildFlags.HasKeyedChildren */) return;
+    const children = vNode.children;
+    const isFragment = (vNode.flags & 8192 /* VNodeFlags.Fragment */) !== 0;
+    let list = isFragment ? fragmentLists.get(children) : elementLists.get(parent);
+    if (list === undefined) {
+      list = {
+        owner: vNode,
+        children,
+        parent,
+        active: false,
+        version: -1
+      };
+      if (isFragment) fragmentLists.set(children, list);else elementLists.set(parent, list);
+    } else if (list.children !== children) {
+      list.children = children;
+      list.version = -1;
+    }
+    list.owner = vNode;
+    if (list.version !== topologyVersion) refresh(list);
+    return list;
+  }
+  function forget(list, isFragment) {
+    if (isFragment) fragmentLists.delete(list.children);else elementLists.delete(list.parent);
+    detach(list);
+  }
+  function coverageOf(commit) {
+    let covered = coverage.get(commit);
+    if (covered === undefined) coverage.set(commit, covered = new Set());
+    return covered;
+  }
+  // Whether the owner whose element was found last renders a fragment (set by firstElement) or was
+  // reached through one (set by ownerElement)
+  let ownerInFragment = false;
+  // The first element that vNode renders, or null when that is text, a placeholder or a portal
+  function firstElement(vNode) {
+    ownerInFragment = false;
+    for (;;) {
+      const flags = vNode.flags;
+      if (flags & 481 /* VNodeFlags.Element */) return vNode.dom;
+      if (flags & 8192 /* VNodeFlags.Fragment */) {
+        ownerInFragment = true;
+        return findElementFromVNode(vNode);
+      }
+      if ((flags & 14 /* VNodeFlags.Component */) === 0) return null;
+      vNode = input(vNode);
+    }
+  }
+  // Calls the move hook of vNode's outermost owner, or of every owner in a fragment. Only a keyed
+  // fragment list shares its parent with an enclosing list, so only its items are checked against
+  // the parent and against the elements that the enclosing list prepared.
+  function prepareOwner(vNode, list, commit, inFragment) {
+    let flags = vNode.flags;
+    while (flags & 14 /* VNodeFlags.Component */) {
+      if (flags & 4 /* VNodeFlags.ComponentClass */) {
+        const instance = vNode.children;
+        if (instance === null || instance.$UN) return;
+        if (typeof instance.componentWillMove === 'function') {
+          const dom = ownerElement(vNode, list, commit, inFragment);
+          if (dom !== null) {
+            instance.componentWillMove(list.owner, list.parent, dom);
           }
-          for (let j = 0; j < animationQueue.length; j++) {
-            animationQueue[j](phase);
+          return;
+        }
+      } else {
+        const hooks = vNode.ref;
+        if (hooks != null && typeof hooks.onComponentWillMove === 'function') {
+          const dom = ownerElement(vNode, list, commit, inFragment);
+          if (dom !== null) {
+            hooks.onComponentWillMove(list.owner, list.parent, dom, vNode.props);
           }
+          return;
+        }
+      }
+      vNode = input(vNode);
+      flags = vNode.flags;
+    }
+    if (flags & 8192 /* VNodeFlags.Fragment */) {
+      if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) {
+        prepareOwner(input(vNode), list, commit, true);
+      } else {
+        for (const child of vNode.children) {
+          prepareOwner(child, list, commit, true);
+        }
       }
     }
   }
-  function queueAnimation(callback) {
-    _animationQueue.push(callback);
-    if (_nextAnimationFrame === IDLE) {
-      {
-        _nextAnimationFrame = requestAnimationFrame(_runAnimationPhases);
+  // The element an owner's hook gets, or null when it has none in the list's parent or an enclosing
+  // list prepared it already. Records the owner's elements when a keyed fragment list may share them.
+  function ownerElement(owner, list, commit, inFragment) {
+    const dom = firstElement(owner);
+    if (dom === null) return null;
+    if (list.owner.flags & 8192 /* VNodeFlags.Fragment */) {
+      if (dom.parentNode !== list.parent) return null;
+      const covered = coverage.get(commit);
+      if (covered !== undefined && covered.has(dom)) return null;
+    }
+    if (inFragment || ownerInFragment) {
+      ownerInFragment = true;
+      coverRoots(owner, coverageOf(commit));
+    }
+    return dom;
+  }
+  function isRetained(child, next) {
+    return next !== undefined && next.type === child.type && !((next.flags ^ child.flags) & -81921 /* VNodeFlags.InUseOrNormalized */) && !(next.flags & 2048 /* VNodeFlags.ReCreate */);
+  }
+  // Calls the hooks of the items of last that stay in next, before either is patched
+  function prepareItems(list, previous, children, commit, cancel) {
+    const lastLength = previous.length;
+    const nextLength = children.length;
+    // Items before prefix and from lastEnd on keep their place at either end, so only the items
+    // between need a key map
+    let prefix = 0;
+    // Items before kept are also retained
+    let kept = 0;
+    while (prefix < lastLength && prefix < nextLength) {
+      const child = previous[prefix];
+      const next = children[prefix];
+      if (child.key !== next.key) break;
+      if (kept === prefix && isRetained(child, next)) kept++;
+      prefix++;
+    }
+    let lastEnd = lastLength;
+    let nextEnd = nextLength;
+    while (lastEnd > prefix && nextEnd > prefix && previous[lastEnd - 1].key === children[nextEnd - 1].key) {
+      lastEnd--;
+      nextEnd--;
+    }
+    let nextByKey;
+    // A few moved items are found by a scan; more of them build the key map
+    let scans = 4;
+    const outerOwnerInFragment = ownerInFragment;
+    try {
+      for (let i = 0; i < lastLength; i++) {
+        const child = previous[i];
+        let retained;
+        if (i < prefix) {
+          retained = children[i];
+        } else if (i >= lastEnd) {
+          retained = children[i - lastLength + nextLength];
+        } else {
+          retained = i < nextEnd ? children[i] : undefined;
+          if (retained === undefined || retained.key !== child.key) {
+            retained = undefined;
+            if (nextByKey !== undefined) {
+              retained = nextByKey.get(child.key);
+            } else if (scans-- > 0) {
+              for (let j = prefix; j < nextEnd; j++) {
+                if (children[j].key === child.key) {
+                  retained = children[j];
+                  break;
+                }
+              }
+            } else {
+              nextByKey = new Map();
+              for (let j = prefix; j < nextEnd; j++) {
+                nextByKey.set(children[j].key, children[j]);
+              }
+              retained = nextByKey.get(child.key);
+            }
+          }
+        }
+        if (i < kept || isRetained(child, retained)) {
+          prepareOwner(child, list, commit, false);
+        }
+      }
+    } catch (error) {
+      cancel(list.parent);
+      throw error;
+    } finally {
+      ownerInFragment = outerOwnerInFragment;
+    }
+  }
+  function collectNestedLists(vNode, nested) {
+    const flags = vNode.flags;
+    if (flags & 14 /* VNodeFlags.Component */) {
+      if (flags & 4 /* VNodeFlags.ComponentClass */ && vNode.children.$UN) return;
+      collectNestedLists(input(vNode), nested);
+    } else if (flags & 8192 /* VNodeFlags.Fragment */) {
+      const list = fragmentListOf(vNode);
+      if (list?.active) {
+        nested.add(list);
+        return;
+      }
+      if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) collectNestedLists(input(vNode), nested);else for (const child of vNode.children) collectNestedLists(child, nested);
+    }
+  }
+  function prepareRemoval(parent, invoke) {
+    const siblings = parents.get(parent);
+    if (!siblings) return false;
+    const covered = invoke ? new Set() : undefined;
+    const nested = new Set();
+    let found = false;
+    // Outer owners cover inner fragment roots regardless of mount order.
+    if (siblings.size > 1) {
+      for (const list of siblings) {
+        for (const child of list.children) collectNestedLists(child, nested);
       }
     }
+    for (const list of siblings) {
+      if (nested.has(list)) continue;
+      for (const child of list.children) {
+        if (visit(child, list, covered)) {
+          found = true;
+          if (!invoke) return true;
+        }
+      }
+    }
+    return found;
+  }
+  function installMoveAnimations(cancel) {
+    const adapter = {
+      mountClass(instance) {
+        if (!instance.$UN && !classOwners.has(instance)) {
+          classOwners.add(instance);
+          changeOwners(adapter, 1);
+        }
+      },
+      unmountClass(instance) {
+        if (classOwners.delete(instance)) changeOwners(adapter, -1);
+      },
+      updateHooks(lastRef, nextRef) {
+        const delta = hasMoveHook(nextRef) - hasMoveHook(lastRef);
+        if (delta !== 0) changeOwners(adapter, delta);
+      },
+      prepare(last, next, parent, commit) {
+        const list = track(last, parent);
+        if (next.childFlags === 8 /* ChildFlags.HasKeyedChildren */) {
+          const children = next.children;
+          if (list.active) prepareItems(list, last.children, children, commit, cancel);
+          // Follows the patch: the next prepare finds next's children here
+          list.owner = next;
+          list.children = children;
+        } else {
+          forget(list, false);
+        }
+      },
+      prepareFragment(last, nextChildren, parent, commit) {
+        const list = track(last, parent);
+        if (nextChildren !== null) {
+          if (list.active) prepareItems(list, last.children, nextChildren, commit, cancel);
+          fragmentLists.delete(list.children);
+          list.children = nextChildren;
+          fragmentLists.set(nextChildren, list);
+        } else {
+          forget(list, true);
+        }
+      },
+      unmountList(vNode) {
+        if (vNode.flags & 8192 /* VNodeFlags.Fragment */) {
+          const list = fragmentLists.get(vNode.children);
+          if (list !== undefined) {
+            forget(list, true);
+            // Moves in progress inside the parent end with its last list
+            if (!parents.has(list.parent)) cancel(list.parent);
+          }
+        } else {
+          const list = elementLists.get(vNode.dom);
+          if (list !== undefined) forget(list, false);
+          cancel(vNode.dom);
+        }
+      },
+      reparent(vNode, parent) {
+        const flags = vNode.flags;
+        if (flags & 14 /* VNodeFlags.Component */) this.reparent(input(vNode), parent);else if (flags & 8192 /* VNodeFlags.Fragment */) {
+          const list = fragmentListOf(vNode);
+          if (list && list.parent !== parent) {
+            cancel(list.parent);
+            detach(list);
+            list.parent = parent;
+            if (list.active) attach(list, parent);
+          }
+          if (vNode.childFlags === 2 /* ChildFlags.HasVNodeChildren */) this.reparent(input(vNode), parent);else for (const child of vNode.children) this.reparent(child, parent);
+        }
+      },
+      remove(parent, callback) {
+        if (!parent.isConnected || !hasQueuedRemoval(parent) && !prepareRemoval(parent, false)) callback();else queueRemoval(parent, () => {
+          try {
+            prepareRemoval(parent, true);
+          } catch (error) {
+            cancel(parent);
+            throw error;
+          }
+        }, callback);
+      }
+    };
+    setMoveAnimations(adapter, false);
   }
   function getAnimationClass(animationProp, prefix) {
     let animCls;
@@ -2919,36 +3248,45 @@
     return animCls;
   }
   function componentDidAppear(dom, props) {
-    entering.add(dom);
     // Get dimensions and unpack class names
     const cls = getAnimationClass(props.animation, '-enter');
     // Moved measuring to pre_initialize. It causes a reflow for each component beacuse of the setDisplay of previous component.
     const dimensions = {};
-    const display = setDisplay(dom, 'none');
+    const enter = {
+      cls,
+      display: setDisplay(dom, 'none'),
+      activated: false,
+      cancelled: false,
+      sizes: [],
+      transforms: []
+    };
+    entering.set(dom, enter);
     const sourceState = props.globalAnimationKey === undefined ? null : consumeGlobalAnimationSource(props.globalAnimationKey);
     queueAnimation(phase => {
-      _didAppear(phase, dom, cls, dimensions, display, sourceState);
-    });
+      if (!enter.cancelled) {
+        _didAppear(phase, dom, enter, dimensions, sourceState);
+      }
+    }, dom.parentNode);
   }
-  function _getDidAppearTransitionCallback(dom, cls) {
-    return () => {
-      entering.delete(dom);
-      // 5. Remove the element
-      clearDimensions(dom);
-      removeClassName(dom, cls.active + ' ' + cls.end);
-      // 6. Call callback to allow stuff to happen
-      // Not currently used but this is where one could
-      // add a call to something like this.didAppearDone
-    };
+  function _finishEnter(dom, enter) {
+    entering.delete(dom);
+    // 5. Restore the application's width and height
+    restoreStyles(dom.style, enter.sizes);
+    removeClassName(dom, enter.cls.active + ' ' + enter.cls.end);
+    // 6. Call callback to allow stuff to happen
+    // Not currently used but this is where one could
+    // add a call to something like this.didAppearDone
   }
-  function _didAppear(phase, dom, cls, dimensions, display, sourceState) {
+  function _didAppear(phase, dom, enter, dimensions, sourceState) {
+    const cls = enter.cls;
+    const fromSource = !isNullOrUndef(sourceState) && dimensions.width !== 0 && dimensions.height !== 0;
     switch (phase) {
-      case 0 /* AnimationPhase.INITIALIZE */:
+      case 1 /* AnimationPhase.INITIALIZE */:
         // Needs to be done in a single pass to avoid reflows
         // We set display: none whilst waiting for an animation frame to avoid flicker
-        resetDisplay(dom, display);
+        resetDisplay(dom, enter.display);
         return;
-      case 1 /* AnimationPhase.MEASURE */:
+      case 2 /* AnimationPhase.MEASURE */:
         // In case of img element that hasn't been loaded, just trigger reflow
         if (dom.tagName !== 'IMG' || dom.complete) {
           const tmp = getDimensions(dom);
@@ -2960,71 +3298,269 @@
           forceReflow();
         }
         return;
-      case 2 /* AnimationPhase.SET_START_STATE */:
+      case 3 /* AnimationPhase.SET_START_STATE */:
         // 1. Set start of animation
-        if (!isNullOrUndef(sourceState) && dimensions.width !== 0 && dimensions.height !== 0) {
+        if (fromSource) {
           // const diffX = (sourceState.width - dimensions.width) / 2;
           // const diffY = (sourceState.height - dimensions.height) / 2;
           const dx = sourceState.x - dimensions.x;
           const dy = sourceState.y - dimensions.y;
           const scaleX = sourceState.width / dimensions.width;
           const scaleY = sourceState.height / dimensions.height;
+          enter.transforms = saveStyles(dom.style, ['transform', 'transform-origin']);
           setTransform(dom, dx, dy, scaleX, scaleY);
+          markApplied(dom.style, enter.transforms);
         }
         addClassName(dom, cls.start);
         return;
-      case 5 /* AnimationPhase.ACTIVATE_TRANSITIONS */:
+      case 9 /* AnimationPhase.ACTIVATE_TRANSITIONS */:
         // 2. Activate transition (after a reflow)
         addClassName(dom, cls.active);
         return;
-      case 7 /* AnimationPhase.ACTIVATE_ANIMATION */:
+      case 10 /* AnimationPhase.ACTIVATE_ANIMATION */:
         // 4. Activate target state (called async via requestAnimationFrame)
-        if (!isNullOrUndef(sourceState) && dimensions.width !== 0 && dimensions.height !== 0) {
-          clearTransform(dom);
-        }
+        enter.activated = true;
+        // A global animation transitions to the application's transform
+        restoreStyles(dom.style, enter.transforms);
+        enter.sizes = saveStyles(dom.style, ['width', 'height']);
         setDimensions(dom, dimensions.width, dimensions.height);
+        markApplied(dom.style, enter.sizes);
         removeClassName(dom, cls.start);
         addClassName(dom, cls.end);
+        break;
+      case 11 /* AnimationPhase.REGISTER_LISTENERS */:
         // Start the timeout after activation; zero-duration transitions must not
         // clean up before the following frame installs the target styles.
-        registerTransitionListener([dom], _getDidAppearTransitionCallback(dom, cls));
+        enter.stop = registerTransitionListener([dom], () => _finishEnter(dom, enter));
     }
   }
+  // The values that the running transitions of dom have reached, except its width and height
+  function reachedValues(dom) {
+    const reached = [];
+    let style = null;
+    for (const animation of dom.getAnimations?.() || []) {
+      if ('transitionProperty' in animation && (animation.playState === 'running' || animation.playState === 'paused')) {
+        const property = animation.transitionProperty;
+        if (property !== 'width' && property !== 'height') {
+          style ??= window.getComputedStyle(dom);
+          reached.push([property, style.getPropertyValue(property)]);
+        }
+      }
+    }
+    return reached;
+  }
+  // The leave takes over from the enter it interrupts: the element keeps the values that the enter's
+  // transitions have reached, until the leave activates its own. Removing the enter's classes
+  // cancels those transitions within this animation pass, before the leave listens for transitions.
+  function _interruptEnter(dom, leave) {
+    const enter = leave.enter;
+    const style = dom.style;
+    removeClassName(dom, enter.cls.start + ' ' + enter.cls.active + ' ' + enter.cls.end);
+    restoreStyles(style, enter.transforms);
+    restoreStyles(style, enter.sizes);
+    leave.held = saveStyles(style, leave.reached.map(([property]) => property));
+    for (const [property, value] of leave.reached) {
+      style.setProperty(property, value);
+    }
+    markApplied(style, leave.held);
+  }
   function componentWillDisappear(dom, props, callback) {
+    const enter = entering.get(dom);
+    if (enter !== undefined) {
+      entering.delete(dom);
+      enter.cancelled = true;
+      enter.stop?.();
+      // Nothing of the element has been visible, so there is nothing to animate
+      if (!enter.activated) {
+        callback();
+        return;
+      }
+    }
     leaving.add(dom);
-    // Get dimensions and unpack class names
-    const cls = getAnimationClass(props.animation, '-leave');
-    const dimensions = getDimensions(dom);
+    // A move that ended with its list in this commit
+    const hold = released.get(dom);
+    if (hold !== undefined) {
+      released.delete(dom);
+      holdOffset(dom, hold);
+    }
+    // A leave is measured with the others once the commit's writes are done: a read between them
+    // would lay the document out again for every leaving element. A global animation hands its
+    // source to an element that may enter in another pass, so it is measured now.
+    const deferred = props.globalAnimationKey === undefined;
+    const leave = {
+      cls: getAnimationClass(props.animation, '-leave'),
+      dimensions: deferred ? {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0
+      } : getDimensions(dom),
+      deferred,
+      enter: enter ?? null,
+      reached: [],
+      held: [],
+      sizes: [],
+      hold: null
+    };
     queueAnimation(phase => {
-      _willDisappear(phase, dom, callback, cls, dimensions);
-    });
-    if (props.globalAnimationKey !== undefined) {
-      addGlobalAnimationSource(props.globalAnimationKey, dimensions);
+      _willDisappear(phase, dom, callback, leave);
+    }, dom.parentNode);
+    if (!deferred) {
+      addGlobalAnimationSource(props.globalAnimationKey, leave.dimensions);
       dom.style.setProperty('visibility', 'hidden');
     }
   }
-  function _willDisappear(phase, dom, callback, cls, dimensions) {
+  function _willDisappear(phase, dom, callback, leave) {
+    const {
+      cls,
+      dimensions
+    } = leave;
+    const style = dom.style;
+    const move = moving.get(dom);
     switch (phase) {
-      case 0 /* AnimationPhase.INITIALIZE */:
+      case 0 /* AnimationPhase.MEASURE_LEAVES */:
+        if (leave.deferred) {
+          const measured = getDimensions(dom);
+          dimensions.x = measured.x;
+          dimensions.y = measured.y;
+          dimensions.width = measured.width;
+          dimensions.height = measured.height;
+        }
+        if (leave.enter !== null) leave.reached = reachedValues(dom);
+        if (move !== undefined) leave.hold = reachedOffset(move);
+        return;
+      case 1 /* AnimationPhase.INITIALIZE */:
+        // The element stays where its move has brought it
+        if (move !== undefined) {
+          finishMove(move);
+          if (leave.hold !== null) holdOffset(dom, leave.hold);
+        }
+        if (leave.enter !== null) _interruptEnter(dom, leave);
         // Write leave styles before the shared measurement phases.
         // 1. Set animation start state and dimensions
+        leave.sizes = saveStyles(style, ['width', 'height']);
         setDimensions(dom, dimensions.width, dimensions.height);
+        markApplied(style, leave.sizes);
         addClassName(dom, cls.start);
         return;
-      case 5 /* AnimationPhase.ACTIVATE_TRANSITIONS */:
+      case 9 /* AnimationPhase.ACTIVATE_TRANSITIONS */:
         // 2. Activate transition (after a reflow)
         addClassName(dom, cls.active);
         return;
-      case 7 /* AnimationPhase.ACTIVATE_ANIMATION */:
+      case 10 /* AnimationPhase.ACTIVATE_ANIMATION */:
         // 4. Activate target state (called async via requestAnimationFrame)
         addClassName(dom, cls.end);
         removeClassName(dom, cls.start);
-        clearDimensions(dom);
+        restoreStyles(style, leave.sizes);
+        restoreStyles(style, leave.held);
+        break;
+      case 11 /* AnimationPhase.REGISTER_LISTENERS */:
         registerTransitionListener([dom], callback);
     }
   }
-  const entering = new WeakSet();
+  const moveBatches = new WeakMap();
+  const moving = new WeakMap();
+  const entering = new WeakMap();
   const leaving = new WeakSet();
+  // The offsets of the moves that ended with their list in the current task: the leaves of their
+  // elements, which the commit starts after it has unmounted the list, hold them
+  const released = new Map();
+  function restoreTransitions(item) {
+    restoreStyles(item.node.style, item.transitions);
+  }
+  function restoreMoveStyles(item) {
+    item.cancel?.();
+    if (item.previous) {
+      disposeMove(item.previous);
+      item.previous = undefined;
+    }
+    if (!item.initialized) return;
+    const style = item.node.style;
+    restoreStyles(style, item.offset);
+    restoreStyles(style, item.overrides);
+    restoreTransitions(item);
+    removeClassName(item.node, item.addedClasses);
+  }
+  function disposeMove(item) {
+    if (item.done) return;
+    item.done = true;
+    restoreMoveStyles(item);
+    if (--item.batch.remaining === 0) {
+      item.batch.cancel?.();
+      if (moveBatches.get(item.batch.parent) === item.batch) moveBatches.delete(item.batch.parent);
+    }
+  }
+  function finishMove(item) {
+    if (moving.get(item.node) === item) {
+      disposeMove(item);
+      moving.delete(item.node);
+    }
+  }
+  // The declaration that keeps the element of item at the offset that its running move has reached.
+  // An offset in the transform is held in translate where possible, so that the leave can animate
+  // the transform; the element's own rotate and scale apply to the one but not to the other.
+  function reachedOffset(item) {
+    const running = item.initialized ? item : item.previous;
+    if (running === undefined || !running.initialized) return null;
+    const {
+      node,
+      property,
+      linear
+    } = running;
+    const reached = window.getComputedStyle(node).getPropertyValue(property);
+    if (!reached || reached === 'none') return null;
+    if (property === 'transform' && running.translate === 'none' && 'translate' in node.style) {
+      const to = matrix(reached);
+      const from = matrix(running.baseTransform);
+      const x = to[4] - from[4];
+      const y = to[5] - from[5];
+      return {
+        property: 'translate',
+        value: `${linear[0] * x + linear[2] * y}px ${linear[1] * x + linear[3] * y}px`,
+        priority: ''
+      };
+    }
+    return {
+      property,
+      value: reached,
+      priority: running.offset[0].priority
+    };
+  }
+  function holdOffset(node, hold) {
+    node.style.setProperty(hold.property, hold.value, hold.priority);
+  }
+  function isCurrent(item) {
+    return !item.done && moving.get(item.node) === item;
+  }
+  // Finishes the moves of elements that leave, or that may leave in this commit: they stay where the
+  // moves have brought them. Every offset is read before the first move is finished.
+  function finishHeld(items) {
+    const holds = items.map(reachedOffset);
+    for (let i = 0; i < items.length; i++) {
+      const node = items[i].node;
+      const hold = holds[i];
+      finishMove(items[i]);
+      if (hold === null) continue;
+      if (leaving.has(node)) {
+        holdOffset(node, hold);
+      } else {
+        if (released.size === 0) {
+          queueMicrotask(() => {
+            released.clear();
+          });
+        }
+        released.set(node, hold);
+      }
+    }
+  }
+  function cancelMoves(parent) {
+    const batch = moveBatches.get(parent);
+    if (!batch) return;
+    batch.cancel?.();
+    finishHeld(batch.items.filter(isCurrent));
+    moveBatches.delete(parent);
+  }
+  installMoveAnimations(cancelMoves);
 
   const anim = {
     onComponentDidAppear: componentDidAppear,

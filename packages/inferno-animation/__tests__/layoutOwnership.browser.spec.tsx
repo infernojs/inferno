@@ -1,11 +1,13 @@
 import { render } from 'inferno';
 import { AnimatedMoveComponent } from 'inferno-animation';
+import { browserHelpers, frame } from './helpers/browser';
 
 const browserDescribe = global.usingJSDOM ? xdescribe : describe;
 
 browserDescribe('move ownership in a real CSS engine', () => {
   let container: HTMLDivElement;
   let sheet: HTMLStyleElement;
+  const { card } = browserHelpers(() => container);
   class Card extends AnimatedMoveComponent<{ id: string }, unknown> {
     public render() {
       return <div data-id={this.props.id}>{this.props.id}</div>;
@@ -18,10 +20,6 @@ browserDescribe('move ownership in a real CSS engine', () => {
       ))}
     </main>
   );
-  const frame = () =>
-    new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
-  const card = (id: string) =>
-    container.querySelector('[data-id="' + id + '"]') as HTMLElement;
   async function transition(node: HTMLElement, property: string) {
     for (let i = 0; i < 60; i++) {
       const animation = node

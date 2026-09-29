@@ -9,6 +9,8 @@ export const enum AnimationPhase {
   READ_MOVES,
   RESET_MOVES,
   MEASURE_MOVES,
+  // Moves that do not happen drop out before any move writes its start state
+  SELECT_MOVES,
   SET_MOVE_START_STATE,
   ACTIVATE_TRANSITIONS,
   ACTIVATE_ANIMATION,
@@ -21,24 +23,25 @@ export interface GlobalAnimationState {
   height: number;
   x: number;
   y: number;
-  ticks: number;
+  // The time that the source can be used until
+  expires: number;
 }
-const _globalAnimationSources: Record<
-  GlobalAnimationKey,
-  GlobalAnimationState
-> = {};
+// How long an element that enters can start from the box of one that left with its key, in
+// milliseconds: long enough for a page that loads before it mounts
+const SOURCE_LIFETIME = 1000;
+const sources: Record<GlobalAnimationKey, GlobalAnimationState> = {};
+let sourceTimer: ReturnType<typeof setTimeout> | undefined;
 
-export function _globalAnimationGC(): void {
-  let entriesLeft = false;
-
-  for (const key in _globalAnimationSources) {
-    if (--_globalAnimationSources[key].ticks < 0) {
-      delete _globalAnimationSources[key];
-    } else entriesLeft = true;
-  }
-
-  if (entriesLeft) {
-    requestAnimationFrame(_globalAnimationGC);
+// Sources that no element used do not stay in memory
+function expireSources(): void {
+  sourceTimer = undefined;
+  const now = performance.now();
+  for (const key in sources) {
+    if (sources[key].expires > now) {
+      sourceTimer ??= setTimeout(expireSources, SOURCE_LIFETIME);
+    } else {
+      delete sources[key];
+    }
   }
 }
 
@@ -46,22 +49,18 @@ export function addGlobalAnimationSource(
   key: GlobalAnimationKey,
   state: GlobalAnimationState,
 ): void {
-  state.ticks = 5;
-  _globalAnimationSources[key] = state;
-
-  if (_globalAnimationGC === null) {
-    requestAnimationFrame(_globalAnimationGC);
-  }
+  state.expires = performance.now() + SOURCE_LIFETIME;
+  sources[key] = state;
+  sourceTimer ??= setTimeout(expireSources, SOURCE_LIFETIME);
 }
 
 export function consumeGlobalAnimationSource(
   key: GlobalAnimationKey,
-): GlobalAnimationState {
-  const tmp = _globalAnimationSources[key];
-  if (tmp !== undefined) {
-    delete _globalAnimationSources[key];
-  }
-  return tmp;
+): GlobalAnimationState | null {
+  const source = sources[key];
+  if (source === undefined) return null;
+  delete sources[key];
+  return source.expires > performance.now() ? source : null;
 }
 
 interface QueuedAnimation {

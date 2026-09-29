@@ -162,6 +162,27 @@ the final target in a microtask before paint. Unrelated parents keep their own
 animation schedule. An update that moves items during a move transition starts
 from their visible positions.
 
+A moved item starts where it was on screen. The offset is converted into the
+item's own coordinates, so 2D transforms of its ancestors, also those around a
+shadow root, an SVG `viewBox`, and the item's own `scale` and `rotate`
+properties are taken into account. CSS `zoom`, perspective and rotations around
+another axis than z are not: items inside them start at a wrong distance. A list
+may be rendered into a shadow root or a document fragment.
+
+A list inside an element that starts moving in the same update, such as a group
+of a grouped list, moves relative to that element: an item that ends where it
+was on screen moves against its group. The items of such a list are measured
+while the list around them is patched, and are corrected by the distance that
+removals before them have shifted their group. That needs move hooks on the
+groups: inside plain elements the items start from the shifted positions.
+
+An element hidden with `display: none` has no position: one that becomes visible
+in a reordering update appears in place. When a CSS keyframe animation sets an
+item's `transform`, which would override the move's transform, also after it has
+finished with `animation-fill-mode: forwards`, the item moves with the
+`translate` property instead, and the move classes' `transform` transition
+applies to `translate`.
+
 Elements still entering or leaving, or running an author CSS transition, are
 excluded from move transforms. On a reorder those elements move directly to
 their reconciled positions while eligible neighbours slide. This preserves the
@@ -186,6 +207,22 @@ registered: a keyed list that was never updated since the first move hook
 mounted does not animate when a sibling keyed fragment removes an item on its
 own, for example through `setState` inside that fragment.
 
+A leave that interrupts an enter starts from the size and values the enter has
+reached. An element that leaves before its enter has started its transitions is
+removed at once, without a leave animation: nothing of it has been visible.
+
+A leaving element that was moving stays where its move has brought it, also
+when its whole list is removed or replaced. Its offset is kept in the
+`translate` property, so that the leave classes can animate its `transform`. An
+element that has a `translate` of its own keeps the offset in its `transform`,
+which the leave classes then cannot animate.
+
+Enter and leave animations restore the element's inline `width` and `height`,
+and a global animation its inline `transform` and `transform-origin`, unless the
+application changed them during the animation. Inline declarations take
+precedence over the animation classes: an element that the application gives an
+inline `height` does not grow or collapse with them.
+
 Children replaced by text or by `dangerouslySetInnerHTML` are removed at once:
 their leave hooks do not run. An element replaced by an element of another type
 stays in the document until the leave hooks inside it complete.
@@ -196,7 +233,7 @@ mixed animated/plain items, nested components, and insertion/removal updates.
 
 ### Global animations
 
-Global animations allow you to animate a component between positions on two different "pages". Technincally this means they don't have the same parent element. When you mount one page imediately after unmounting the other page, inferno-animation will perform a FLIP-animation between the two positions. To match the elements you use the attribute `globalAnimationKey` which accept a string.
+Global animations allow you to animate a component between positions on two different "pages". Technincally this means they don't have the same parent element. When you mount one page imediately after unmounting the other page, inferno-animation will perform a FLIP-animation between the two positions. To match the elements you use the attribute `globalAnimationKey` which accept a string. The position of a leaving element can be used for one second: an element that enters with its key later than that, for example on a page that took longer to load, appears in place.
 
 Global animations are very simple to use, [check this example.](https://github.com/infernojs/inferno/blob/master/docs/animations-global-demo/app.js)
 
