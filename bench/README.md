@@ -41,7 +41,7 @@ known size before its results are trusted (see "Validation" below).
 | command | runtime | primary metrics |
 | --- | --- | --- |
 | `size` | – | raw / gzip-9 / brotli-11 / zstd-19 of inferno bundles and every app, jfb's `42_size-compressed`, per-module minified bytes (`--modules`), budgets (`budgets.json`) |
-| `micro` | Node (or d8) | ns/op, **exact allocated bytes/op** (sampling heap profiler, 8 B interval, with top allocation sites), **exact DOM operations/op** (counting DOM shim), final-DOM checksum, hidden-class checks (`--maps`) |
+| `micro` | Node (or d8) | ns/op, **exact allocated bytes/op** (sampling heap profiler, 8 B interval, with top allocation sites), **exact DOM operations/op** (counting DOM shim), final-DOM checksum, hidden-class checks (`--maps`); `--steady` warms up for 2× and runs 3× a case's iterations and takes statistics over the last half, so a median can't land on a JIT tier plateau that one variant leaves later |
 | `run --mode timing` | Chrome | input dispatch → end of next frame's main-thread work (untraced) |
 | `run --mode trace` | Chrome | jfb-compatible total (identical to js-framework-benchmark on its own traces) and **self time per stage**: script, gc, style, layout, prepaint, paint, layerize, commit, idle, harness; default metric `busy` = total − idle − harness |
 | `run --mode counters` | Chrome | **user-space instructions**, cycles, branch/L1D misses of the renderer main thread (op minus a null op), plus compositor and GPU-process threads |

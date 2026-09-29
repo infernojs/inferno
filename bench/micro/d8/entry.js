@@ -42,8 +42,10 @@ if (caseName === '@list') {
   if (!c) {
     throw new Error(`Unknown case ${caseName}`);
   }
-  const iterations = Number(itersArg) || c.iterations;
-  const warmup = warmupArg !== undefined && warmupArg !== '' ? Number(warmupArg) : c.warmup;
+  // 'xN': N times the case's own iterations (micro --steady)
+  const scaled = (arg) => (typeof arg === 'string' && arg[0] === 'x' ? Number(arg.slice(1)) * c.iterations : NaN);
+  const iterations = scaled(itersArg) || Number(itersArg) || c.iterations;
+  const warmup = scaled(warmupArg) >= 0 ? scaled(warmupArg) : warmupArg !== undefined && warmupArg !== '' ? Number(warmupArg) : c.warmup;
   const gcEach = gcEachArg === '1' && typeof gc === 'function';
 
   c.setup();

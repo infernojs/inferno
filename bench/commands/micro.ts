@@ -159,6 +159,7 @@ export default async function micro(argv: string[]): Promise<number> {
       d8: { type: 'string' },
       'young-mb': { type: 'string' },
       preload: { type: 'string' },
+      steady: { type: 'boolean', default: false },
     },
   });
   youngMb = Number(values['young-mb'] ?? 0);
@@ -207,7 +208,12 @@ export default async function micro(argv: string[]): Promise<number> {
     throw new Error('No cases matched');
   }
   const rounds = Number(values.rounds);
-  const extra = [values.iterations ?? '', values.warmup ?? '', values['gc-each'] ? '1' : '0'];
+  // --steady: warm up for 2× the case's iterations, run 3×, and take statistics over the last half
+  // only, so a median can't land on a JIT tier plateau that one variant leaves later than another
+  // (e.g. after a GC throws optimized code away).
+  const steady = values.steady!;
+  const extra = [values.iterations ?? (steady ? 'x3' : ''), values.warmup ?? (steady ? 'x2' : ''), values['gc-each'] ? '1' : '0'];
+  const late = (a: number[]) => (steady ? a.slice(a.length >> 1) : a);
 
   const results = new Map<string, WorkerResult[]>();
   const failures = new Map<string, string>();
@@ -248,11 +254,11 @@ export default async function micro(argv: string[]): Promise<number> {
       continue;
     }
     // time (ns/op) everywhere; instructions/op when the d8 build has counters.
-    const series = (r: WorkerResult) => (values.metric === 'instructions' && r.instructions?.length ? r.instructions : r.timesNs);
+    const series = (r: WorkerResult) => late(values.metric === 'instructions' && r.instructions?.length ? r.instructions : r.timesNs);
     const baseBlocks = base.map((r) => median(series(r)));
     // Median over every iteration of every round: one-off V8 allocations (optimized code,
     // feedback) land in a single iteration and must not read as per-op cost.
-    const baseAlloc = median(base.flatMap(opAlloc));
+    const baseAlloc = median(base.flatMap((r) => late(opAlloc(r))));
     const baseDom = perOp(base[0].domTotals, base[0].iterations);
     for (const spec of specs) {
       const res = results.get(key(spec.id, c));
@@ -263,7 +269,7 @@ export default async function micro(argv: string[]): Promise<number> {
       }
       const blocks = res.map((r) => median(series(r)));
       const time = summarize(blocks);
-      const allocAll = res.flatMap(opAlloc);
+      const allocAll = res.flatMap((r) => late(opAlloc(r)));
       const alloc = median(allocAll);
       const allocDomAll = res.flatMap((r) => r.allocDomBytes ?? []);
       const dom = perOp(res[0].domTotals, res[0].iterations);

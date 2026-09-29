@@ -18,7 +18,7 @@ const commands: Record<string, Command> = {
   },
   micro: {
     summary: 'Node micro suite: ns/op, alloc B/op, exact DOM ops/op, checksums (counting DOM shim)',
-    usage: "micro --variants local,src:reproduce_issues [--cases 'jfb/keyed/*'] [--rounds 5] [--runtime node|d8 [--d8 <path>] [--metric time|instructions]] [--deterministic] [--gc-each [--young-mb 128]] [--list] [--maps] [--ops] [--alloc-sites] [--preload inferno-animation]",
+    usage: "micro --variants local,src:reproduce_issues [--cases 'jfb/keyed/*'] [--rounds 5] [--runtime node|d8 [--d8 <path>] [--metric time|instructions]] [--deterministic] [--gc-each [--young-mb 128]] [--list] [--maps] [--ops] [--alloc-sites] [--preload inferno-animation] [--steady]",
     run: async (argv) => (await import('./commands/micro.ts')).default(argv),
   },
   run: {
