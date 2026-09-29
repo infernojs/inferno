@@ -54,6 +54,7 @@ known size before its results are trusted (see "Validation" below).
 | `stages` | InfernoProf Chrome | self instructions per rendering stage over `--window` ms (script, gc, style, layout, prepaint, paint, layerize, commit, …), plus Layout and UpdateLayoutTree counts, how many of them script forced, and GC counts |
 | `profile` | Chrome under `perf` | native + JIT cycles of the renderer main thread cut to the exact op windows (subsystem rollup + top symbols, `hotspot`-ready `perf.jit.data`), CDP CPU profile for JS self time per function |
 | `jit` | Chrome | V8 IC/map/deopt logs → polymorphic/megamorphic IC sites and deopts in app code |
+| `leak` | Chrome | run/clear cycles (jfb apps) or prepare/op cycles of a harness case (`--app anim --case …`): 3 heap snapshots, survivors with retaining paths, JS and Blink heap, DOM nodes and JS event listeners |
 | `aa` | any | A/A (same variant twice): false-positive rate and detectable change |
 | `gate` | Node + Chrome | regression gate on DOM ops, allocations and instructions |
 | `check` | Node | CI gate: hidden classes, DOM ops + checksums vs `baselines/domops.json`, size budgets |

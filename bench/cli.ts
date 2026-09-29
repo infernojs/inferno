@@ -49,7 +49,7 @@ const commands: Record<string, Command> = {
   },
   leak: {
     summary: 'Leak check: in-page run/clear cycles, 3 heap snapshots, survivors with retaining paths',
-    usage: "leak --variants local,npm:9.1.0 [--app jfb-keyed] [--warmup 5] [--cycles 10] [--blocks 1] [--js-flags='--no-opt'] [--save]",
+    usage: "leak --variants local,npm:9.1.0 [--app jfb-keyed | --app anim --case leave-mid-move [--settle 1600]] [--warmup 5] [--cycles 10] [--blocks 1] [--js-flags='--no-opt'] [--save]",
     run: async (argv) => (await import('./commands/leak.ts')).default(argv),
   },
   aa: {

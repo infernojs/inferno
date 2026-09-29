@@ -22,6 +22,7 @@ import { parseVariantList } from '../variants/spec.ts';
  * per-cycle CDP evaluations with changing sources (the run-mode workloads)
  * leave compiled scripts and strings behind that look like page leaks.
  * el.click() reaches Inferno's delegated document listener like real input.
+ * Rows with a leave animation stay until it ends, so clear waits for them.
  */
 const DRIVER = String.raw`(() => {
   const frame = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 0)));
@@ -33,16 +34,42 @@ const DRIVER = String.raw`(() => {
       if (!document.querySelector('tbody tr')) throw new Error('run rendered no rows');
       await frame();
       clear.click();
-      if (document.querySelector('tbody tr')) throw new Error('clear left rows');
+      for (let f = 0; document.querySelector('tbody tr'); f++) {
+        if (f > 300) throw new Error('clear left rows');
+        await frame();
+      }
       await frame();
     }
     return n;
   };
 })()`;
 
-async function heapUsage(s: PageSession): Promise<{ jsHeap: number; embedderHeap: number }> {
+/**
+ * Harness apps (window.__bench, e.g. anim): each cycle prepares the case, clicks its op and
+ * waits for the animations it started to end.
+ */
+const HARNESS_DRIVER = String.raw`(() => {
+  window.__leakCycles = async (n, name, settle) => {
+    for (let i = 0; i < n; i++) {
+      const selector = (await window.__bench.prepare(name)) ?? window.__bench.op;
+      document.querySelector(selector).click();
+      await new Promise((r) => setTimeout(r, settle));
+    }
+    return n;
+  };
+})()`;
+
+interface HeapUsage {
+  jsHeap: number;
+  embedderHeap: number;
+  nodes: number;
+  listeners: number;
+}
+
+async function heapUsage(s: PageSession): Promise<HeapUsage> {
   const u = (await s.cdp.send('Runtime.getHeapUsage')) as any;
-  return { jsHeap: u.usedSize, embedderHeap: u.embedderHeapUsedSize ?? 0 };
+  const c = (await s.cdp.send('Memory.getDOMCounters')) as any;
+  return { jsHeap: u.usedSize, embedderHeap: u.embedderHeapUsedSize ?? 0, nodes: c.nodes, listeners: c.jsEventListeners };
 }
 
 async function settleAndCollect(s: PageSession): Promise<void> {
@@ -69,7 +96,7 @@ async function takeSnapshot(s: PageSession): Promise<{ raw: string; parsed: Retu
 interface LeakRecord {
   block: number;
   variant: string;
-  heap: { jsHeap: number; embedderHeap: number }[];
+  heap: HeapUsage[];
   analysis: LeakAnalysis;
 }
 
@@ -87,6 +114,8 @@ export default async function leak(argv: string[]): Promise<number> {
     options: {
       variants: { type: 'string' },
       app: { type: 'string', default: 'jfb-keyed' },
+      case: { type: 'string' },
+      settle: { type: 'string', default: '1600' },
       warmup: { type: 'string', default: '5' },
       cycles: { type: 'string', default: '10' },
       blocks: { type: 'string', default: '1' },
@@ -102,9 +131,11 @@ export default async function leak(argv: string[]): Promise<number> {
     },
   });
   const app = APPS[values.app!];
-  if (!app || !app.name.startsWith('jfb')) {
-    throw new Error('--app must be a jfb app (the driver clicks #run and #clear)');
+  const caseName = values.case;
+  if (!app || (!app.name.startsWith('jfb') && !caseName)) {
+    throw new Error('--app must be a jfb app (the driver clicks #run and #clear), or a harness app with --case');
   }
+  const settle = Number(values.settle);
   const specs = parseVariantList(values.variants);
   const resolved = resolveBrowser(values.browser!, values.headless as HeadlessMode);
   const [options] = buildOptionMatrix(values.transform, values.minify ?? 'on');
@@ -143,13 +174,18 @@ export default async function leak(argv: string[]): Promise<number> {
           }
           const s = await PageSession.open(launched.browser, urls.get(spec.id)!);
           try {
-            await s.waitFor(`!!document.getElementById('run')`);
-            await s.evaluate(DRIVER);
+            if (caseName) {
+              await s.waitFor('window.__bench && window.__bench.ready');
+              await s.evaluate(HARNESS_DRIVER);
+            } else {
+              await s.waitFor(`!!document.getElementById('run')`);
+              await s.evaluate(DRIVER);
+            }
             await s.cdp.send('HeapProfiler.enable');
             const heap = [];
             const snaps = [];
             for (const n of [warmup, cycles, cycles]) {
-              await s.evaluate(`window.__leakCycles(${n})`);
+              await s.evaluate(caseName ? `window.__leakCycles(${n}, ${JSON.stringify(caseName)}, ${settle})` : `window.__leakCycles(${n})`);
               await settleAndCollect(s);
               heap.push(await heapUsage(s));
               const snap = await takeSnapshot(s);
@@ -178,7 +214,7 @@ export default async function leak(argv: string[]): Promise<number> {
     createdAt: new Date(started).toISOString(),
     durationS: (Date.now() - started) / 1000,
     browser: resolved,
-    options: { app: app.name, warmup, cycles, blocks, jsFlags, transform: options.transform, minify: options.minify },
+    options: { app: app.name, case: caseName, settle, warmup, cycles, blocks, jsFlags, transform: options.transform, minify: options.minify },
     envs,
     records,
   };
@@ -191,10 +227,11 @@ export default async function leak(argv: string[]): Promise<number> {
 
   for (const r of records) {
     const [h1, h2, h3] = r.heap;
-    console.log(`\n== ${r.variant} (block ${r.block + 1}): ${cycles} cycles per window after ${warmup} warmup cycles`);
+    console.log(`\n== ${r.variant}${caseName ? ` ${caseName}` : ''} (block ${r.block + 1}): ${cycles} cycles per window after ${warmup} warmup cycles`);
     console.log(
       `JS heap ${kb(h1.jsHeap)} → ${kb(h2.jsHeap)} → ${kb(h3.jsHeap)}; Blink heap ${kb(h1.embedderHeap)} → ${kb(h2.embedderHeap)} → ${kb(h3.embedderHeap)}`,
     );
+    console.log(`DOM nodes ${h1.nodes} → ${h2.nodes} → ${h3.nodes}; JS event listeners ${h1.listeners} → ${h2.listeners} → ${h3.listeners}`);
     console.log(
       `survivors (allocated in window 1, alive after window 2): ${r.analysis.survivorCount} objects, ${kb(r.analysis.survivorBytes)}`,
     );
