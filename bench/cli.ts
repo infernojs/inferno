@@ -24,7 +24,7 @@ const commands: Record<string, Command> = {
   run: {
     summary: 'Browser measurements: timing, trace (jfb total + stages), memory, counters (PMU), latency (input→present), frames',
     usage:
-      "run --mode timing|trace|memory|counters|latency|frames [--snapshot] [--js-flags='--no-opt'] [--duration ms] [--frames vsync|unthrottled] [--metric busy|jfb|total|jsHeap|embedderHeap|uaMemory] --variants local,npm:9.1.0 --workloads 'jfb:*' [--browser cft-152] [--headless new|shell|off] [--blocks 5 --iters 3] [--warmup jfb|none] [--throttle none|jfb] [--pin none|ccd0] [--sandbox on|off]",
+      "run --mode timing|trace|memory|counters|latency|frames|alloc|domcalls|allocsites [--snapshot] [--js-flags='--no-opt'] [--duration ms] [--frames vsync|unthrottled] [--window 1500] [--settle 1000] [--baseline save|check] [--metric busy|jfb|total|jsHeap|embedderHeap|uaMemory|allocOp|allocWindow|gcWindow|instrOp|instrWindow|callsOp|callsWindow|sampledWindow] --variants local,npm:9.1.0 --workloads 'jfb:*' [--browser cft-152 (alloc: infernoprof)] [--headless new|shell|off] [--blocks 5 --iters 3] [--warmup jfb|none|<ops>] [--throttle none|jfb] [--pin none|ccd0] [--sandbox on|off]",
     run: async (argv) => (await import('./commands/run.ts')).default(argv),
   },
   profile: {

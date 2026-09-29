@@ -20,7 +20,8 @@ export interface Workload {
   root: string;
   /** jfb CPU throttling factor, applied only in --throttle jfb mode. */
   jfbThrottle?: number;
-  init(s: PageSession, warmup: boolean): Promise<Op>;
+  /** warmup: the workload's own warmups, none, or (harness apps) this many warmup ops. */
+  init(s: PageSession, warmup: boolean | number): Promise<Op>;
   check(s: PageSession): Promise<string | null>;
 }
 
@@ -252,7 +253,8 @@ function harnessWorkload(id: string, app: string, root: string, caseName: string
         (await s.evaluate<string>('window.__bench.op'));
       let selector = await prepare();
       // Warmup: run the op a few times untimed, re-preparing before each.
-      for (let i = 0; warmup && i < 3; i++) {
+      const warmups = typeof warmup === 'number' ? warmup : warmup ? 3 : 0;
+      for (let i = 0; i < warmups; i++) {
         const key = await s.evaluate<string | undefined>('window.__bench.key');
         if (key) {
           await s.pressKey(selector, key);

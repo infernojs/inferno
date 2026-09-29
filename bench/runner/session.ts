@@ -9,18 +9,47 @@ import type { Browser, BrowserContext, CDPSession, Page } from 'puppeteer-core';
  */
 const INSTRUMENT = String.raw`(() => {
   let armed = null;
-  window.__benchArm = (type) => { armed = type; };
+  let windowMs = 0;
+  // InfernoProf's V8 with --expose-statistics: [allocated bytes, GC count, instructions, cycles,
+  // branch misses, L1D misses] of the main thread. Read first in the listener, before the
+  // harness allocates anything for the op.
+  const counters = typeof infernoBenchCounters === 'function' ? infernoBenchCounters : null;
+  // domcalls mode installs __benchProbe (call counts); otherwise the counters, if any
+  const probe = () => (window.__benchProbe ? window.__benchProbe() : counters ? counters() : null);
+  let settleMs = 0;
+  // window: ms after the input to read the probe once more (0 = only the op window); settle: ms
+  // after that for a last reading (work still scheduled once the window is over)
+  window.__benchArm = (type, window, settle) => { armed = type; windowMs = window || 0; settleMs = settle || 0; };
   // Named so trace analysis can recognise (and exclude) the harness's own work.
   function __benchStart(e) {
     if (armed !== e.type) return;
+    const c0 = probe();
     armed = null;
     const t0 = performance.now();
     const inputTs = e.timeStamp;
+    const wait = windowMs;
+    const settle = settleMs;
     requestAnimationFrame(function __benchRaf() {
       const raf = performance.now();
       const ch = new MessageChannel();
       ch.port1.onmessage = function __benchDone() {
-        window.__benchReport(JSON.stringify({ t0, inputTs, raf, t1: performance.now() }));
+        const c1 = probe();
+        const t1 = performance.now();
+        if (!wait) {
+          window.__benchReport(JSON.stringify({ t0, inputTs, raf, t1, c0, c1 }));
+          return;
+        }
+        setTimeout(function __benchWindow() {
+          const c2 = probe();
+          const t2 = performance.now();
+          if (!settle) {
+            window.__benchReport(JSON.stringify({ t0, inputTs, raf, t1, c0, c1, c2, t2 }));
+            return;
+          }
+          setTimeout(function __benchSettled() {
+            window.__benchReport(JSON.stringify({ t0, inputTs, raf, t1, c0, c1, c2, t2, c3: probe() }));
+          }, settle);
+        }, Math.max(0, t0 + wait - t1));
       };
       ch.port2.postMessage(null);
     });
@@ -48,6 +77,16 @@ export interface OpReport {
   raf: number;
   /** After that frame's main-thread rendering work. */
   t1: number;
+  /**
+   * The probe at the input, at t1, with a window at t2, and with a settle time after it (c3):
+   * infernoBenchCounters() on InfernoProf, or call counts in domcalls mode.
+   */
+  c0?: any;
+  c1?: any;
+  c2?: any;
+  c3?: any;
+  /** End of the window after the input (MeasureHooks.windowMs). */
+  t2?: number;
 }
 
 export interface MeasureHooks {
@@ -55,6 +94,10 @@ export interface MeasureHooks {
   before?: () => Promise<void>;
   /** Runs immediately before the input events are dispatched (counter enable). */
   justBefore?: () => Promise<void>;
+  /** Also read the in-page probe this many ms after the input; the report waits for it. */
+  windowMs?: number;
+  /** And once more this many ms after the window. */
+  settleMs?: number;
 }
 
 export class PageSession {
@@ -88,7 +131,7 @@ export class PageSession {
    * navigation swaps browsing instance (and process), which would drop
    * instrumentation registered before it.
    */
-  static async open(browser: Browser, url: string): Promise<PageSession> {
+  static async open(browser: Browser, url: string, scripts: string[] = []): Promise<PageSession> {
     const context = await browser.createBrowserContext();
     const page = await context.newPage();
     await page.goto(new URL('/__blank', url).href, { waitUntil: 'load' });
@@ -98,6 +141,9 @@ export class PageSession {
     await cdp.send('Runtime.enable');
     await cdp.send('Runtime.addBinding', { name: '__benchReport' });
     await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source: INSTRUMENT });
+    for (const source of scripts) {
+      await cdp.send('Page.addScriptToEvaluateOnNewDocument', { source });
+    }
     const session = new PageSession(context, page, cdp);
     await page.goto(url, { waitUntil: 'load', timeout: 60_000 });
     return session;
@@ -175,7 +221,7 @@ export class PageSession {
     const p = await this.moveTo(selector);
     await this.frames(2);
     await hooks.before?.();
-    await this.evaluate(`window.__benchArm('click')`);
+    await this.evaluate(`window.__benchArm('click', ${hooks.windowMs ?? 0}, ${hooks.settleMs ?? 0})`);
     const done = this.nextReport(timeoutMs);
     await hooks.justBefore?.();
     await this.pressRelease(p);
@@ -200,7 +246,7 @@ export class PageSession {
     await this.evaluate(`document.querySelector(${JSON.stringify(selector)}).focus()`);
     await this.frames(2);
     await hooks.before?.();
-    await this.evaluate(`window.__benchArm('keydown')`);
+    await this.evaluate(`window.__benchArm('keydown', ${hooks.windowMs ?? 0}, ${hooks.settleMs ?? 0})`);
     const done = this.nextReport(timeoutMs);
     await hooks.justBefore?.();
     await this.keyEvents(key);

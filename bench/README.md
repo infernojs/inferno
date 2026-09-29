@@ -45,6 +45,9 @@ known size before its results are trusted (see "Validation" below).
 | `run --mode timing` | Chrome | input dispatch → end of next frame's main-thread work (untraced) |
 | `run --mode trace` | Chrome | jfb-compatible total (identical to js-framework-benchmark on its own traces) and **self time per stage**: script, gc, style, layout, prepaint, paint, layerize, commit, idle, harness; default metric `busy` = total − idle − harness |
 | `run --mode counters` | Chrome | **user-space instructions**, cycles, branch/L1D misses of the renderer main thread (op minus a null op), plus compositor and GPU-process threads |
+| `run --mode alloc` | InfernoProf Chrome | **V8 bytes allocated**, GCs and main-thread instructions per op (input → end of the next frame) and over `--window` ms (animation frames included), from `infernoBenchCounters()` in the page, op minus a null op. Use `--warmup 30` for steady-state allocation: with the usual 3 warmups, code and feedback of functions still tiering up land in the op. The counter includes code that V8 compiles during the window, which makes some iterations outliers (+0.3–0.6 MiB): compare medians of ≥ 3 blocks |
+| `run --mode domcalls` | Chrome | exact counts of layout reads, `getComputedStyle`, inline and computed style reads and writes, class changes, listeners, Web Animations queries, timers/rAF and tree mutations, per op, window and settled second (op minus a null op); `--baseline save\|check` against `baselines/animcalls.json` |
+| `run --mode allocsites` | Chrome | sampled allocation sites over the window (sampling heap profiler, 64 B interval, collected objects included) mapped through the app's source map to functions; KiB per package (inferno, inferno-animation, app, harness) |
 | `run --mode memory` | Chrome | JS heap and Blink (embedder) heap after 2 GCs, `measureUserAgentSpecificMemory`, live DOM nodes/layout objects/listeners, heap-snapshot objects by constructor (`--snapshot`) |
 | `run --mode latency` | Chrome | Chrome's EventLatency: OS input → presentation, with every stage (queueing, main-thread processing, commit, activation, submit → present) |
 | `run --mode frames` | Chrome | sustained rAF loops (dbmonster, 1k components): presented/dropped frames, p50/p99 frame pipeline time, main-thread ms per frame |
@@ -100,6 +103,8 @@ fuzz sequences and SSR.
   → +0.47 / +0.57 ms busy, attributed to the script stage.
 * A/A: micro 2/31 false positives (6.5 %, nominal 5 %), median detectable
   wall-time change ±5.4 %; counters: instruction CIs ≈ ±0.1 %.
+* alloc mode: A/A 0/11 false positives (3 blocks × 3 iterations, default warmups);
+  `+alloc:patch:8` → jfb select 92 → 588 KiB/op.
 
 ## InfernoProf (custom Chromium)
 

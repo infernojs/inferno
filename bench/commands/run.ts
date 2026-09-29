@@ -1,4 +1,4 @@
-import { mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { gzipSync } from 'node:zlib';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
@@ -9,10 +9,12 @@ import { APPS } from '../apps/registry.ts';
 import { fileSha256, type HeadlessMode, resolveBrowser } from '../lib/browsers.ts';
 import { snapshotEnv } from '../lib/env.ts';
 import { buildOptionMatrix } from '../lib/options.ts';
-import { cachePath } from '../lib/paths.ts';
+import { BENCH_DIR, cachePath } from '../lib/paths.ts';
 import { median, quantile, seededShuffle, shift, summarize } from '../lib/stats.ts';
 import { run, table } from '../lib/util.ts';
 import { launchBrowser } from '../runner/launch.ts';
+import { meanSites, type SiteSample, startSampling, stopSampling } from '../runner/allocsites.ts';
+import { CALL_GROUPS, CALLS_INSTRUMENT, type CallCounts, type CallsSample, diffCounts, groupCounts, subtractCalls } from '../runner/domcalls.ts';
 import { measureMemory, type MemoryMetrics } from '../runner/memory.ts';
 import { classify, type CounterSample, gpuThreads, identifyRenderer, Pmu, rendererPids, rendererThreads, subtract } from '../runner/pmu.ts';
 import { PageSession, type OpReport } from '../runner/session.ts';
@@ -22,7 +24,55 @@ import { startServer } from '../server/server.ts';
 import { ensureVariant } from '../variants/build.ts';
 import { parseVariantList } from '../variants/spec.ts';
 
-type Mode = 'timing' | 'trace' | 'memory' | 'counters' | 'latency' | 'frames';
+type Mode = 'timing' | 'trace' | 'memory' | 'counters' | 'latency' | 'frames' | 'alloc' | 'domcalls' | 'allocsites';
+
+const CALLS_BASELINE = join(BENCH_DIR, 'baselines', 'animcalls.json');
+
+/** Median of every call name over the records, zeros dropped. */
+function medianCounts(samples: CallCounts[]): CallCounts {
+  const out: CallCounts = {};
+  for (const k of new Set(samples.flatMap((c) => Object.keys(c)))) {
+    const m = median(samples.map((c) => c[k] ?? 0));
+    if (m !== 0) {
+      out[k] = m;
+    }
+  }
+  return out;
+}
+
+/**
+ * alloc mode, op minus a null op: V8 bytes allocated, GCs and main-thread instructions from the
+ * InfernoProf infernoBenchCounters(), for the op (input to the end of the next frame) and for the
+ * whole window after the input (--window ms, animation frames included). Blink (Oilpan) objects
+ * are not counted, only their JS wrappers.
+ */
+interface AllocSample {
+  opBytes: number;
+  opGcs: number;
+  opInstructions: number;
+  windowBytes: number;
+  windowGcs: number;
+  windowInstructions: number;
+}
+
+function allocDelta(r: OpReport): AllocSample {
+  if (!r.c0 || !r.c1) {
+    throw new Error('alloc mode needs infernoBenchCounters(): use --browser infernoprof');
+  }
+  const d = (a: number[] | null | undefined, i: number) => (a && r.c0![i] >= 0 && a[i] >= 0 ? a[i] - r.c0![i] : NaN);
+  return {
+    opBytes: d(r.c1, 0),
+    opGcs: d(r.c1, 1),
+    opInstructions: d(r.c1, 2),
+    windowBytes: d(r.c2, 0),
+    windowGcs: d(r.c2, 1),
+    windowInstructions: d(r.c2, 2),
+  };
+}
+
+function subtractAlloc(a: AllocSample, b: AllocSample): AllocSample {
+  return Object.fromEntries(Object.keys(a).map((k) => [k, a[k as keyof AllocSample] - b[k as keyof AllocSample]])) as unknown as AllocSample;
+}
 
 interface IterationRecord {
   block: number;
@@ -32,11 +82,16 @@ interface IterationRecord {
   total: number;
   /** ms: input received -> dispatch start. */
   inputDelay: number;
+  /** ms: dispatch start -> the next frame's rAF callback. */
+  toRaf?: number;
   trace?: TraceMetrics;
   memory?: MemoryMetrics;
   counters?: CounterSample;
   latency?: LatencyMetrics;
   frames?: FrameStats;
+  alloc?: AllocSample;
+  calls?: CallsSample;
+  sites?: SiteSample;
   checksum: string | null;
   error: string | null;
 }
@@ -55,7 +110,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
       mode: { type: 'string', default: 'timing' },
       variants: { type: 'string' },
       workloads: { type: 'string', default: 'jfb:*' },
-      browser: { type: 'string', default: 'cft-152' },
+      browser: { type: 'string' },
       headless: { type: 'string', default: 'new' },
       blocks: { type: 'string', default: '5' },
       iters: { type: 'string', default: '3' },
@@ -73,22 +128,29 @@ export default async function runCmd(argv: string[]): Promise<number> {
       minify: { type: 'string' },
       duration: { type: 'string', default: '3000' },
       'js-flags': { type: 'string' },
+      window: { type: 'string', default: '1500' },
+      settle: { type: 'string', default: '1000' },
+      baseline: { type: 'string' },
     },
   });
   const mode = values.mode as Mode;
-  if (!['timing', 'trace', 'memory', 'counters', 'latency', 'frames'].includes(mode)) {
-    throw new Error(`--mode must be timing, trace, memory, counters, latency or frames (got ${mode})`);
+  if (!['timing', 'trace', 'memory', 'counters', 'latency', 'frames', 'alloc', 'domcalls', 'allocsites'].includes(mode)) {
+    throw new Error(`--mode must be timing, trace, memory, counters, latency, frames, alloc, domcalls or allocsites (got ${mode})`);
   }
   const specs = parseVariantList(values.variants);
   const workloads = selectWorkloads(values.workloads!);
   const headless = values.headless as HeadlessMode;
-  const resolved = resolveBrowser(values.browser!, headless);
+  const resolved = resolveBrowser(values.browser ?? (mode === 'alloc' ? 'infernoprof' : 'cft-152'), headless);
   const [options] = buildOptionMatrix(values.transform, values.minify ?? 'on');
   const blocks = Number(values.blocks);
   const iters = Number(values.iters);
-  const warmup = values.warmup !== 'none';
-  // Counters need dumpable renderers: perf_event_open on another process's threads.
-  const sandbox = mode === 'counters' ? false : values.sandbox !== 'off';
+  // jfb: the workloads' own warmups; none; or a number of warmup ops (harness apps)
+  const warmup = values.warmup === 'none' ? false : /^\d+$/.test(values.warmup!) ? Number(values.warmup) : true;
+  // Counters need dumpable renderers: perf_event_open on another process's threads. alloc mode
+  // reads the renderer's own counters, which the sandbox blocks too.
+  const sandbox = mode === 'counters' || mode === 'alloc' ? false : values.sandbox !== 'off';
+  const windowMs = Number(values.window);
+  const jsFlags = [...(values['js-flags'] ? values['js-flags'].split(/\s+/).filter(Boolean) : []), ...(mode === 'alloc' ? ['--expose-statistics'] : [])];
   const pmu = mode === 'counters' ? await Pmu.start() : null;
 
   if (values.pin === 'ccd0') {
@@ -99,6 +161,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
   // Build every (variant, app) pair up front and serve them.
   const server = await startServer();
   const urls = new Map<string, string>();
+  const appDirs = new Map<string, string>();
   const builtApps: BuiltApp[] = [];
   for (const spec of specs) {
     const variant = await ensureVariant(spec);
@@ -106,6 +169,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
       const built = await buildApp(APPS[appName], variant, options);
       builtApps.push(built);
       urls.set(`${spec.id}\0${appName}`, server.origin + server.mount(built.dir));
+      appDirs.set(`${spec.id}\0${appName}`, built.dir);
     }
   }
   const browserSha = await fileSha256(resolved.executable);
@@ -126,7 +190,9 @@ export default async function runCmd(argv: string[]): Promise<number> {
       const launched = await launchBrowser(resolved, {
         headless,
         sandbox,
-        jsFlags: values['js-flags'] ? values['js-flags'].split(/\s+/).filter(Boolean) : undefined,
+        jsFlags: jsFlags.length ? jsFlags : undefined,
+        // InfernoProf's in-page counters also need the PMU env (and the sandbox off for instructions)
+        env: mode === 'alloc' || resolved.name === 'infernoprof' ? { INFERNO_BENCH_PMU: '1' } : undefined,
         wrapper: values.pin === 'ccd0' ? ['taskset', '-c', CCD0] : undefined,
         // Unthrottled: frames start as soon as the main thread asks for one, so
         // totals stop depending on the input's phase relative to vsync.
@@ -141,9 +207,23 @@ export default async function runCmd(argv: string[]): Promise<number> {
           }
           const url = urls.get(`${job.variant}\0${job.w.app}`)! + (job.w.query ? `?${job.w.query}` : '');
           const renderersBefore = pmu ? await rendererPids(browserCdp) : null;
-          const s = await PageSession.open(launched.browser, url);
+          const s = await PageSession.open(launched.browser, url, mode === 'domcalls' ? [CALLS_INSTRUMENT] : []);
           let rec: IterationRecord;
           try {
+            // alloc and domcalls measure their null op before the workload's init, so the measured
+            // op follows the preparation directly: a null op with a 1.5 s window in between would
+            // let animations that the preparation started end first.
+            let nullReport: OpReport | null = null;
+            if (mode === 'alloc' || mode === 'domcalls') {
+              nullReport = await s.measuredClick(await s.addNullTarget(), {
+                before: async () => {
+                  await s.evaluate('window.gc()');
+                  await s.frames(2);
+                },
+                windowMs,
+                settleMs: mode === 'domcalls' ? Number(values.settle) : 0,
+              });
+            }
             const op = await job.w.init(s, warmup);
             let counters: CounterSample | undefined;
             if (pmu && renderersBefore) {
@@ -213,12 +293,47 @@ export default async function runCmd(argv: string[]): Promise<number> {
                 await s.cdp.send('Emulation.setCPUThrottlingRate', { rate: job.w.jfbThrottle });
               }
             };
-            // Counters mode already ran the op inside its counter bracket.
+            let alloc: AllocSample | undefined;
+            let calls: CallsSample | undefined;
+            let sites: SiteSample | undefined;
+            let allocReport: OpReport | null = null;
+            if (mode === 'allocsites') {
+              const hooks = {
+                before: async () => {
+                  await before();
+                  await startSampling(s.cdp);
+                },
+                windowMs,
+              };
+              allocReport = op.kind === 'key' ? await s.measuredKey(op.selector, op.key!, hooks) : await s.measuredClick(op.selector, hooks);
+              sites = await stopSampling(s.cdp, appDirs.get(`${job.variant}\0${job.w.app}`)!);
+            }
+            if (mode === 'domcalls') {
+              const hooks = { before, windowMs, settleMs: Number(values.settle) };
+              const sample = (r: OpReport): CallsSample => {
+                if (!r.c0 || !r.c3) {
+                  throw new Error('call counts missing: the page did not install __benchProbe');
+                }
+                return { op: diffCounts(r.c1, r.c0), window: diffCounts(r.c2, r.c0), settled: diffCounts(r.c3, r.c2) };
+              };
+              const nullSample = sample(nullReport!);
+              allocReport = op.kind === 'key' ? await s.measuredKey(op.selector, op.key!, hooks) : await s.measuredClick(op.selector, hooks);
+              calls = subtractCalls(sample(allocReport), nullSample);
+            }
+            if (mode === 'alloc') {
+              const hooks = { before, windowMs };
+              const nullSample = allocDelta(nullReport!);
+              allocReport = op.kind === 'key' ? await s.measuredKey(op.selector, op.key!, hooks) : await s.measuredClick(op.selector, hooks);
+              alloc = subtractAlloc(allocDelta(allocReport), nullSample);
+            }
+            // Counters and alloc modes already ran the op inside their brackets.
             const report: OpReport | null = counters
               ? null
-              : op.kind === 'key'
-                ? await s.measuredKey(op.selector, op.key!, { before })
-                : await s.measuredClick(op.selector, { before });
+              : allocReport
+                ? allocReport
+                : op.kind === 'key'
+                  ? await s.measuredKey(op.selector, op.key!, { before })
+                  : await s.measuredClick(op.selector, { before });
             await s.cdp.send('Emulation.setCPUThrottlingRate', { rate: 1 });
             let trace: TraceMetrics | undefined;
             let latency: LatencyMetrics | undefined;
@@ -246,10 +361,16 @@ export default async function runCmd(argv: string[]): Promise<number> {
               workload: job.w.id,
               total: report ? report.t1 - report.t0 : NaN,
               inputDelay: report ? report.t0 - report.inputTs : NaN,
+              toRaf: report ? report.raf - report.t0 : NaN,
+              // Other modes on InfernoProf with --js-flags=--expose-statistics: the op's own counters
+              // (no null op subtracted)
+              alloc: alloc ?? (report && Array.isArray(report.c0) && Array.isArray(report.c1) ? allocDelta(report) : undefined),
               trace,
               latency,
               memory,
               counters,
+              calls,
+              sites,
               checksum: await s.checksum(job.w.root),
               error,
             };
@@ -294,7 +415,13 @@ export default async function runCmd(argv: string[]): Promise<number> {
             ? 'latency'
             : mode === 'frames'
               ? 'p95Frame'
-              : 'total');
+              : mode === 'alloc'
+                ? 'allocOp'
+                : mode === 'domcalls'
+                  ? 'callsWindow'
+                  : mode === 'allocsites'
+                    ? 'sampledWindow'
+                    : 'total');
   const metric = (r: IterationRecord): number => {
     switch (metricName) {
       case 'busy':
@@ -313,6 +440,22 @@ export default async function runCmd(argv: string[]): Promise<number> {
         return r.frames ? quantile(r.frames.durations, 0.95) : NaN;
       case 'droppedPct':
         return r.frames ? (r.frames.dropped / Math.max(1, r.frames.presented + r.frames.dropped)) * 100 : NaN;
+      case 'sampledWindow':
+        return r.sites ? r.sites.total / 1024 : NaN;
+      case 'callsOp':
+        return r.calls ? Object.values(r.calls.op).reduce((a, b) => a + b, 0) : NaN;
+      case 'callsWindow':
+        return r.calls ? Object.values(r.calls.window).reduce((a, b) => a + b, 0) : NaN;
+      case 'allocOp':
+        return r.alloc ? r.alloc.opBytes / 1024 : NaN;
+      case 'allocWindow':
+        return r.alloc ? r.alloc.windowBytes / 1024 : NaN;
+      case 'gcWindow':
+        return r.alloc ? r.alloc.windowGcs : NaN;
+      case 'instrOp':
+        return r.alloc ? r.alloc.opInstructions / 1e6 : NaN;
+      case 'instrWindow':
+        return r.alloc ? r.alloc.windowInstructions / 1e6 : NaN;
       case 'instructions':
       case 'cycles':
       case 'branch-misses':
@@ -366,6 +509,34 @@ export default async function runCmd(argv: string[]): Promise<number> {
               multiplexed: ok.some((r) => r.counters!.multiplexed),
             }
           : undefined;
+      const alloc =
+        mode === 'alloc'
+          ? {
+              opKiB: median(ok.map((r) => r.alloc!.opBytes / 1024)),
+              windowKiB: median(ok.map((r) => r.alloc!.windowBytes / 1024)),
+              opGcs: median(ok.map((r) => r.alloc!.opGcs)),
+              windowGcs: median(ok.map((r) => r.alloc!.windowGcs)),
+              opMinstr: median(ok.map((r) => r.alloc!.opInstructions / 1e6)),
+              windowMinstr: median(ok.map((r) => r.alloc!.windowInstructions / 1e6)),
+            }
+          : undefined;
+      const calls =
+        mode === 'domcalls'
+          ? {
+              op: medianCounts(ok.map((r) => r.calls!.op)),
+              window: medianCounts(ok.map((r) => r.calls!.window)),
+              settled: medianCounts(ok.map((r) => r.calls!.settled)),
+            }
+          : undefined;
+      const siteSummary =
+        mode === 'allocsites'
+          ? {
+              byPackageKiB: Object.fromEntries(
+                (['inferno', 'animation', 'app', 'harness', 'other', 'native'] as const).map((k) => [k, median(ok.map((r) => r.sites!.byPackage[k] / 1024))]),
+              ),
+              top: meanSites(ok.map((r) => r.sites!)).slice(0, 25),
+            }
+          : undefined;
       const latencyStages =
         mode === 'latency'
           ? Object.fromEntries(
@@ -396,6 +567,9 @@ export default async function runCmd(argv: string[]): Promise<number> {
         stages,
         memory,
         counters,
+        alloc,
+        calls,
+        sites: siteSummary,
         latencyStages,
         frames,
       });
@@ -433,6 +607,25 @@ export default async function runCmd(argv: string[]): Promise<number> {
               (counters.gpuInstructions / 1e6).toFixed(3),
             ]
           : []),
+        ...(siteSummary
+          ? (['inferno', 'animation', 'app', 'harness', 'native'] as const).map((k) => siteSummary.byPackageKiB[k].toFixed(1))
+          : []),
+        ...(calls
+          ? [
+              String(Object.values(calls.op).reduce((a, b) => a + b, 0)),
+              ...groupCounts(calls.window).map(String),
+              String(Object.values(calls.settled).reduce((a, b) => a + b, 0)),
+            ]
+          : []),
+        ...(alloc
+          ? [
+              alloc.opKiB.toFixed(2),
+              alloc.windowKiB.toFixed(2),
+              `${alloc.opGcs}/${alloc.windowGcs}`,
+              alloc.opMinstr.toFixed(3),
+              alloc.windowMinstr.toFixed(3),
+            ]
+          : []),
         ...(memory
           ? [
               memory.embedderKiB.toFixed(0),
@@ -460,6 +653,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
       pin: values.pin,
       frames: values.frames,
       metric: metricName,
+      window: mode === 'alloc' ? windowMs : undefined,
       transform: options.transform,
       seed: values.seed,
     },
@@ -469,6 +663,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
     records,
   };
   lastReport = report;
+  let baselineFailed = false;
   const outDir = cachePath('results', 'run');
   mkdirSync(outDir, { recursive: true });
   const outFile = join(outDir, `${runId}-${mode}.json`);
@@ -477,13 +672,22 @@ export default async function runCmd(argv: string[]): Promise<number> {
   if (values.json) {
     console.log(JSON.stringify(report, null, 2));
   } else {
-    const unit = mode === 'memory' ? 'KiB' : mode === 'counters' ? '(main thread)' : 'ms';
+    const unit = mode === 'memory' || mode === 'alloc' || mode === 'allocsites' ? 'KiB' : mode === 'counters' ? '(main thread)' : mode === 'domcalls' ? 'calls' : 'ms';
     const head = ['workload', 'variant', `${metricName} ${unit}`, 'rCV', `Δ vs ${baseId} [95% CI]`];
     if (mode === 'trace') {
       head.push('script', 'gc', 'style', 'layout', 'paint', 'commit', 'idle');
     }
     if (mode === 'memory') {
       head.push('embedder KiB', 'uaMemory KiB', 'DOM nodes', 'layout objs', 'listeners');
+    }
+    if (mode === 'allocsites') {
+      head.push('inferno KiB', 'animation KiB', 'app KiB', 'harness KiB', 'native KiB');
+    }
+    if (mode === 'domcalls') {
+      head.push('op calls', ...CALL_GROUPS.map(([name]) => `${name} (win)`), 'settled');
+    }
+    if (mode === 'alloc') {
+      head.push('op KiB', `${windowMs} ms KiB`, 'GCs op/win', 'op Minstr', 'win Minstr');
     }
     if (mode === 'counters') {
       head.push('Mcycles', 'IPC', 'kbr-miss', 'kL1D-miss', 'comp Minstr', 'gpu Minstr');
@@ -501,7 +705,54 @@ export default async function runCmd(argv: string[]): Promise<number> {
       console.log(`error: ${e.variant} ${e.workload} block ${e.block}: ${e.error}`);
     }
     console.log(`\n${resolved.name} (${headless}), ${blocks} blocks × ${iters} iters in ${out.durationS.toFixed(0)} s; * = CI excludes 0`);
+    if (mode === 'allocsites') {
+      for (const r of report) {
+        console.log(`\n${r.workload} ${r.variant}: sampled allocation sites, mean KiB per op (${windowMs} ms window)`);
+        for (const [site, bytes] of r.sites.top.filter(([, b]: [string, number]) => b >= 1024).slice(0, 15)) {
+          console.log(`  ${(bytes / 1024).toFixed(1).padStart(8)}  ${site}`);
+        }
+      }
+    }
+    if (mode === 'domcalls' && values.baseline) {
+      baselineFailed = callsBaseline(values.baseline, report.filter((r) => r.variant === baseId));
+    }
     console.log(`results: ${outFile}`);
   }
-  return records.some((r) => r.error) || report.some((r) => !r.checksumOk) ? 1 : 0;
+  return records.some((r) => r.error) || report.some((r) => !r.checksumOk) || baselineFailed ? 1 : 0;
+}
+
+/**
+ * --baseline save: store the first variant's median op and window counts per workload.
+ * --baseline check: fail when an op count grew at all or a window count grew by more than 2
+ * (a frame more or less in 1.5 s is not a regression).
+ */
+function callsBaseline(action: string, rows: any[]): boolean {
+  const stored: Record<string, { op: CallCounts; window: CallCounts }> = existsSync(CALLS_BASELINE)
+    ? JSON.parse(readFileSync(CALLS_BASELINE, 'utf8'))
+    : {};
+  if (action === 'save') {
+    for (const r of rows) {
+      stored[r.workload] = { op: r.calls.op, window: r.calls.window };
+    }
+    writeFileSync(CALLS_BASELINE, JSON.stringify(stored, null, 2) + '\n');
+    console.log(`baseline: saved ${rows.length} workloads to ${CALLS_BASELINE}`);
+    return false;
+  }
+  let failed = false;
+  for (const r of rows) {
+    const base = stored[r.workload];
+    if (!base) {
+      console.log(`baseline: new workload ${r.workload} (run with --baseline save)`);
+      continue;
+    }
+    for (const [win, slack] of [['op', 0], ['window', 2]] as const) {
+      const grown = Object.entries(diffCounts(r.calls[win], base[win])).filter(([, d]) => d > slack);
+      if (grown.length) {
+        failed = true;
+        console.log(`baseline: ${r.workload} ${win}: ${grown.map(([k, d]) => `${k} +${d}`).join(', ')}`);
+      }
+    }
+  }
+  console.log(failed ? 'baseline: FAILED' : `baseline: ok (${rows.length} workloads)`);
+  return failed;
 }
