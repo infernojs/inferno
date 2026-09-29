@@ -51,6 +51,7 @@ known size before its results are trusted (see "Validation" below).
 | `run --mode memory` | Chrome | JS heap and Blink (embedder) heap after 2 GCs, `measureUserAgentSpecificMemory`, live DOM nodes/layout objects/listeners, heap-snapshot objects by constructor (`--snapshot`) |
 | `run --mode latency` | Chrome | Chrome's EventLatency: OS input → presentation, with every stage (queueing, main-thread processing, commit, activation, submit → present) |
 | `run --mode frames` | Chrome | sustained rAF loops (dbmonster, 1k components): presented/dropped frames, p50/p99 frame pipeline time, main-thread ms per frame |
+| `stages` | InfernoProf Chrome | self instructions per rendering stage over `--window` ms (script, gc, style, layout, prepaint, paint, layerize, commit, …), plus Layout and UpdateLayoutTree counts, how many of them script forced, and GC counts |
 | `profile` | Chrome under `perf` | native + JIT cycles of the renderer main thread cut to the exact op windows (subsystem rollup + top symbols, `hotspot`-ready `perf.jit.data`), CDP CPU profile for JS self time per function |
 | `jit` | Chrome | V8 IC/map/deopt logs → polymorphic/megamorphic IC sites and deopts in app code |
 | `aa` | any | A/A (same variant twice): false-positive rate and detectable change |

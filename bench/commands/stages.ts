@@ -27,12 +27,22 @@ import { parseVariantList } from '../variants/spec.ts';
 const STAGES = ['script', 'gc', 'style', 'layout', 'prepaint', 'paint', 'layerize', 'commit', 'hittest', 'harness', 'other'] as const;
 type Stage = (typeof STAGES)[number];
 
+const SCRIPT_NAMES = `('FunctionCall', 'EventDispatch', 'EvaluateScript', 'v8.run', 'v8.callFunction', 'V8.Execute', 'RunMicrotasks',
+                'TimerFire', 'FireAnimationFrame', 'FireIdleCallback', 'v8.compile', 'V8.CompileCode')`;
+const GC_TEST = (col: string) => `(${col} in ('MinorGC', 'MajorGC') or ${col} like 'V8.GC%' or ${col} like 'BlinkGC%' or ${col} like 'CppGC%')`;
+
+/**
+ * Counts in the window: every Layout and UpdateLayoutTree, the ones forced by script (nested in a
+ * script slice: a read such as getBoundingClientRect after a write), and GCs (outermost GC slices).
+ */
+const COUNTS = ['layouts', 'forcedLayouts', 'styles', 'forcedStyles', 'gcs'] as const;
+type Count = (typeof COUNTS)[number];
+
 const STAGE_SQL = `
 case
   when is_harness then 'harness'
-  when name in ('FunctionCall', 'EventDispatch', 'EvaluateScript', 'v8.run', 'v8.callFunction', 'V8.Execute', 'RunMicrotasks',
-                'TimerFire', 'FireAnimationFrame', 'FireIdleCallback', 'v8.compile', 'V8.CompileCode') then 'script'
-  when name in ('MinorGC', 'MajorGC') or name like 'V8.GC%' or name like 'BlinkGC%' or name like 'CppGC%' then 'gc'
+  when name in ${SCRIPT_NAMES} then 'script'
+  when ${GC_TEST('name')} then 'gc'
   when name in ('UpdateLayoutTree', 'RecalculateStyles', 'ScheduleStyleRecalculation') then 'style'
   when name = 'Layout' then 'layout'
   when name = 'PrePaint' then 'prepaint'
@@ -62,7 +72,20 @@ self as (
 )
 select ${STAGE_SQL} as stage, sum(self_instr) as instr from self group by stage
 union all
-select 'min_delta', min(instr) from self;
+select 'min_delta', min(instr) from self
+union all
+select 'layouts', count(*) from self where name = 'Layout'
+union all
+select 'forcedLayouts', count(*) from self where name = 'Layout'
+  and exists (select 1 from ancestor_slice(self.id) a where a.name in ${SCRIPT_NAMES})
+union all
+select 'styles', count(*) from self where name = 'UpdateLayoutTree'
+union all
+select 'forcedStyles', count(*) from self where name = 'UpdateLayoutTree'
+  and exists (select 1 from ancestor_slice(self.id) a where a.name in ${SCRIPT_NAMES})
+union all
+select 'gcs', count(*) from self where ${GC_TEST('name')}
+  and not exists (select 1 from main p where p.id = self.parent_id and ${GC_TEST('p.name')});
 `;
 }
 
@@ -74,9 +97,10 @@ function traceProcessor(): string {
   return tp;
 }
 
-function analyze(tp: string, trace: string, sqlFile: string): Record<Stage, number> {
+function analyze(tp: string, trace: string, sqlFile: string): { stages: Record<Stage, number>; counts: Record<Count, number> } {
   const out = execFileSync(tp, ['-q', sqlFile, trace], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'], maxBuffer: 1 << 26 });
   const stages = Object.fromEntries(STAGES.map((s) => [s, 0])) as Record<Stage, number>;
+  const counts = Object.fromEntries(COUNTS.map((c) => [c, 0])) as Record<Count, number>;
   for (const line of out.split('\n')) {
     const m = /^"(\w+)",(-?\d+)/.exec(line.trim());
     if (m && m[1] === 'min_delta' && Number(m[2]) < 0) {
@@ -87,8 +111,11 @@ function analyze(tp: string, trace: string, sqlFile: string): Record<Stage, numb
     if (m && m[1] in stages) {
       stages[m[1] as Stage] = Number(m[2]);
     }
+    if (m && m[1] in counts) {
+      counts[m[1] as Count] = Number(m[2]);
+    }
   }
-  return stages;
+  return { stages, counts };
 }
 
 async function recordProto(cdp: any, run: () => Promise<unknown>, file: string, settleMs: number): Promise<void> {
@@ -120,6 +147,7 @@ interface Rec {
   variant: string;
   workload: string;
   stages: Record<Stage, number> | null;
+  counts?: Record<Count, number>;
   error: string | null;
 }
 
@@ -190,7 +218,7 @@ export default async function stages(argv: string[]): Promise<number> {
               200,
             );
             const error = await job.w.check(s);
-            records.push({ block: b, variant: job.variant, workload: job.w.id, stages: analyze(tp, file, sqlFile), error });
+            records.push({ block: b, variant: job.variant, workload: job.w.id, ...analyze(tp, file, sqlFile), error });
           } catch (err) {
             records.push({ block: b, variant: job.variant, workload: job.w.id, stages: null, error: String(err instanceof Error ? err.message : err) });
           } finally {
@@ -230,6 +258,8 @@ export default async function stages(argv: string[]): Promise<number> {
           entry.est[metric] = mine.length >= 3 && base.length >= 3 ? shift(base, mine) : null;
         }
       }
+      const okRecs = records.filter((r) => r.variant === spec.id && r.workload === w.id && r.counts && !r.error);
+      entry.counts = Object.fromEntries(COUNTS.map((c) => [c, median(okRecs.map((r) => r.counts![c]))]));
       report.push(entry);
       const fmt = (x: number) => (Number.isFinite(x) ? (x / 1e6).toFixed(2) : '-');
       const delta = (metric: string) => {
@@ -242,6 +272,9 @@ export default async function stages(argv: string[]): Promise<number> {
         fmt(entry.stages.total),
         spec.id === baseId ? '' : delta('total'),
         ...['script', 'style', 'layout', 'prepaint', 'paint', 'gc', 'other'].map((m) => fmt(entry.stages[m]) + (spec.id === baseId ? '' : ` (${delta(m).split(' ')[0]})`)),
+        `${entry.counts.forcedLayouts}/${entry.counts.layouts}`,
+        `${entry.counts.forcedStyles}/${entry.counts.styles}`,
+        String(entry.counts.gcs),
       ]);
     }
   }
@@ -260,7 +293,12 @@ export default async function stages(argv: string[]): Promise<number> {
   if (values.json) {
     console.log(JSON.stringify(report, null, 2));
   } else {
-    console.log(table(['workload', 'variant', 'Minstr', `Δ vs ${baseId} [95% CI]`, 'script', 'style', 'layout', 'prepaint', 'paint', 'gc', 'other'], rows));
+    console.log(
+      table(
+        ['workload', 'variant', 'Minstr', `Δ vs ${baseId} [95% CI]`, 'script', 'style', 'layout', 'prepaint', 'paint', 'gc', 'other', 'forced/layouts', 'forced/styles', 'GCs'],
+        rows,
+      ),
+    );
     const errors = records.filter((r) => r.error);
     if (errors.length) {
       console.log(`\n${errors.length} iterations with errors, e.g. ${errors[0].variant} ${errors[0].workload}: ${errors[0].error}`);
