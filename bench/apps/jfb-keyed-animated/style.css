@@ -1,0 +1,14 @@
+/* Row animations of the jfb-keyed-fade and jfb-keyed-move apps */
+.Row-move-active {
+  transition: transform 150ms linear;
+}
+
+.Row-enter-active,
+.Row-leave-active {
+  transition: opacity 150ms linear;
+}
+
+.Row-enter,
+.Row-leave-end {
+  opacity: 0;
+}

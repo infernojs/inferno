@@ -62,7 +62,9 @@ known size before its results are trusted (see "Validation" below).
 
 Workloads (`--workloads`, globs): `jfb:*` / `jfb-nk:*` (the jfb ops, same
 warmups and checks as js-framework-benchmark, plus `22_run-memory` and
-`cycle-run-clear-{1,5,20}` leak cycles), `uibench:*` (96 cases), `events:*`,
+`cycle-run-clear-{1,5,20}` leak cycles), `jfb-anim:*` (inferno-animation imported, nothing
+animated), `jfb-fade:*` / `jfb-move:*` (the jfb ops with AnimatedComponent /
+AnimatedAllComponent rows), `uibench:*` (96 cases), `events:*`,
 `fuzz:1..20`, `typing:echo|filter-1k`, `dbmonster:frame|loop`,
 `1kcomponents:step|loop`, `anim:*` (inferno-animation on keyed lists: shuffle, rerender,
 update-text, grow, leave and enter, shuffles deep in the DOM, scaled, with keyframe animations,

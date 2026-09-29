@@ -305,6 +305,9 @@ export function allWorkloads(): Workload[] {
     ...uibenchCaseNames().map((c) => harnessWorkload(`uibench:${c}`, 'uibench', '#App', c)),
     // The apps above with inferno-animation imported
     ...jfbWorkloads('jfb-anim', 'jfb-keyed-anim'),
+    // jfb with animated rows: enter/leave only, and enter/leave/move
+    ...jfbWorkloads('jfb-fade', 'jfb-keyed-fade'),
+    ...jfbWorkloads('jfb-move', 'jfb-keyed-move'),
     ...uibenchCaseNames().map((c) => harnessWorkload(`uibench-anim:${c}`, 'uibench-anim', '#App', c)),
     harnessWorkload('dbmonster-anim:frame', 'dbmonster-anim', '#app', null),
     harnessWorkload('1kcomponents-anim:step', '1kcomponents-anim', '#app', null),

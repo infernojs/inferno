@@ -51,6 +51,24 @@ export const APPS: Record<string, AppDef> = {
     head: JFB_HEAD,
     body: '<div id="main"></div>',
   },
+  // jfb-keyed with animated rows (apps/jfb-keyed-animated): AnimatedComponent rows (enter and
+  // leave only, the move adapter stays dormant) and AnimatedAllComponent rows (moves too).
+  'jfb-keyed-fade': {
+    name: 'jfb-keyed-fade',
+    entry: 'jfb-keyed-animated/fade.jsx',
+    title: 'Inferno',
+    head: JFB_HEAD + LOCAL_CSS,
+    body: '<div id="main"></div>',
+    assets: ['jfb-keyed-animated/style.css'],
+  },
+  'jfb-keyed-move': {
+    name: 'jfb-keyed-move',
+    entry: 'jfb-keyed-animated/move.jsx',
+    title: 'Inferno',
+    head: JFB_HEAD + LOCAL_CSS,
+    body: '<div id="main"></div>',
+    assets: ['jfb-keyed-animated/style.css'],
+  },
   // Template cloning, rows built into a detached tbody in batches.
   'vanillajs-lite': jfbReference('vanillajs-lite'),
   // Template cloning, one row at a time into the connected tbody.
