@@ -31,3 +31,64 @@
 .Item-leave-end {
   opacity: 0;
 }
+
+/* Moves inside a transformed ancestor */
+.scaled {
+  transform: scale(0.5);
+  transform-origin: 0 0;
+}
+
+/* Long transitions, so the measured op lands while the prime's animations run */
+.slow .Item-move-active {
+  transition: transform 1000ms linear;
+}
+
+.slow .Item-enter-active,
+.slow .Item-leave-active {
+  transition: opacity 1000ms linear;
+}
+
+/* Items that run a transform keyframe animation while they move */
+@keyframes pulse {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(0.98);
+  }
+}
+
+.item.pulse {
+  animation: pulse 700ms linear infinite alternate;
+}
+
+.groups {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 300px;
+}
+
+.group {
+  margin: 0 0 2px;
+  padding: 0;
+}
+
+.page {
+  display: flex;
+  flex-wrap: wrap;
+  width: 300px;
+}
+
+.page-b {
+  margin-top: 40px;
+  width: 150px;
+}
+
+.tile {
+  box-sizing: border-box;
+  width: 30px;
+  height: 12px;
+  font-size: 5px;
+  background: #edc;
+}

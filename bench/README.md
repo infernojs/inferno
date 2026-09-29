@@ -64,7 +64,10 @@ Workloads (`--workloads`, globs): `jfb:*` / `jfb-nk:*` (the jfb ops, same
 warmups and checks as js-framework-benchmark, plus `22_run-memory` and
 `cycle-run-clear-{1,5,20}` leak cycles), `uibench:*` (96 cases), `events:*`,
 `fuzz:1..20`, `typing:echo|filter-1k`, `dbmonster:frame|loop`,
-`1kcomponents:step|loop`. Micro cases (`--cases`, `pnpm bench micro --list`)
+`1kcomponents:step|loop`, `anim:*` (inferno-animation on keyed lists: shuffle, rerender,
+update-text, grow, leave and enter, shuffles deep in the DOM, scaled, with keyframe animations,
+inline animation objects or function owners, 1000 items, a second shuffle or leaves while moves
+or enters run, nested groups, a global page switch; `anim:stress` for frames mode). Micro cases (`--cases`, `pnpm bench micro --list`)
 cover the jfb ops, keyed/non-keyed permutations, mount/unmount/patch, vNode
 creation and normalization, setState/forceUpdate, event dispatch, uibench,
 fuzz sequences and SSR.
