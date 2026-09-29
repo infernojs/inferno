@@ -25,6 +25,7 @@ const DEFAULT_CASES = [
   'events/*',
   'fuzz/*',
   'ssr/*',
+  'reuse/*',
 ];
 
 interface WorkerResult {
@@ -34,8 +35,12 @@ interface WorkerResult {
   timesNs: number[];
   /** d8 with InfernoProf counters only: user-space instructions per op. */
   instructions?: number[];
+  /** Per iteration: bytes allocated by the op itself (Inferno, app, builtins they call). */
   allocBytes: number[];
+  /** Per iteration: bytes allocated by the DOM shim (node runtime only). */
+  allocDomBytes?: number[];
   allocSites: { site: string; bytesPerOp: number }[];
+  allocDomSites?: { site: string; bytesPerOp: number }[];
   gc: { count: number; timeMs: number; iterationsWithGc: number[] };
   domTotals: Record<string, number>;
   checksum: string | null;
@@ -46,8 +51,18 @@ function globToRegExp(glob: string): RegExp {
   return new RegExp(`^${escaped}$`);
 }
 
+/**
+ * A young generation larger than what an op allocates: with --gc-each every op then runs
+ * without any GC, so instruction counts measure the op itself and not where GCs happen to land.
+ */
+let youngMb = 0;
+
+function heapFlags(): string[] {
+  return youngMb > 0 ? [`--min-semi-space-size=${youngMb}`, `--max-semi-space-size=${youngMb}`] : [];
+}
+
 function d8Flags(deterministic: boolean): string[] {
-  const flags = ['--expose-gc', '--allow-natives-syntax', '--expose-statistics'];
+  const flags = ['--expose-gc', '--allow-natives-syntax', '--expose-statistics', ...heapFlags()];
   if (deterministic) {
     flags.push('--single-threaded', '--random-seed=1', '--hash-seed=1');
   }
@@ -57,7 +72,7 @@ function d8Flags(deterministic: boolean): string[] {
 let d8Path = join(CHROMIUM_SRC, 'out/InfernoProf/d8');
 
 function nodeFlags(deterministic: boolean): string[] {
-  const flags = ['--expose-gc', '--allow-natives-syntax', '--no-warnings'];
+  const flags = ['--expose-gc', '--allow-natives-syntax', '--no-warnings', ...heapFlags()];
   if (deterministic) {
     // No concurrent compiler/GC threads and fixed seeds: minimal run-to-run variance.
     flags.push('--single-threaded', '--random-seed=1', '--hash-seed=1');
@@ -76,6 +91,15 @@ async function worker(bundle: MicroBundle, args: string[], deterministic: boolea
     throw new Error(`worker failed for ${bundle.variant.spec.id} ${args[0]}:\n${res.stderr || res.stdout}`);
   }
   return JSON.parse(res.stdout.trim().split('\n').pop()!);
+}
+
+/**
+ * Bytes allocated per iteration below the op's frame, DOM shim included. The
+ * JS/shim split is only approximate (V8 charges allocations of inlined shim
+ * code to the caller), the total is exact.
+ */
+function opAlloc(r: WorkerResult): number[] {
+  return r.allocBytes.map((b, i) => b + (r.allocDomBytes?.[i] ?? 0));
 }
 
 function perOp(totals: Record<string, number>, iterations: number): Record<string, number> {
@@ -133,9 +157,14 @@ export default async function micro(argv: string[]): Promise<number> {
       runtime: { type: 'string', default: 'node' },
       metric: { type: 'string', default: 'time' },
       d8: { type: 'string' },
+      'young-mb': { type: 'string' },
+      preload: { type: 'string' },
     },
   });
+  youngMb = Number(values['young-mb'] ?? 0);
   const runtime = values.runtime as MicroRuntime;
+  // Modules imported before the cases, e.g. inferno-animation for its side effects
+  const preload = values.preload ? values.preload.split(',').map((m) => m.trim()).filter(Boolean) : [];
   if (runtime !== 'node' && runtime !== 'd8') {
     throw new Error('--runtime must be node or d8');
   }
@@ -152,7 +181,7 @@ export default async function micro(argv: string[]): Promise<number> {
   const bundles: MicroBundle[] = [];
   for (const spec of specs) {
     const variant = await ensureVariant(spec);
-    bundles.push(await buildMicroBundle(variant, options, runtime));
+    bundles.push(await buildMicroBundle(variant, options, runtime, preload));
   }
 
   const listing = await worker(bundles[0], ['@list'], deterministic);
@@ -181,6 +210,7 @@ export default async function micro(argv: string[]): Promise<number> {
   const extra = [values.iterations ?? '', values.warmup ?? '', values['gc-each'] ? '1' : '0'];
 
   const results = new Map<string, WorkerResult[]>();
+  const failures = new Map<string, string>();
   const key = (variant: string, c: string) => `${variant}\0${c}`;
   const pairs = bundles.flatMap((b) => caseNames.map((c) => ({ bundle: b, c })));
   const env = snapshotEnv();
@@ -191,9 +221,18 @@ export default async function micro(argv: string[]): Promise<number> {
       if (!values.json) {
         process.stderr.write(`\rround ${r + 1}/${rounds} ${i + 1}/${order.length} ${c}`.padEnd(100).slice(0, 100));
       }
-      const res: WorkerResult = await worker(bundle, [c, ...extra], deterministic);
       const k = key(bundle.variant.spec.id, c);
-      results.set(k, [...(results.get(k) ?? []), res]);
+      if (failures.has(k)) {
+        continue;
+      }
+      try {
+        const res: WorkerResult = await worker(bundle, [c, ...extra], deterministic);
+        results.set(k, [...(results.get(k) ?? []), res]);
+      } catch (err) {
+        // One failing variant must not throw away every other measurement.
+        failures.set(k, String(err instanceof Error ? err.message : err).split('\n').slice(0, 6).join('\n'));
+        results.delete(k);
+      }
     }
   }
   if (!values.json) {
@@ -204,17 +243,29 @@ export default async function micro(argv: string[]): Promise<number> {
   const report: any[] = [];
   const rows: (string | number)[][] = [];
   for (const c of caseNames) {
-    const base = results.get(key(baseId, c))!;
+    const base = results.get(key(baseId, c));
+    if (!base) {
+      continue;
+    }
     // time (ns/op) everywhere; instructions/op when the d8 build has counters.
     const series = (r: WorkerResult) => (values.metric === 'instructions' && r.instructions?.length ? r.instructions : r.timesNs);
     const baseBlocks = base.map((r) => median(series(r)));
-    const baseAlloc = mean(base.flatMap((r) => r.allocBytes));
+    // Median over every iteration of every round: one-off V8 allocations (optimized code,
+    // feedback) land in a single iteration and must not read as per-op cost.
+    const baseAlloc = median(base.flatMap(opAlloc));
     const baseDom = perOp(base[0].domTotals, base[0].iterations);
     for (const spec of specs) {
-      const res = results.get(key(spec.id, c))!;
+      const res = results.get(key(spec.id, c));
+      if (!res) {
+        report.push({ case: c, variant: spec.id, error: failures.get(key(spec.id, c)) ?? 'no result' });
+        rows.push([spec.id === baseId ? c : '', spec.id, 'ERROR', '', '', '', '', '', '', 'failed']);
+        continue;
+      }
       const blocks = res.map((r) => median(series(r)));
       const time = summarize(blocks);
-      const alloc = mean(res.flatMap((r) => r.allocBytes));
+      const allocAll = res.flatMap(opAlloc);
+      const alloc = median(allocAll);
+      const allocDomAll = res.flatMap((r) => r.allocDomBytes ?? []);
       const dom = perOp(res[0].domTotals, res[0].iterations);
       const domStable = res.every((r) => JSON.stringify(r.domTotals) === JSON.stringify(res[0].domTotals));
       const checksumOk = res.every((r) => r.checksum === base[0].checksum);
@@ -229,7 +280,11 @@ export default async function micro(argv: string[]): Promise<number> {
         blocks,
         est,
         alloc,
+        allocMean: mean(allocAll),
+        allocSamples: allocAll,
+        allocDom: allocDomAll.length ? median(allocDomAll) : null,
         allocSites: res[0].allocSites,
+        allocDomSites: res[0].allocDomSites ?? [],
         canaryCallsPerOp: (res[0] as any).canaryCallsPerOp ?? 0,
         dom,
         domStable,
@@ -260,7 +315,7 @@ export default async function micro(argv: string[]): Promise<number> {
     createdAt: new Date().toISOString(),
     durationS: (Date.now() - started) / 1000,
     env,
-    options: { rounds, deterministic, gcEach: values['gc-each'], transform: options.transform },
+    options: { rounds, deterministic, gcEach: values['gc-each'], youngMb, runtime, metric: values.metric, transform: options.transform, preload },
     variants: bundles.map((b) => ({ id: b.variant.spec.id, manifest: b.variant.manifest, bundle: b.file })),
     report,
   };
@@ -275,7 +330,7 @@ export default async function micro(argv: string[]): Promise<number> {
   } else {
     console.log(
       table(
-        ['case', 'variant', 'time/op', 'rCV', `Δtime vs ${baseId} [95% CI]`, 'alloc B/op', 'DOM writes/op', 'DOM reads/op', 'GC iters', 'check'],
+        ['case', 'variant', 'time/op', 'rCV', `Δtime vs ${baseId} [95% CI]`, 'alloc B/op (median)', 'DOM writes/op', 'DOM reads/op', 'GC iters', 'check'],
         rows,
       ),
     );
@@ -295,12 +350,16 @@ export default async function micro(argv: string[]): Promise<number> {
       console.log(table(['case', 'variant', 'ops'], opRows));
     }
     if (values['alloc-sites']) {
-      console.log('\nTop allocation sites (bytes/op, sampling heap profiler, 8 B interval)');
+      console.log('\nTop allocation sites (bytes/op, sampling heap profiler, 8 B interval, op frames only)');
       for (const c of caseNames) {
         for (const e of report.filter((r) => r.case === c)) {
-          console.log(`\n${c} [${e.variant}] total ${Math.round(e.alloc)} B/op`);
+          const dom = e.allocDom === null ? '' : `, of which ~${Math.round(e.allocDom)} in the DOM shim`;
+          console.log(`\n${c} [${e.variant}] median ${Math.round(e.alloc)} B/op (mean ${Math.round(e.allocMean)})${dom}`);
           for (const s of e.allocSites.slice(0, 8)) {
             console.log(`  ${String(Math.round(s.bytesPerOp)).padStart(9)}  ${s.site}`);
+          }
+          for (const s of e.allocDomSites.slice(0, 3)) {
+            console.log(`  ${String(Math.round(s.bytesPerOp)).padStart(9)}  [shim] ${s.site}`);
           }
         }
       }
@@ -308,5 +367,8 @@ export default async function micro(argv: string[]): Promise<number> {
     console.log(`\n${rounds} rounds × ${bundles.length} variants × ${caseNames.length} cases in ${out.durationS.toFixed(0)} s; * = CI excludes 0`);
     console.log(`results: ${outFile}`);
   }
-  return report.some((r) => !r.checksumOk) ? 1 : 0;
+  for (const [k, message] of failures) {
+    console.error(`\nworker failed for ${k.replace('\0', ' ')}:\n${message}`);
+  }
+  return failures.size > 0 || report.some((r) => r.checksumOk === false) ? 1 : 0;
 }

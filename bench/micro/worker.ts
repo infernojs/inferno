@@ -59,10 +59,25 @@ function post(method: string, params: object = {}): any {
 post('HeapProfiler.enable');
 
 interface AllocSample {
+  /** Bytes allocated by the op itself: Inferno, the app and builtins they call. */
   bytes: number;
+  /** Bytes allocated by the DOM shim (in a browser these live in Blink, not on the V8 heap). */
+  domBytes: number;
   sites: Map<string, number>;
+  domSites: Map<string, number>;
 }
 
+/** Name of the function frame that wraps the measured op in the sampling profile. */
+const OP_FRAME = '__benchOp';
+
+/**
+ * Only allocations below the op's own frame count. Starting and stopping the
+ * profiler allocates inside the sampling window too (node:inspector, this
+ * worker), so counting the whole profile made sub-KB ops meaningless.
+ * Allocations are charged to the nearest frame that has a script: builtins
+ * (Map, keys, slice…) belong to their caller, and the DOM shim's own objects
+ * are reported separately.
+ */
 function sampleAllocations(fn: () => void): AllocSample {
   post('HeapProfiler.startSampling', {
     samplingInterval: 8,
@@ -71,22 +86,30 @@ function sampleAllocations(fn: () => void): AllocSample {
   });
   fn();
   const { profile } = post('HeapProfiler.stopSampling');
-  const sites = new Map<string, number>();
-  let bytes = 0;
-  const walk = (node: any) => {
-    if (node.selfSize > 0) {
-      bytes += node.selfSize;
-      const f = node.callFrame;
-      const where = f.url ? `${f.url.split('/').pop()}:${f.lineNumber + 1}` : '';
+  const sample: AllocSample = { bytes: 0, domBytes: 0, sites: new Map(), domSites: new Map() };
+  const walk = (node: any, inOp: boolean, nearestFile: string) => {
+    const f = node.callFrame;
+    const file = f.url ? f.url.split('/').pop() : '';
+    const op = inOp || (f.functionName === OP_FRAME && file === 'worker.ts');
+    const owner = file || nearestFile;
+    if (op && node.selfSize > 0) {
+      const where = file ? `${file}:${f.lineNumber + 1}` : '';
       const key = `${f.functionName || '(anonymous)'} ${where}`.trim();
+      const isDom = owner === 'dom-shim.js';
+      const sites = isDom ? sample.domSites : sample.sites;
       sites.set(key, (sites.get(key) ?? 0) + node.selfSize);
+      if (isDom) {
+        sample.domBytes += node.selfSize;
+      } else {
+        sample.bytes += node.selfSize;
+      }
     }
     for (const c of node.children) {
-      walk(c);
+      walk(c, op, owner);
     }
   };
-  walk(profile.head);
-  return { bytes, sites };
+  walk(profile.head, false, '');
+  return sample;
 }
 
 /** Hidden-class consistency of vNodes produced by every creation path. */
@@ -212,29 +235,44 @@ if (caseName === '@fuzz-trace') {
   const normalize = (html: string) =>
     process.env.INFERNO_BENCH_NORMALIZE_STYLE ? html.replace(/style="([^"]*)"/g, (_m, v) => `style="${v.replace(/\s+/g, '')}"`) : html;
   const checksum = root ? shim.fnv(normalize(root.innerHTML)) : c.output ? shim.fnv(c.output()) : null;
-  const probe: number[] = [0];
-  for (let i = 0; i < (Number(process.env.INFERNO_BENCH_ALLOC_ITERS ?? 20) > 0 ? 16 : 0); i++) {
-    probe.push(sampleAllocations(() => {}).bytes);
-  }
-  probe.sort((a, b) => a - b);
-  const probeBytes = probe[probe.length >> 1];
-  const allocIterations = Math.min(iterations, Number(process.env.INFERNO_BENCH_ALLOC_ITERS ?? 20));
-  // The probe/alloc pass is skipped entirely when INFERNO_BENCH_ALLOC_ITERS=0.
-  const allocBytes: number[] = [];
-  const allocSites = new Map<string, number>();
-  for (let i = 0; i < allocIterations; i++) {
+  // Per-iteration values are kept: the report uses the median, so one-off V8
+  // allocations (optimized code, feedback) don't show up as per-op cost.
+  // The alloc pass is skipped entirely when INFERNO_BENCH_ALLOC_ITERS=0.
+  const allocIterations = Math.min(iterations, Number(process.env.INFERNO_BENCH_ALLOC_ITERS ?? 30));
+  // Sampling every 8 bytes sends each allocation through the runtime, which
+  // changes what V8 compiles; discarded profiled iterations let it settle.
+  const allocWarmup = allocIterations > 0 ? Number(process.env.INFERNO_BENCH_ALLOC_WARMUP ?? 10) : 0;
+  for (let i = 0; i < allocWarmup; i++) {
     const it = warmup + iterations + i;
     c.prepare(it);
-    const sample = sampleAllocations(() => c.op(it));
-    allocBytes.push(sample.bytes - probeBytes);
+    sampleAllocations(function __benchOp() {
+      c.op(it);
+    });
+  }
+  const allocBytes: number[] = [];
+  const allocDomBytes: number[] = [];
+  const allocSites = new Map<string, number>();
+  const allocDomSites = new Map<string, number>();
+  for (let i = 0; i < allocIterations; i++) {
+    const it = warmup + iterations + allocWarmup + i;
+    c.prepare(it);
+    const sample = sampleAllocations(function __benchOp() {
+      c.op(it);
+    });
+    allocBytes.push(sample.bytes);
+    allocDomBytes.push(sample.domBytes);
     for (const [k, v] of sample.sites) {
       allocSites.set(k, (allocSites.get(k) ?? 0) + v);
     }
+    for (const [k, v] of sample.domSites) {
+      allocDomSites.set(k, (allocDomSites.get(k) ?? 0) + v);
+    }
   }
-  const topSites = [...allocSites.entries()]
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 12)
-    .map(([site, bytes]) => ({ site, bytesPerOp: bytes / allocIterations }));
+  const top = (sites: Map<string, number>, n: number) =>
+    [...sites.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, n)
+      .map(([site, bytes]) => ({ site, bytesPerOp: bytes / allocIterations }));
 
   emit({
     version: mod.version,
@@ -243,9 +281,10 @@ if (caseName === '@fuzz-trace') {
     warmup,
     timesNs,
     allocBytes,
-    allocProbeBytes: probeBytes,
+    allocDomBytes,
     canaryCallsPerOp: canaryCalls / iterations,
-    allocSites: topSites,
+    allocSites: top(allocSites, 12),
+    allocDomSites: top(allocDomSites, 6),
     gc: { count: gcInWindow, timeMs: gcTimeInWindow, iterationsWithGc: [...gcIters] },
     domTotals,
     firstDom,

@@ -4,14 +4,19 @@
 import { render } from 'inferno';
 import { Main as KeyedMain } from '../../apps/jfb-keyed/app.jsx';
 import { Main as NonKeyedMain } from '../../apps/jfb-nonkeyed/app.jsx';
+import { Main as KeyedMemoMain } from '../../apps/jfb-keyed-memo/app.jsx';
 import { byClass, byId, children, click, defineCase, newContainer } from './common.js';
 
-function jfbCases(prefix, Main) {
+// beforeMount runs once, before the app is mounted (anim.jsx mounts a move-hook owner there).
+export function jfbCases(prefix, Main, beforeMount) {
   let container = null;
   let tbody = null;
 
   const mount = () => {
     if (container === null) {
+      if (beforeMount) {
+        beforeMount();
+      }
       container = newContainer();
       render(<Main />, container);
       tbody = byClass(container, 'test-data').childNodes[0];
@@ -78,4 +83,5 @@ function jfbCases(prefix, Main) {
 export const cases = {
   ...jfbCases('jfb/keyed', KeyedMain),
   ...jfbCases('jfb/nonkeyed', NonKeyedMain),
+  ...jfbCases('jfb/keyed-memo', KeyedMemoMain),
 };

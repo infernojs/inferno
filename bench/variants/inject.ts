@@ -18,6 +18,8 @@ function snippet(c: Canary): string {
       return `${count}globalThis.__infernoCanarySink=new Array(${c.elements}).fill(0);`;
     case 'domop':
       return `${count}(document.body||document.documentElement).setAttribute('data-inferno-canary',''+globalThis.${CANARY_COUNTER});`;
+    case 'leak':
+      return `${count}(globalThis.__infernoCanaryLeak||(globalThis.__infernoCanaryLeak=[])).push(new Array(${c.elements}).fill(0));`;
   }
 }
 

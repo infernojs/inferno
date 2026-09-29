@@ -222,7 +222,9 @@ function jfbWorkloads(prefix: string, app: string): Workload[] {
           await ready(s);
           for (let i = 0; i < cycles; i++) {
             await s.click('#run');
-            await s.waitFor(textIs(td(1, 1), String(i * 1000 + 1)));
+            // Constant expression: a per-cycle source (e.g. the expected row id) leaves a
+            // compiled script and strings behind in the page for every cycle.
+            await s.waitFor(exists(td(1000, 1)));
             if (i < cycles - 1) {
               await s.click('#clear');
               await s.waitFor(`!${exists(td(1, 1))}`);
@@ -293,7 +295,18 @@ export function allWorkloads(): Workload[] {
   return [
     ...jfbWorkloads('jfb', 'jfb-keyed'),
     ...jfbWorkloads('jfb-nk', 'jfb-nonkeyed'),
+    ...jfbWorkloads('jfb-memo', 'jfb-keyed-memo'),
+    // References without Inferno (the variant is ignored): same DOM, other construction strategies.
+    ...jfbWorkloads('vjs-lite', 'vanillajs-lite'),
+    ...jfbWorkloads('vjs3', 'vanillajs-3'),
+    ...jfbWorkloads('vjs', 'vanillajs'),
     ...uibenchCaseNames().map((c) => harnessWorkload(`uibench:${c}`, 'uibench', '#App', c)),
+    // The apps above with inferno-animation imported
+    ...jfbWorkloads('jfb-anim', 'jfb-keyed-anim'),
+    ...uibenchCaseNames().map((c) => harnessWorkload(`uibench-anim:${c}`, 'uibench-anim', '#App', c)),
+    harnessWorkload('dbmonster-anim:frame', 'dbmonster-anim', '#app', null),
+    harnessWorkload('1kcomponents-anim:step', '1kcomponents-anim', '#app', null),
+    ...Array.from({ length: 20 }, (_, i) => harnessWorkload(`fuzz-anim:${i + 1}`, 'fuzz-anim', '#app', String(i + 1))),
     harnessWorkload('dbmonster:frame', 'dbmonster', '#app', null),
     harnessWorkload('1kcomponents:step', '1kcomponents', '#app', null),
     loopWorkload('dbmonster:loop', 'dbmonster', '#app'),
@@ -302,6 +315,7 @@ export function allWorkloads(): Workload[] {
       ['mount', 'patch', 'unmount', 'dispatch'].map((phase) => harnessWorkload(`events:${phase}:${st}`, 'events', '#App', `${phase}:${st}`)),
     ),
     ...Array.from({ length: 20 }, (_, i) => harnessWorkload(`fuzz:${i + 1}`, 'fuzz', '#app', String(i + 1))),
+    ...['shuffle', 'rerender', 'update-text', 'grow', 'plain-shuffle', 'leave-update', 'fade-update', 'fade-enter'].map((c) => harnessWorkload(`anim:${c}`, 'anim', '#app', c)),
     harnessWorkload('typing:echo', 'typing', '#app', 'echo'),
     harnessWorkload('typing:filter-1k', 'typing', '#app', 'filter-1k'),
   ];

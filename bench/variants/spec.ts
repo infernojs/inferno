@@ -4,6 +4,7 @@
  *   canary := spin:<fn>:<n>us    busy-waits n microseconds per call of <fn>
  *           | alloc:<fn>:<n>     allocates a packed array of n elements per call
  *           | domop:<fn>         performs one extra setAttribute per call
+ *           | leak:<fn>:<n>      retains an n-element array per call in a global (leak detector check)
  *
  * Canaries are injected into the prod ESM bundle of `inferno` so every
  * measurement mode can be validated against a known, sized effect.
@@ -17,7 +18,8 @@ export type BaseSpec = { kind: 'local' } | { kind: 'src'; ref: string } | { kind
 export type Canary =
   | { kind: 'spin'; fn: string; micros: number }
   | { kind: 'alloc'; fn: string; elements: number }
-  | { kind: 'domop'; fn: string };
+  | { kind: 'domop'; fn: string }
+  | { kind: 'leak'; fn: string; elements: number };
 
 export interface VariantSpec {
   raw: string;
@@ -56,10 +58,11 @@ function parseCanary(raw: string): Canary {
       }
       return { kind, fn, micros: Number(m[1]) };
     }
-    case 'alloc': {
+    case 'alloc':
+    case 'leak': {
       const n = Number(amount);
       if (!Number.isInteger(n) || n <= 0) {
-        throw new Error(`Alloc canary "${raw}" needs a positive element count`);
+        throw new Error(`${kind} canary "${raw}" needs a positive element count`);
       }
       return { kind, fn, elements: n };
     }
@@ -89,6 +92,8 @@ export function canaryId(c: Canary): string {
       return `alloc-${c.fn}-${c.elements}`;
     case 'domop':
       return `domop-${c.fn}`;
+    case 'leak':
+      return `leak-${c.fn}-${c.elements}`;
   }
 }
 

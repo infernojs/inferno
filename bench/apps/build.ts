@@ -1,4 +1,4 @@
-import { copyFileSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
+import { copyFileSync, cpSync, existsSync, mkdirSync, readFileSync, renameSync, rmSync, writeFileSync } from 'node:fs';
 import { basename, dirname, join } from 'node:path';
 import { rollup } from 'rollup';
 import { type Transform, toolVersions, variantPlugins } from '../lib/bundle.ts';
@@ -46,7 +46,42 @@ export function appSources(): Map<string, Buffer> {
   return files;
 }
 
+/** A jfb reference implementation: its index.html (stylesheet path mapped to /assets) and src/, unchanged. */
+function buildStaticApp(app: AppDef, variant: BuiltVariant, options: AppBuildOptions): BuiltApp {
+  const srcDir = join(app.staticDir!, 'src');
+  const html = readFileSync(join(app.staticDir!, 'index.html'), 'utf8').replaceAll('/css/currentStyle.css', '/assets/jfb/currentStyle.css');
+  const sources = new Map<string, Buffer>([['index.html', Buffer.from(html)]]);
+  for (const rel of listFiles(srcDir)) {
+    sources.set(`src/${rel}`, readFileSync(join(srcDir, rel)));
+  }
+  const hash = hashEntries([...sources, ['@revision', String(APP_BUILD_REVISION)]]);
+  const dir = cachePath('apps', 'static', app.name, hash.slice(0, 16));
+  if (!existsSync(join(dir, 'manifest.json'))) {
+    const staging = `${dir}.tmp-${process.pid}`;
+    rmSync(staging, { recursive: true, force: true });
+    mkdirSync(staging, { recursive: true });
+    writeFileSync(join(staging, 'index.html'), html);
+    cpSync(srcDir, join(staging, 'src'), { recursive: true });
+    const files: AppManifest['files'] = {};
+    for (const [rel, buf] of sources) {
+      files[rel] = { bytes: buf.length, sha256: sha256(buf) };
+    }
+    const manifest: AppManifest = { app: app.name, variant: 'static', variantHash: '', options, hash, files, builtAt: new Date().toISOString() };
+    writeFileSync(join(staging, 'manifest.json'), JSON.stringify(manifest, null, 2));
+    if (existsSync(dir)) {
+      rmSync(staging, { recursive: true, force: true });
+    } else {
+      mkdirSync(dirname(dir), { recursive: true });
+      renameSync(staging, dir);
+    }
+  }
+  return { app, variant, dir, manifest: readJson(join(dir, 'manifest.json')) };
+}
+
 export async function buildApp(app: AppDef, variant: BuiltVariant, options: AppBuildOptions): Promise<BuiltApp> {
+  if (app.staticDir) {
+    return buildStaticApp(app, variant, options);
+  }
   const hash = hashEntries([
     ...appSources(),
     ['@app', JSON.stringify(app) + '\0' + renderHtml(app)],

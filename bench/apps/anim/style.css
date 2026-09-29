@@ -1,0 +1,33 @@
+.list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 300px;
+}
+
+.item {
+  height: 6px;
+  line-height: 6px;
+  font-size: 5px;
+  margin: 0;
+  padding: 0 4px;
+  background: #cde;
+}
+
+.item.tall {
+  height: 18px;
+}
+
+.Item-move-active {
+  transition: transform 150ms linear;
+}
+
+.Item-enter-active,
+.Item-leave-active {
+  transition: opacity 150ms linear;
+}
+
+.Item-enter,
+.Item-leave-end {
+  opacity: 0;
+}

@@ -109,6 +109,13 @@ export class Node {
   }
 
   _link(child, ref) {
+    if (child.nodeType === 11) {
+      // Inserting a fragment inserts its children in order and leaves it empty.
+      while (child._first !== null) {
+        this._link(child._first, ref);
+      }
+      return child;
+    }
     if (child._parent !== null) {
       child._parent._unlink(child);
     }
@@ -562,6 +569,16 @@ class RawHTML extends Node {
   }
 }
 
+export class DocumentFragment extends Node {
+  constructor(ownerDocument) {
+    super(11, ownerDocument);
+  }
+
+  get nodeName() {
+    return '#document-fragment';
+  }
+}
+
 export class Document extends Node {
   constructor() {
     super(9, null);
@@ -589,6 +606,11 @@ export class Document extends Node {
   createTextNode(data) {
     tick('createTextNode');
     return new Text(String(data), this);
+  }
+
+  createDocumentFragment() {
+    tick('createDocumentFragment');
+    return new DocumentFragment(this);
   }
 
   createComment() {
@@ -684,6 +706,7 @@ export function installDom(g = globalThis) {
   g.Element = Element;
   g.HTMLElement = Element;
   g.Text = Text;
+  g.DocumentFragment = DocumentFragment;
   g.Event = Event;
   g.MouseEvent = MouseEvent;
   g.requestAnimationFrame ??= (cb) => setTimeout(() => cb(performance.now()), 0);

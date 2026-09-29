@@ -7,10 +7,12 @@ import { cases as events } from './events.jsx';
 import { cases as uibench } from './uibench.jsx';
 import { cases as fuzz } from './fuzz.js';
 import { cases as ssr } from './ssr.jsx';
+import { cases as reuse } from './reuse.jsx';
+import { cases as anim } from './anim.jsx';
 
 export { version } from 'inferno';
 export * as Inferno from 'inferno';
 
 export { renderFuzzStep } from './fuzz.js';
 
-export const cases = { ...jfb, ...lists, ...lifecycle, ...events, ...uibench, ...fuzz, ...ssr };
+export const cases = { ...jfb, ...lists, ...lifecycle, ...events, ...uibench, ...fuzz, ...ssr, ...reuse, ...anim };

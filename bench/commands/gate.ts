@@ -49,6 +49,10 @@ export default async function gate(argv: string[]): Promise<number> {
     if (!base || !head) {
       continue;
     }
+    if (base.error || head.error) {
+      findings.push({ kind: 'error', target: c, detail: String(head.error ?? base.error).split('\n')[0] });
+      continue;
+    }
     if (!head.checksumOk) {
       findings.push({ kind: 'rendering', target: c, detail: 'final DOM differs from base' });
     }

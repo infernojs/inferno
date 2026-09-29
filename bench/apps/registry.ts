@@ -1,5 +1,5 @@
 import { join } from 'node:path';
-import { BENCH_DIR } from '../lib/paths.ts';
+import { BENCH_DIR, JFB_DIR } from '../lib/paths.ts';
 
 export const APPS_DIR = join(BENCH_DIR, 'apps');
 
@@ -14,6 +14,15 @@ export interface AppDef {
   body: string;
   /** App-local files (relative to apps/) copied next to index.html. */
   assets?: string[];
+  /**
+   * A js-framework-benchmark implementation served as is (index.html + src/), without Inferno:
+   * the same DOM built by other means, as a reference for what the framework costs.
+   */
+  staticDir?: string;
+}
+
+function jfbReference(name: string): AppDef {
+  return { name, entry: '', title: name, head: '', body: '', staticDir: join(JFB_DIR, 'frameworks', 'keyed', name) };
 }
 
 const JFB_HEAD = '<link href="/assets/jfb/currentStyle.css" rel="stylesheet"/>';
@@ -34,6 +43,20 @@ export const APPS: Record<string, AppDef> = {
     head: JFB_HEAD,
     body: '<div id="main"></div>',
   },
+  // jfb-keyed with Row vNodes cached per data row (re-created only when label or selection change).
+  'jfb-keyed-memo': {
+    name: 'jfb-keyed-memo',
+    entry: 'jfb-keyed-memo/main.jsx',
+    title: 'Inferno',
+    head: JFB_HEAD,
+    body: '<div id="main"></div>',
+  },
+  // Template cloning, rows built into a detached tbody in batches.
+  'vanillajs-lite': jfbReference('vanillajs-lite'),
+  // Template cloning, one row at a time into the connected tbody.
+  'vanillajs-3': jfbReference('vanillajs-3'),
+  // Template cloning into a detached tbody.
+  vanillajs: jfbReference('vanillajs'),
   uibench: {
     name: 'uibench',
     entry: 'uibench/main.jsx',
@@ -73,6 +96,14 @@ export const APPS: Record<string, AppDef> = {
     head: '',
     body: '<div id="app"></div>',
   },
+  anim: {
+    name: 'anim',
+    entry: 'anim/main.jsx',
+    title: 'Move animations',
+    head: LOCAL_CSS,
+    body: '<div id="app"></div>',
+    assets: ['anim/style.css'],
+  },
   typing: {
     name: 'typing',
     entry: 'typing/main.jsx',
@@ -82,7 +113,24 @@ export const APPS: Record<string, AppDef> = {
   },
 };
 
-export function resolveApps(raw: string | undefined, fallback = Object.keys(APPS).join(',')): AppDef[] {
+// The same apps with inferno-animation imported (and so its adapter installed in inferno).
+for (const [name, entry] of [
+  ['jfb-keyed', 'preload-anim/jfb-keyed.jsx'],
+  ['uibench', 'preload-anim/uibench.jsx'],
+  ['1kcomponents', 'preload-anim/1kcomponents.jsx'],
+  ['dbmonster', 'preload-anim/dbmonster.js'],
+  ['fuzz', 'preload-anim/fuzz.js'],
+]) {
+  APPS[`${name}-anim`] = { ...APPS[name], name: `${name}-anim`, entry };
+}
+
+/** Inferno apps (the default for build and size); static references only when named. */
+const INFERNO_APPS = Object.values(APPS)
+  .filter((app) => !app.staticDir)
+  .map((app) => app.name)
+  .join(',');
+
+export function resolveApps(raw: string | undefined, fallback = INFERNO_APPS): AppDef[] {
   return (raw ?? fallback)
     .split(',')
     .map((s) => s.trim())

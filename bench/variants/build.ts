@@ -19,11 +19,14 @@ import type { BaseSpec, VariantSpec } from './spec.ts';
 /** Packages built for every variant, in dependency order. */
 export const PACKAGES = ['inferno-shared', 'inferno-vnode-flags', 'inferno', 'inferno-hydrate', 'inferno-server'];
 
+/** Also built for source variants whose ref has them (apps import them next to inferno). */
+const OPTIONAL_PACKAGES = ['inferno-animation'];
+
 /** Packages fetched for npm variants; the others are bundled into these. */
 const NPM_PACKAGES = ['inferno', 'inferno-hydrate', 'inferno-server'];
 
 /** Bump whenever the build procedure changes in a way that affects output. */
-const BUILD_REVISION = 3;
+const BUILD_REVISION = 4;
 
 /** Repository build infrastructure reused verbatim (apart from sourcemap flags). */
 const INFRA_FILES = [
@@ -132,11 +135,24 @@ async function git(args: string[]): Promise<string> {
 }
 
 /** Collects package.json + src/** of every built package for a source variant. */
-async function collectSources(base: BaseSpec): Promise<{ files: Map<string, Buffer>; source: VariantManifest['source'] }> {
+async function collectSources(
+  base: BaseSpec,
+): Promise<{ files: Map<string, Buffer>; packages: string[]; source: VariantManifest['source'] }> {
   const files = new Map<string, Buffer>();
-  const paths = PACKAGES.flatMap((pkg) => [`packages/${pkg}/package.json`, `packages/${pkg}/src`]);
+  const commit = base.kind === 'src' ? await git(['rev-parse', '--verify', `${base.ref}^{commit}`]) : '';
+  const present = async (pkg: string) =>
+    base.kind === 'src'
+      ? (await run('git', ['-C', REPO_DIR, 'cat-file', '-e', `${commit}:packages/${pkg}/package.json`], { allowFail: true })).code === 0
+      : existsSync(join(REPO_DIR, 'packages', pkg, 'package.json'));
+  const packages = [...PACKAGES];
+  for (const pkg of OPTIONAL_PACKAGES) {
+    if (await present(pkg)) {
+      packages.push(pkg);
+    }
+  }
+  const paths = packages.flatMap((pkg) => [`packages/${pkg}/package.json`, `packages/${pkg}/src`]);
   if (base.kind === 'local') {
-    for (const pkg of PACKAGES) {
+    for (const pkg of packages) {
       const pkgDir = join(REPO_DIR, 'packages', pkg);
       files.set(`packages/${pkg}/package.json`, readFileSync(join(pkgDir, 'package.json')));
       for (const rel of listFiles(join(pkgDir, 'src'))) {
@@ -146,10 +162,9 @@ async function collectSources(base: BaseSpec): Promise<{ files: Map<string, Buff
     const head = await git(['rev-parse', 'HEAD']);
     const status = await git(['status', '--porcelain', '--', ...paths]);
     const dirty = status ? status.split('\n').map((l) => l.slice(3)) : [];
-    return { files, source: { kind: 'local', head, dirty } };
+    return { files, packages, source: { kind: 'local', head, dirty } };
   }
   if (base.kind === 'src') {
-    const commit = await git(['rev-parse', '--verify', `${base.ref}^{commit}`]);
     const tmp = mkdtempSync(join(cachePath('tmp'), 'src-'));
     try {
       await run('sh', ['-c', `git -C "${REPO_DIR}" archive --format=tar ${commit} -- ${paths.join(' ')} | tar -x -C "${tmp}"`]);
@@ -159,7 +174,7 @@ async function collectSources(base: BaseSpec): Promise<{ files: Map<string, Buff
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }
-    return { files, source: { kind: 'src', ref: base.ref, commit } };
+    return { files, packages, source: { kind: 'src', ref: base.ref, commit } };
   }
   throw new Error('collectSources only handles source variants');
 }
@@ -173,16 +188,16 @@ function analysisPlugins(content: Buffer): Buffer {
   return Buffer.from(content.toString('utf8').replace('sourceMaps: false', 'sourceMaps: true'));
 }
 
-function workTsconfig(): string {
+function workTsconfig(packages: string[]): string {
   const root = readJson(join(REPO_DIR, 'tsconfig.json'));
   const paths: Record<string, string[]> = {};
-  for (const pkg of PACKAGES) {
+  for (const pkg of packages) {
     paths[pkg] = [`./packages/${pkg}/src/index.ts`];
   }
   return JSON.stringify(
     {
       compilerOptions: { ...root.compilerOptions, paths, types: ['node'] },
-      include: PACKAGES.map((pkg) => `packages/${pkg}/src`),
+      include: packages.map((pkg) => `packages/${pkg}/src`),
     },
     null,
     2,
@@ -190,7 +205,7 @@ function workTsconfig(): string {
 }
 
 async function buildSourceVariant(spec: VariantSpec, log: (s: string) => void): Promise<BuiltVariant> {
-  const { files, source } = await collectSources(spec.base);
+  const { files, packages: pkgs, source } = await collectSources(spec.base);
   const infra = new Map<string, Buffer>();
   for (const rel of INFRA_FILES) {
     infra.set(rel, readFileSync(join(REPO_DIR, rel)));
@@ -219,10 +234,10 @@ async function buildSourceVariant(spec: VariantSpec, log: (s: string) => void): 
       writeFileSync(join(work, rel), buf);
     }
     writeFileSync(join(work, ANALYSIS_PLUGINS), analysisPlugins(infra.get('scripts/rollup/plugins/index.js')!));
-    writeFileSync(join(work, 'tsconfig.json'), workTsconfig());
+    writeFileSync(join(work, 'tsconfig.json'), workTsconfig(pkgs));
     writeFileSync(join(work, 'package.json'), JSON.stringify({ private: true, type: 'module' }));
     symlinkSync(REPO_NODE_MODULES, join(work, 'node_modules'), 'dir');
-    for (const pkg of PACKAGES) {
+    for (const pkg of pkgs) {
       // Package-local deps (e.g. csstype types for inferno).
       const pkgModules = join(REPO_DIR, 'packages', pkg, 'node_modules');
       if (existsSync(pkgModules)) {
@@ -238,7 +253,7 @@ async function buildSourceVariant(spec: VariantSpec, log: (s: string) => void): 
     if (tsc.code !== 0) {
       buildLog += `tsc exited with ${tsc.code}:\n${tsc.stdout}${tsc.stderr}\n`;
     }
-    for (const pkg of PACKAGES) {
+    for (const pkg of pkgs) {
       const compiled = join(work, 'build/packages', pkg, 'src');
       if (!existsSync(join(compiled, 'index.js'))) {
         throw new Error(`tsc produced no output for ${pkg}\n${buildLog}`);
@@ -246,7 +261,7 @@ async function buildSourceVariant(spec: VariantSpec, log: (s: string) => void): 
       cpSync(compiled, join(work, 'packages', pkg, 'tmpDist'), { recursive: true });
     }
     const results = await Promise.all(
-      PACKAGES.map((pkg) =>
+      pkgs.map((pkg) =>
         run(process.execPath, [join(work, 'scripts/rollup/build.js')], {
           cwd: join(work, 'packages', pkg),
           env: { ...process.env, NODE_ENV: 'production' },
@@ -261,7 +276,7 @@ async function buildSourceVariant(spec: VariantSpec, log: (s: string) => void): 
     const modules = await analyzeModules(work, 'inferno');
     writeFileSync(join(staging, 'modules.json'), JSON.stringify(modules, null, 2));
     const packages: VariantManifest['packages'] = {};
-    for (const pkg of PACKAGES) {
+    for (const pkg of pkgs) {
       const out = join(staging, 'packages', pkg);
       mkdirSync(out, { recursive: true });
       cpSync(join(work, 'packages', pkg, 'dist'), join(out, 'dist'), { recursive: true });

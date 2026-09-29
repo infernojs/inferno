@@ -72,6 +72,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
       snapshot: { type: 'boolean', default: false },
       minify: { type: 'string' },
       duration: { type: 'string', default: '3000' },
+      'js-flags': { type: 'string' },
     },
   });
   const mode = values.mode as Mode;
@@ -125,6 +126,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
       const launched = await launchBrowser(resolved, {
         headless,
         sandbox,
+        jsFlags: values['js-flags'] ? values['js-flags'].split(/\s+/).filter(Boolean) : undefined,
         wrapper: values.pin === 'ccd0' ? ['taskset', '-c', CCD0] : undefined,
         // Unthrottled: frames start as soon as the main thread asks for one, so
         // totals stop depending on the input's phase relative to vsync.

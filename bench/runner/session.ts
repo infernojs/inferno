@@ -28,6 +28,8 @@ const INSTRUMENT = String.raw`(() => {
   window.addEventListener('click', __benchStart, true);
   window.addEventListener('keydown', __benchStart, true);
   window.__benchChecksum = (selector) => {
+    // An app can define what counts as its rendered result (e.g. without in-flight animation styles)
+    if (window.__bench && typeof window.__bench.checksum === 'function') return String(window.__bench.checksum());
     const root = document.querySelector(selector);
     if (!root) return null;
     const html = root.innerHTML;

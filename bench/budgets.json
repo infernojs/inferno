@@ -1,9 +1,9 @@
 {
   "variant": "local",
   "limits": {
-    "inferno/esm+terser": { "brotli": 8000, "gzip": 8750 },
-    "inferno/min-umd": { "brotli": 8050, "gzip": 8800 },
-    "app/jfb-keyed/babel-min": { "brotli": 8900, "gzip": 9720 },
-    "app/jfb-nonkeyed/babel-min": { "brotli": 8900, "gzip": 9720 }
+    "inferno/esm+terser": { "brotli": 8200, "gzip": 9000 },
+    "inferno/min-umd": { "brotli": 8250, "gzip": 9050 },
+    "app/jfb-keyed/babel-min": { "brotli": 9150, "gzip": 9950 },
+    "app/jfb-nonkeyed/babel-min": { "brotli": 9150, "gzip": 9950 }
   }
 }

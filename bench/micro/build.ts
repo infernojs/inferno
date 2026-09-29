@@ -9,7 +9,7 @@ import { hashEntries, listFiles, readJson } from '../lib/util.ts';
 import type { BuiltVariant } from '../variants/build.ts';
 
 export const MICRO_DIR = join(BENCH_DIR, 'micro');
-const MICRO_BUILD_REVISION = 2;
+const MICRO_BUILD_REVISION = 3;
 
 export type MicroRuntime = 'node' | 'd8';
 
@@ -31,6 +31,24 @@ function microSources(): Map<string, Buffer> {
   return files;
 }
 
+const PRELOAD_ENTRY = '\0micro-preload-entry';
+
+/**
+ * Entry that imports `preload` modules (for their side effects) before the real entry. In d8 the
+ * DOM shim is installed first, as the d8 entry itself does: Inferno reads the DOM at module load.
+ */
+function preloadEntry(entry: string, preload: string[], runtime: MicroRuntime): Plugin {
+  const first = runtime === 'd8' ? [join(MICRO_DIR, 'd8/install-dom.js')] : [];
+  return {
+    name: 'micro-preload-entry',
+    resolveId: (id) => (id === PRELOAD_ENTRY ? id : null),
+    load: (id) =>
+      id === PRELOAD_ENTRY
+        ? [...first, ...preload].map((m) => `import ${JSON.stringify(m)};\n`).join('') + `export * from ${JSON.stringify(entry)};\n`
+        : null,
+  };
+}
+
 function streamStub(): Plugin {
   const stub = join(MICRO_DIR, 'd8/stream-stub.js');
   return {
@@ -48,8 +66,10 @@ export async function buildMicroBundle(
   variant: BuiltVariant,
   options: AppBuildOptions,
   runtime: MicroRuntime = 'node',
+  preload: string[] = [],
 ): Promise<MicroBundle> {
   const hash = hashEntries([
+    ['@preload', preload.join(',')],
     ...microSources(),
     ...appSources(),
     ['@variant', variant.manifest.hash + '\0' + variant.spec.id],
@@ -58,7 +78,7 @@ export async function buildMicroBundle(
     ['@revision', String(MICRO_BUILD_REVISION)],
     ['@runtime', runtime],
   ]);
-  const flavour = `${runtime}-${options.transform}-${options.minify ? 'min' : 'nomin'}`;
+  const flavour = `${runtime}-${options.transform}-${options.minify ? 'min' : 'nomin'}${preload.length ? '-preload' : ''}`;
   const dir = cachePath('micro', variant.spec.id, flavour, hash.slice(0, 16));
   const fileName = runtime === 'd8' ? 'micro-d8.js' : 'micro.mjs';
   const file = join(dir, fileName);
@@ -66,8 +86,12 @@ export async function buildMicroBundle(
     return { variant, runtime, file, hash };
   }
   const plugins = variantPlugins(variant, { ...options, include: [APPS_DIR, MICRO_DIR] });
+  const entry = join(MICRO_DIR, runtime === 'd8' ? 'd8/entry.js' : 'cases/index.js');
+  if (preload.length) {
+    plugins.unshift(preloadEntry(entry, preload, runtime));
+  }
   const bundle = await rollup({
-    input: join(MICRO_DIR, runtime === 'd8' ? 'd8/entry.js' : 'cases/index.js'),
+    input: preload.length ? PRELOAD_ENTRY : entry,
     external: runtime === 'd8' ? [] : ['stream'],
     plugins: runtime === 'd8' ? [streamStub(), ...plugins] : plugins,
     onwarn: () => {},

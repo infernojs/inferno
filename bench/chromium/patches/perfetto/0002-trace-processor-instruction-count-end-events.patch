@@ -1,0 +1,30 @@
+trace_processor: use the event's own instruction count when a thread slice ends.
+
+The importer takes thread_instruction_count from extra counter tracks as well as
+from the legacy TrackEvent fields, but ParseThreadEndEvent (and the async end)
+dereferenced the legacy field, which is empty for counter tracks: with libc++
+hardening that traps (SIGILL) on every trace with per-event instruction counters.
+
+diff -ru a/src/trace_processor/importers/proto/track_event_event_importer.h b/src/trace_processor/importers/proto/track_event_event_importer.h
+--- a/src/trace_processor/importers/proto/track_event_event_importer.h	2026-09-27 02:39:26.310899539 +0300
++++ b/src/trace_processor/importers/proto/track_event_event_importer.h	2026-09-27 02:39:26.320187012 +0300
+@@ -867,8 +867,8 @@
+     }
+     std::optional<int64_t> tic = slice_ref.thread_instruction_count();
+     if (tic && thread_instruction_count_) {
+-      slice_ref.set_thread_instruction_delta(
+-          *event_data_->thread_instruction_count - *tic);
++      slice_ref.set_thread_instruction_delta(*thread_instruction_count_ -
++                                             *tic);
+     }
+     return base::OkStatus();
+   }
+@@ -1116,7 +1116,7 @@
+     if (legacy_event_.use_async_tts()) {
+       auto* vtrack_slices = storage_->mutable_virtual_track_slices();
+       int64_t tts = event_data_->thread_timestamp.value_or(0);
+-      int64_t tic = event_data_->thread_instruction_count.value_or(0);
++      int64_t tic = thread_instruction_count_.value_or(0);
+       vtrack_slices->UpdateThreadDeltasForSliceId(*opt_slice_id, tts, tic);
+     }
+     return base::OkStatus();

@@ -179,6 +179,96 @@
     },
     "checksum": "5ba78248:1102"
   },
+  "jfb/keyed-memo/01_run1k": {
+    "dom": {
+      "appendChild": 8000,
+      "composedPath": 1,
+      "createElement": 8000,
+      "get:parentNode": 1,
+      "set:className": 5000,
+      "set:textContent": 2000,
+      "setAttribute": 1000
+    },
+    "checksum": "d490b72e:217943"
+  },
+  "jfb/keyed-memo/02_replace1k": {
+    "dom": {
+      "appendChild": 8000,
+      "composedPath": 1,
+      "createElement": 8000,
+      "get:parentNode": 1,
+      "set:className": 5000,
+      "set:textContent": 2001,
+      "setAttribute": 1000
+    },
+    "checksum": "4b78bfb7:218216"
+  },
+  "jfb/keyed-memo/03_update10th1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:firstChild": 100,
+      "get:parentNode": 1,
+      "set:nodeValue": 100
+    },
+    "checksum": "7dfa4f2c:315885"
+  },
+  "jfb/keyed-memo/04_select1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "removeAttribute": 1,
+      "set:className": 1
+    },
+    "checksum": "982706fc:215900"
+  },
+  "jfb/keyed-memo/05_swap1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "insertBefore": 2
+    },
+    "checksum": "2ee6c74c:215885"
+  },
+  "jfb/keyed-memo/06_remove-one-1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "removeChild": 1
+    },
+    "checksum": "ac8ce512:215907"
+  },
+  "jfb/keyed-memo/07_create10k": {
+    "dom": {
+      "appendChild": 80000,
+      "composedPath": 1,
+      "createElement": 80000,
+      "get:parentNode": 1,
+      "set:className": 50000,
+      "set:textContent": 20000,
+      "setAttribute": 10000
+    },
+    "checksum": "cde31a4c:2170312"
+  },
+  "jfb/keyed-memo/08_create1k-after1k": {
+    "dom": {
+      "appendChild": 8000,
+      "composedPath": 1,
+      "createElement": 8000,
+      "get:parentNode": 1,
+      "set:className": 5000,
+      "set:textContent": 2000,
+      "setAttribute": 1000
+    },
+    "checksum": "2f7e6fca:434864"
+  },
+  "jfb/keyed-memo/09_clear1k": {
+    "dom": {
+      "composedPath": 1,
+      "get:parentNode": 1,
+      "set:textContent": 1
+    },
+    "checksum": "5ba78248:1102"
+  },
   "keyed/el/swap2": {
     "dom": {
       "insertBefore": 2
@@ -1343,5 +1433,21 @@
   "ssr/uibench/anim/100/32": {
     "dom": {},
     "checksum": "6d0d94a7:9438"
+  },
+  "reuse/hoisted-in-rows-1k": {
+    "dom": {},
+    "checksum": "5b9e963a:48899"
+  },
+  "reuse/props-children-1k": {
+    "dom": {},
+    "checksum": "c6d2df86:37901"
+  },
+  "reuse/same-root-1k": {
+    "dom": {},
+    "checksum": "7a014d52:15899"
+  },
+  "reuse/normalize-unkeyed-1k": {
+    "dom": {},
+    "checksum": "7a014d52:15899"
   }
 }

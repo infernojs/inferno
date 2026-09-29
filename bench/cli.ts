@@ -18,13 +18,13 @@ const commands: Record<string, Command> = {
   },
   micro: {
     summary: 'Node micro suite: ns/op, alloc B/op, exact DOM ops/op, checksums (counting DOM shim)',
-    usage: "micro --variants local,src:reproduce_issues [--cases 'jfb/keyed/*'] [--rounds 5] [--runtime node|d8 [--d8 <path>] [--metric time|instructions]] [--deterministic] [--gc-each] [--list] [--maps] [--ops] [--alloc-sites]",
+    usage: "micro --variants local,src:reproduce_issues [--cases 'jfb/keyed/*'] [--rounds 5] [--runtime node|d8 [--d8 <path>] [--metric time|instructions]] [--deterministic] [--gc-each [--young-mb 128]] [--list] [--maps] [--ops] [--alloc-sites] [--preload inferno-animation]",
     run: async (argv) => (await import('./commands/micro.ts')).default(argv),
   },
   run: {
     summary: 'Browser measurements: timing, trace (jfb total + stages), memory, counters (PMU), latency (input→present), frames',
     usage:
-      "run --mode timing|trace|memory|counters|latency|frames [--snapshot] [--duration ms] [--frames vsync|unthrottled] [--metric busy|jfb|total|jsHeap|embedderHeap|uaMemory] --variants local,npm:9.1.0 --workloads 'jfb:*' [--browser cft-152] [--headless new|shell|off] [--blocks 5 --iters 3] [--warmup jfb|none] [--throttle none|jfb] [--pin none|ccd0] [--sandbox on|off]",
+      "run --mode timing|trace|memory|counters|latency|frames [--snapshot] [--js-flags='--no-opt'] [--duration ms] [--frames vsync|unthrottled] [--metric busy|jfb|total|jsHeap|embedderHeap|uaMemory] --variants local,npm:9.1.0 --workloads 'jfb:*' [--browser cft-152] [--headless new|shell|off] [--blocks 5 --iters 3] [--warmup jfb|none] [--throttle none|jfb] [--pin none|ccd0] [--sandbox on|off]",
     run: async (argv) => (await import('./commands/run.ts')).default(argv),
   },
   profile: {
@@ -32,10 +32,25 @@ const commands: Record<string, Command> = {
     usage: "profile --variants local --workloads 'jfb:01_run1k' [--iters 20] [--browser autoexplore|cft-152] [--freq 20000] [--minify off]",
     run: async (argv) => (await import('./commands/profile.ts')).default(argv),
   },
+  bytecode: {
+    summary: 'Bytecode length of hot Inferno functions per variant (d8); fails if an inlinable one grew',
+    usage: 'bytecode --variants src:1d7245f8e,src:<ref> [--preload inferno-animation] [--d8 <path>]',
+    run: async (argv) => (await import('./commands/bytecode.ts')).default(argv),
+  },
   jit: {
     summary: 'V8 IC/map/deopt logging of measured ops: polymorphic/megamorphic sites and deopts in app code',
     usage: "jit --variants local --workloads 'jfb:*' [--iters 1] [--minify off]",
     run: async (argv) => (await import('./commands/jit.ts')).default(argv),
+  },
+  stages: {
+    summary: 'InfernoProf: instructions per rendering stage (per-slice hardware counters, Perfetto + trace_processor)',
+    usage: "stages --variants local,src:perf/x --workloads 'jfb:01_run1k' [--blocks 3] [--iters 3] [--window 1500] [--warmup jfb|none]",
+    run: async (argv) => (await import('./commands/stages.ts')).default(argv),
+  },
+  leak: {
+    summary: 'Leak check: in-page run/clear cycles, 3 heap snapshots, survivors with retaining paths',
+    usage: "leak --variants local,npm:9.1.0 [--app jfb-keyed] [--warmup 5] [--cycles 10] [--blocks 1] [--js-flags='--no-opt'] [--save]",
+    run: async (argv) => (await import('./commands/leak.ts')).default(argv),
   },
   aa: {
     summary: 'A/A run (X@A vs X@B): false-positive rate and detectable change per metric',

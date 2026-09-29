@@ -11,12 +11,15 @@ export interface MemoryMetrics {
   uaMemory: number | null;
   /** DOM/listener counters from Memory.getDOMCountersForLeakDetection. */
   counters: Record<string, number>;
-  /** Heap snapshot: count and self size per constructor/type (top entries). */
+  /** Heap snapshot: count and self size per constructor/type (every group). */
   heapObjects?: { name: string; count: number; selfSize: number }[];
 }
 
 async function fullGc(s: PageSession): Promise<void> {
   await s.cdp.send('HeapProfiler.collectGarbage');
+  await s.cdp.send('HeapProfiler.collectGarbage');
+  // Let concurrent sweeping (V8 and Oilpan) finish before sizes are read.
+  await s.frames(2);
   await s.cdp.send('HeapProfiler.collectGarbage');
 }
 
@@ -91,7 +94,8 @@ export async function measureMemory(s: PageSession, snapshot: boolean): Promise<
     counters,
   };
   if (snapshot) {
-    out.heapObjects = aggregateSnapshot(await takeSnapshot(s), 40);
+    // Every group: a top-N cut hides types that only grow a little between runs.
+    out.heapObjects = aggregateSnapshot(await takeSnapshot(s), Infinity);
   }
   return out;
 }
