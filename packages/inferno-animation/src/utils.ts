@@ -437,10 +437,201 @@ export function registerTransitionListener(
     maxDuration,
   );
   function cancel(): void {
+    if (done) return;
     done = true;
     cancelTimeout();
     rootNode.removeEventListener('transitioncancel', onTransitionEnd, false);
     rootNode.removeEventListener('transitionend', onTransitionEnd, false);
   }
   return cancel;
+}
+
+// A computed time in seconds; computed styles serialize in seconds, "ms" is accepted as well
+function parseTime(value: string | undefined): number {
+  if (value === undefined) return 0;
+  const time = parseFloat(value);
+  if (Number.isNaN(time)) return 0;
+  return value.trimEnd().endsWith('ms') ? time / 1000 : time;
+}
+
+// The transitions that the computed transition lists of style can run: entries with a positive
+// combined duration (a shorter duration or delay list repeats), and the longest of them in seconds.
+// Lists that can't be parsed count as one transition of unknown duration, as before.
+function runnableTransitions(style: CSSStyleDeclaration): {
+  count: number;
+  longest: number;
+} {
+  const properties = style.getPropertyValue('transition-property');
+  if (!properties) return { count: 1, longest: 0 };
+  const names = properties.split(',');
+  const durations = style.getPropertyValue('transition-duration').split(',');
+  const delays = style.getPropertyValue('transition-delay').split(',');
+  let count = 0;
+  let longest = 0;
+  for (let i = 0; i < names.length; i++) {
+    // A property listed again replaces the earlier entry
+    const name = names[i].trim();
+    let repeated = false;
+    for (let j = i + 1; j < names.length && !repeated; j++) {
+      repeated = names[j].trim() === name;
+    }
+    if (repeated) continue;
+    const combined =
+      Math.max(parseTime(durations[i % durations.length]), 0) +
+      parseTime(delays[i % delays.length]);
+    if (combined > 0) {
+      count++;
+      if (combined > longest) longest = combined;
+    }
+  }
+  return { count, longest };
+}
+
+interface TransitionWait {
+  node: Element;
+  // Transitions still to end or be cancelled; each property counts once
+  left: number;
+  seen: Set<string> | null;
+  done: boolean;
+  callback: () => void;
+  root: Node | null;
+  group: TimerGroup | null;
+  // An image that hasn't loaded starts its fallback timer on load
+  onLoad: (() => void) | null;
+}
+
+interface TimerGroup {
+  delay: number;
+  timer: ReturnType<typeof setTimeout>;
+  waits: TransitionWait[];
+  live: number;
+}
+
+const waitsByNode = new Map<Element, TransitionWait[]>();
+const rootWaits = new Map<Node, number>();
+// Fallback timers of the current task by delay: waits registered in one task share them
+let taskGroups: Map<number, TimerGroup> | null = null;
+
+function onTransitionEvent(event: Event): void {
+  // Transitions of ::before and ::after target their element as well
+  if ((event as TransitionEvent).pseudoElement) return;
+  const waits = waitsByNode.get(event.target as Element);
+  if (waits === undefined) return;
+  const name = (event as TransitionEvent).propertyName;
+  for (const wait of waits.slice()) {
+    if (wait.done) continue;
+    if (name) {
+      if (wait.seen === null) wait.seen = new Set();
+      else if (wait.seen.has(name)) continue;
+      wait.seen.add(name);
+    }
+    if (--wait.left <= 0) finishWait(wait, true);
+  }
+}
+
+function releaseWait(wait: TransitionWait): void {
+  wait.done = true;
+  const waits = waitsByNode.get(wait.node);
+  if (waits !== undefined) {
+    const index = waits.indexOf(wait);
+    if (index !== -1) waits.splice(index, 1);
+    if (waits.length === 0) waitsByNode.delete(wait.node);
+  }
+  const root = wait.root;
+  if (root !== null) {
+    const count = rootWaits.get(root)! - 1;
+    if (count === 0) {
+      rootWaits.delete(root);
+      root.removeEventListener('transitionend', onTransitionEvent, true);
+      root.removeEventListener('transitioncancel', onTransitionEvent, true);
+    } else {
+      rootWaits.set(root, count);
+    }
+  }
+  const group = wait.group;
+  if (group !== null && --group.live === 0) {
+    clearTimeout(group.timer);
+    // A wait that the task registers later needs a timer of its own
+    if (taskGroups?.get(group.delay) === group) taskGroups.delete(group.delay);
+  }
+  if (wait.onLoad !== null) {
+    wait.node.removeEventListener('load', wait.onLoad);
+    wait.node.removeEventListener('error', wait.onLoad);
+  }
+}
+
+function finishWait(wait: TransitionWait, callback: boolean): void {
+  if (wait.done) return;
+  releaseWait(wait);
+  if (callback) wait.callback();
+}
+
+function joinTimerGroup(wait: TransitionWait, delay: number): void {
+  if (taskGroups === null) {
+    const groups = (taskGroups = new Map());
+    queueMicrotask(() => {
+      if (taskGroups === groups) taskGroups = null;
+    });
+  }
+  let group = taskGroups.get(delay);
+  if (group === undefined) {
+    const created: TimerGroup = {
+      delay,
+      waits: [],
+      live: 0,
+      timer: setTimeout(() => {
+        for (const member of created.waits) finishWait(member, true);
+      }, delay),
+    };
+    taskGroups.set(delay, (group = created));
+  }
+  group.waits.push(wait);
+  group.live++;
+  wait.group = group;
+}
+
+/**
+ * Calls done once the transitions that node's computed style can run have ended or been cancelled,
+ * or after the longest of them plus 100 ms. One capture listener per root node serves every wait,
+ * and waits registered in one task share their fallback timers. Returns a cancel function.
+ */
+export function waitForTransitions(
+  node: Element,
+  done: () => void,
+): () => void {
+  const { count, longest } = runnableTransitions(window.getComputedStyle(node));
+  const root = node.getRootNode();
+  const wait: TransitionWait = {
+    node,
+    left: count,
+    seen: null,
+    done: false,
+    callback: done,
+    root,
+    group: null,
+    onLoad: null,
+  };
+  const waits = waitsByNode.get(node);
+  if (waits === undefined) waitsByNode.set(node, [wait]);
+  else waits.push(wait);
+  const rootCount = rootWaits.get(root) ?? 0;
+  if (rootCount === 0) {
+    root.addEventListener('transitionend', onTransitionEvent, true);
+    root.addEventListener('transitioncancel', onTransitionEvent, true);
+  }
+  rootWaits.set(root, rootCount + 1);
+  const delay = longest > 0 ? Math.round(longest * 1000) + 100 : 0;
+  if (node.nodeName === 'IMG' && !(node as HTMLImageElement).complete) {
+    wait.onLoad = () => {
+      node.removeEventListener('load', wait.onLoad!);
+      node.removeEventListener('error', wait.onLoad!);
+      wait.onLoad = null;
+      if (!wait.done) joinTimerGroup(wait, delay);
+    };
+    node.addEventListener('load', wait.onLoad);
+    node.addEventListener('error', wait.onLoad);
+  } else {
+    joinTimerGroup(wait, delay);
+  }
+  return () => finishWait(wait, false);
 }

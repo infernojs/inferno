@@ -84,6 +84,23 @@ describe('coordinated layout moves', () => {
     container.remove();
   });
 
+  it('registers no listener or timer of its own for each moving item', async () => {
+    const listeners = spyOn(
+      EventTarget.prototype,
+      'addEventListener',
+    ).and.callThrough();
+    const timers = spyOn(window, 'setTimeout').and.callThrough();
+    render(list(['D', 'C', 'B', 'A']), container);
+    await Promise.resolve();
+    frame();
+    expect(card('A').classList.contains('Card-move-active')).toBe(true);
+    expect(
+      listeners.calls.all().filter((call) => call.object instanceof Element)
+        .length,
+    ).toBe(0);
+    expect(timers.calls.count()).toBeLessThanOrEqual(1);
+  });
+
   it('measures each sibling once before and once after a reorder with insertion', async () => {
     render(list(['D', 'X', 'A', 'B', 'C']), container);
     await Promise.resolve();

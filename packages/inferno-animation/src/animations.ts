@@ -11,7 +11,6 @@ import {
   multiply,
   ownLinear,
   parentSpace,
-  registerTransitionListener,
   removeClassName,
   resetDisplay,
   restoreStyles,
@@ -21,6 +20,7 @@ import {
   setDisplay,
   setTransform,
   solve,
+  waitForTransitions,
 } from './utils';
 import {
   addGlobalAnimationSource,
@@ -207,9 +207,7 @@ function _didAppear(
     case AnimationPhase.REGISTER_LISTENERS:
       // Start the timeout after activation; zero-duration transitions must not
       // clean up before the following frame installs the target styles.
-      enter.stop = registerTransitionListener([dom], () =>
-        _finishEnter(dom, enter),
-      );
+      enter.stop = waitForTransitions(dom, () => _finishEnter(dom, enter));
   }
 }
 
@@ -352,7 +350,7 @@ function _willDisappear(
       restoreStyles(style, leave.held);
       break;
     case AnimationPhase.REGISTER_LISTENERS:
-      registerTransitionListener([dom], callback);
+      waitForTransitions(dom, callback);
   }
 }
 
@@ -1016,9 +1014,7 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
         );
         break;
       case AnimationPhase.REGISTER_LISTENERS:
-        item.cancel = registerTransitionListener([node], () =>
-          finishMove(item),
-        );
+        item.cancel = waitForTransitions(node, () => finishMove(item));
         break;
     }
   }
