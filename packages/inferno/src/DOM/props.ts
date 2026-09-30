@@ -67,6 +67,9 @@ function patchStyle(lastAttrValue, nextAttrValue, dom): void {
       }
     }
   } else {
+    if (isString(lastAttrValue)) {
+      domStyle.cssText = '';
+    }
     for (style in nextAttrValue) {
       value = nextAttrValue[style];
       domStyle.setProperty(style, value);

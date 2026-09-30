@@ -155,6 +155,17 @@ describe('CSS style properties (JSX)', () => {
     expect(container.firstChild.style.color).toBe('');
   });
 
+  it('Should remove the declarations of a string style when it changes to an object', () => {
+    render(<div style="color:red;top:1px" />, container);
+    expect(container.firstChild.style.color).toBe('red');
+    expect(container.firstChild.style.top).toBe('1px');
+
+    render(<div style={{ left: '2px' }} />, container);
+    expect(container.firstChild.style.left).toBe('2px');
+    expect(container.firstChild.style.color).toBe('');
+    expect(container.firstChild.style.top).toBe('');
+  });
+
   // Test for CSS variable support, depends on browser
   if (isCSSvariablesSupported()) {
     it('Should support inline CSS variables string way', () => {
