@@ -129,6 +129,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
       duration: { type: 'string', default: '3000' },
       'js-flags': { type: 'string' },
       window: { type: 'string', default: '1500' },
+      parallel: { type: 'string', default: '1' },
       settle: { type: 'string', default: '1000' },
       baseline: { type: 'string' },
     },
@@ -150,6 +151,12 @@ export default async function runCmd(argv: string[]): Promise<number> {
   // reads the renderer's own counters, which the sandbox blocks too.
   const sandbox = mode === 'counters' || mode === 'alloc' ? false : values.sandbox !== 'off';
   const windowMs = Number(values.window);
+  // Pages at once. Only for modes whose numbers are per renderer thread or exact counts: tracing,
+  // PMU groups, frames and heap measurements need the machine to themselves.
+  const parallel = Number(values.parallel);
+  if (parallel > 1 && !['alloc', 'domcalls', 'allocsites', 'timing'].includes(mode)) {
+    throw new Error('--parallel is for --mode alloc, domcalls, allocsites or timing');
+  }
   const jsFlags = [...(values['js-flags'] ? values['js-flags'].split(/\s+/).filter(Boolean) : []), ...(mode === 'alloc' ? ['--expose-statistics'] : [])];
   const pmu = mode === 'counters' ? await Pmu.start() : null;
 
@@ -201,7 +208,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
       const browserCdp = await launched.browser.target().createCDPSession();
       try {
         const order = seededShuffle(jobs, Number(values.seed) * 7919 + b);
-        for (const [n, job] of order.entries()) {
+        const runJob = async (n: number, job: Job): Promise<void> => {
           if (!values.json) {
             process.stderr.write(`\rblock ${b + 1}/${blocks} ${n + 1}/${order.length} ${job.variant} ${job.w.id}`.padEnd(110).slice(0, 110));
           }
@@ -276,7 +283,7 @@ export default async function runCmd(argv: string[]): Promise<number> {
                 checksum: null,
                 error: null,
               });
-              continue;
+              return;
             }
             const before = async () => {
               if (mode === 'latency') {
@@ -388,7 +395,17 @@ export default async function runCmd(argv: string[]): Promise<number> {
             await s.close();
           }
           records.push(rec);
-        }
+        };
+        // --parallel: that many pages (each its own renderer) at once
+        let next = 0;
+        await Promise.all(
+          Array.from({ length: parallel }, async () => {
+            while (next < order.length) {
+              const n = next++;
+              await runJob(n, order[n]);
+            }
+          }),
+        );
       } finally {
         await launched.close();
       }

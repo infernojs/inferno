@@ -110,6 +110,7 @@ fuzz sequences and SSR.
   → +0.47 / +0.57 ms busy, attributed to the script stage.
 * A/A: micro 2/31 false positives (6.5 %, nominal 5 %), median detectable
   wall-time change ±5.4 %; counters: instruction CIs ≈ ±0.1 %.
+* `--parallel 4` (alloc): same medians as serial runs within iteration noise, 3.7× faster.
 * alloc mode: A/A 0/11 false positives (3 blocks × 3 iterations, default warmups);
   `+alloc:patch:8` → jfb select 92 → 588 KiB/op.
 
