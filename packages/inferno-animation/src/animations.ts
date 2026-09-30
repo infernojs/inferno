@@ -477,12 +477,12 @@ interface MoveItem {
   addedClasses: string;
   // Starts with an offset in the current animation pass, which carries the moves inside it along
   starting: boolean;
-  // No transition can run on the element before the move's classes are added
-  instant: boolean;
+  // The transitions that the element's computed transition lists can run before the move's
+  // classes are added, or null when the lists can't be read
+  runnable: Array<[string, number]> | null;
   // Another item moves the element now
   superseded: boolean;
   previous?: MoveItem;
-  ownedTransition?: Animation;
   cancel?: () => void;
 }
 interface MoveBatch {
@@ -501,10 +501,12 @@ interface MoveBatch {
   // Items that take over an element's running move, and whether any item moved
   retargets: number;
   moved: boolean;
-  // Elements with an author transition, when read before measuring
+  // Elements with an author transition, when read
   authors: Set<AnimatedElement> | null;
   // Elements whose transform a script animation sets, when read with the parent's animations
   scripted: Set<AnimatedElement> | null;
+  // Some measured element can run an author transition, so they are read after measuring
+  mayHaveAuthors: boolean;
   // How the transforms around the parent map offsets to the viewport, once something moves
   space: Linear | null;
   cancel?: () => void;
@@ -571,27 +573,11 @@ function hasAnimationName(names: string | undefined): boolean {
   }
   return false;
 }
-// The children of parent that run an author transition, read before the patch
-function authorTransitions(parent: Node): Set<AnimatedElement> {
-  const authors = new Set<AnimatedElement>();
-  for (const animation of parentTransitions(parent)) {
-    if (!('transitionProperty' in animation)) continue;
-    const node = transitionTarget(animation, parent);
-    if (node === null) continue;
-    const item = moving.get(node);
-    if (
-      animation.playState !== 'finished' &&
-      animation.playState !== 'idle' &&
-      animation !== item?.ownedTransition &&
-      animation !== item?.previous?.ownedTransition
-    )
-      authors.add(node);
-  }
-  return authors;
-}
 // Reads the children of the batch's parent that run an author transition, when authors is set,
 // and those whose transform a script animation sets (not one of a pseudo-element, as the
-// element's own query)
+// element's own query). An element whose running move is retargeted transitions that move's
+// property only for it: an element has one transition per property. A move that has not started
+// runs no transition.
 function readChildAnimations(batch: MoveBatch, authors: boolean): void {
   const parent = batch.parent;
   const found = new Set<AnimatedElement>();
@@ -608,17 +594,42 @@ function readChildAnimations(batch: MoveBatch, authors: boolean): void {
         scripted.add(node);
       continue;
     }
+    const property = (animation as CSSTransition).transitionProperty;
     const item = moving.get(node);
     if (
       animation.playState !== 'finished' &&
       animation.playState !== 'idle' &&
-      animation !== item?.ownedTransition &&
-      animation !== item?.previous?.ownedTransition
+      property !== item?.previous?.property
     )
       found.add(node);
   }
   if (authors) batch.authors = found;
   batch.scripted = scripted;
+}
+// Whether the runnable transitions include one that is not of the property own: without any
+// runnable transition no author transition can run (a transition runs only while its property is
+// listed with a positive combined duration). Unknown lists may run one.
+function mayRunOther(
+  runnable: Array<[string, number]> | null,
+  own: string | null,
+): boolean {
+  if (runnable === null) return true;
+  for (const [name] of runnable) {
+    if (name !== own && name !== '-webkit-' + own) return true;
+  }
+  return false;
+}
+// Whether the runnable transitions can transition property
+function mayTransition(
+  runnable: Array<[string, number]> | null,
+  property: string,
+): boolean {
+  if (runnable === null) return true;
+  for (const [name] of runnable) {
+    if (name === property || name === 'all' || name === '-webkit-' + property)
+      return true;
+  }
+  return false;
 }
 
 // How far the patch in progress has shifted the children of parent. Their list is patched after
@@ -690,13 +701,13 @@ export function componentWillMove(
     moved: false,
     authors: null,
     scripted: null,
+    mayHaveAuthors: false,
     space: null,
     animation,
     activeClasses: cls.active.split(' ').filter((name) => name !== ''),
     ownerClasses: null,
   };
   const skipped: MoveItem[] = [];
-  const authors = authorTransitions(parent);
   for (
     let child = parent.firstChild;
     child !== null;
@@ -706,7 +717,7 @@ export function componentWillMove(
     const node = child as AnimatedElement;
     const previous = moving.get(node);
     if (leaving.has(node)) continue; // Its leave ends its move
-    if (entering.has(node) || authors.has(node)) {
+    if (entering.has(node)) {
       if (previous) skipped.push(previous);
       continue;
     }
@@ -769,7 +780,7 @@ function addMoveItem(
     initialized: false,
     addedClasses: '',
     starting: false,
-    instant: false,
+    runnable: null,
     superseded: false,
     previous,
   };
@@ -777,14 +788,6 @@ function addMoveItem(
   batch.remaining++;
   moving.set(node, item);
   return item;
-}
-
-// A computed transition-duration or -delay list of zeros, such as "0s" or "0s, 0ms"
-function isZeroTime(value: string): boolean {
-  for (const time of value.split(',')) {
-    if (parseFloat(time) !== 0) return false;
-  }
-  return true;
 }
 
 function disableTransitions(item: MoveItem): void {
@@ -930,10 +933,11 @@ function measureMove(
     item.translate = style.translate || 'none';
     item.keyframed = hasAnimationName(style.animationName);
     item.linear = ownLinear(style);
-    item.instant =
-      item.transitions.length === 0 &&
-      isZeroTime(style.transitionDuration) &&
-      isZeroTime(style.transitionDelay);
+    item.runnable = transitionEntries(style);
+    // Before its move starts, any transition of the element is an author's; a retargeted item's
+    // lists are read before its running move is reset
+    if (item.transitions.length === 0 && mayRunOther(item.runnable, null))
+      item.batch.mayHaveAuthors = true;
   }
 }
 
@@ -1004,7 +1008,8 @@ function startMove(item: MoveItem, outer: MoveItem | null): void {
   item.offset = saveStyles(node.style, [item.property]);
   item.initialized = true;
   // Without a transition the start offset applies at once
-  if (!item.transitions.length && !item.instant) {
+  // Without a transition of the move's property the start offset applies at once
+  if (!item.transitions.length && mayTransition(item.runnable, item.property)) {
     disableTransitions(item);
   }
   writeOffset(
@@ -1031,6 +1036,19 @@ function transitionTranslate(item: MoveItem): void {
   markApplied(style, item.overrides);
 }
 
+// Whether a retargeted item can run a transition besides its running move
+function retargetsMayHaveAuthors(batch: MoveBatch): boolean {
+  let may = false;
+  for (const item of batch.items) {
+    const previous = item.previous;
+    if (item.done || previous === undefined || moving.get(item.node) !== item)
+      continue;
+    const runnable = transitionEntries(window.getComputedStyle(item.node));
+    if (mayRunOther(runnable, previous.property)) may = true;
+  }
+  return may;
+}
+
 function runMove(phase: AnimationPhase, batch: MoveBatch): void {
   if (moveBatches.get(batch.parent) !== batch) return;
   // The first phases belong to enter and leave animations
@@ -1049,11 +1067,14 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
   // moves it with translate. Before a running move is reset they are read in READ_MOVES;
   // otherwise once after measuring, and only when something moved.
   if (phase === AnimationPhase.READ_MOVES) {
-    if (batch.retargets !== 0) readChildAnimations(batch, true);
+    // The reads also bring the style up to date after the patch, before RESET_MOVES writes
+    if (batch.retargets !== 0 && retargetsMayHaveAuthors(batch))
+      readChildAnimations(batch, true);
   } else if (
     phase === AnimationPhase.SELECT_MOVES &&
     batch.authors === null &&
-    batch.moved
+    batch.moved &&
+    batch.mayHaveAuthors
   ) {
     readChildAnimations(batch, true);
   }
@@ -1068,20 +1089,6 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
   if (verify) {
     const leavers = batch.items.filter(isLeaving);
     if (leavers.length !== 0) finishHeld(leavers);
-  }
-  if (phase === AnimationPhase.REGISTER_LISTENERS) {
-    for (const animation of parentTransitions(batch.parent)) {
-      if ('transitionProperty' in animation) {
-        const node = transitionTarget(animation, batch.parent);
-        const item = node && moving.get(node);
-        if (
-          item &&
-          item.batch === batch &&
-          animation.transitionProperty === item.property
-        )
-          item.ownedTransition = animation;
-      }
-    }
   }
   for (const item of batch.items) {
     if (item.done || item.superseded) continue;

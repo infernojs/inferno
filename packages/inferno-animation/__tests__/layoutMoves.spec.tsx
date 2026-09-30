@@ -490,7 +490,8 @@ describe('coordinated layout moves', () => {
     render(list(['D', 'A', 'B', 'C']), container);
     await Promise.resolve();
     frame();
-    expect(subtreeQueries).toBeLessThanOrEqual(3);
+    // No moved element can run a transition of its own (jsdom computes all 0s)
+    expect(subtreeQueries).toBe(0);
     for (const count of elementQueries.values()) expect(count).toBe(1);
     expect(card('A').classList.contains('Card-move-active')).toBe(true);
   });
@@ -533,14 +534,98 @@ describe('coordinated layout moves', () => {
       };
     render(list(['C', 'D', 'A', 'B']), container);
     await Promise.resolve();
-    // Before the patch and after it
-    expect(subtreeQueries).toBe(2);
+    expect(subtreeQueries).toBe(1);
     expect(elementQueries).toBe(0);
     expect(card('B').style.getPropertyValue('translate')).not.toBe('');
     expect(card('B').style.transform).toBe('');
     // An animation of a pseudo-element leaves the element's transform alone
     expect(card('C').style.getPropertyValue('translate')).toBe('');
     expect(card('C').style.transform).not.toBe('');
+  });
+
+  it('queries the parent once when a moved element can run an author background-color transition, and leaves that element in place', async () => {
+    const computed = window.getComputedStyle;
+    spyOn(window, 'getComputedStyle').and.callFake(
+      (node: Element, pseudo?: string | null) => {
+        const style = computed.call(window, node, pseudo);
+        if (node !== card('B')) return style;
+        const lists: Record<string, string> = {
+          'transition-property': 'background-color',
+          'transition-duration': '1s',
+          'transition-delay': '0s',
+        };
+        return new Proxy(style, {
+          get: (target, key) =>
+            key === 'getPropertyValue'
+              ? (name: string) =>
+                  name in lists ? lists[name] : target.getPropertyValue(name)
+              : typeof target[key] === 'function'
+                ? target[key].bind(target)
+                : target[key],
+        });
+      },
+    );
+    let queries = 0;
+    const parent = container.firstElementChild!;
+    parent.getAnimations = () => {
+      queries++;
+      return [
+        {
+          transitionProperty: 'background-color',
+          playState: 'running',
+          effect: { target: card('B') },
+        },
+      ] as any;
+    };
+    render(list(['D', 'A', 'B', 'C']), container);
+    await Promise.resolve();
+    frame();
+    expect(queries).toBe(1);
+    expect(card('B').style.transform).toBe('');
+    expect(card('B').classList.contains('Card-move-active')).toBe(false);
+    expect(card('A').classList.contains('Card-move-active')).toBe(true);
+  });
+  it('queries the parent once when a moved element can run an author transform transition, and leaves that element in place', async () => {
+    const computed = window.getComputedStyle;
+    spyOn(window, 'getComputedStyle').and.callFake(
+      (node: Element, pseudo?: string | null) => {
+        const style = computed.call(window, node, pseudo);
+        if (node !== card('B')) return style;
+        const lists: Record<string, string> = {
+          'transition-property': 'transform',
+          'transition-duration': '1s',
+          'transition-delay': '0s',
+        };
+        return new Proxy(style, {
+          get: (target, key) =>
+            key === 'getPropertyValue'
+              ? (name: string) =>
+                  name in lists ? lists[name] : target.getPropertyValue(name)
+              : typeof target[key] === 'function'
+                ? target[key].bind(target)
+                : target[key],
+        });
+      },
+    );
+    let queries = 0;
+    const parent = container.firstElementChild!;
+    parent.getAnimations = () => {
+      queries++;
+      return [
+        {
+          transitionProperty: 'transform',
+          playState: 'running',
+          effect: { target: card('B') },
+        },
+      ] as any;
+    };
+    render(list(['D', 'A', 'B', 'C']), container);
+    await Promise.resolve();
+    frame();
+    expect(queries).toBe(1);
+    expect(card('B').style.transform).toBe('');
+    expect(card('B').classList.contains('Card-move-active')).toBe(false);
+    expect(card('A').classList.contains('Card-move-active')).toBe(true);
   });
 
   it('measures leaving elements together after the commit', async () => {
