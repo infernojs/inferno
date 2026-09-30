@@ -123,6 +123,100 @@ describe('animation glitches', () => {
     expect(box.className).toBe('Glitch-enter Glitch-enter-active');
   });
 
+  describe('leaves that interrupt an enter', () => {
+    // The enter's computed transition lists and reached values, which jsdom does not compute
+    function stubComputed(
+      match: (node: Element) => boolean,
+      values: Record<string, string>,
+    ) {
+      const computed = window.getComputedStyle;
+      spyOn(window, 'getComputedStyle').and.callFake(
+        (node: Element, pseudo?: string | null) => {
+          const style = computed.call(window, node, pseudo);
+          if (!match(node)) return style;
+          return new Proxy(style, {
+            get: (target, key) =>
+              key === 'getPropertyValue'
+                ? (name: string) =>
+                    name in values
+                      ? values[name]
+                      : target.getPropertyValue(name)
+                : typeof target[key] === 'function'
+                  ? target[key].bind(target)
+                  : target[key],
+          });
+        },
+      );
+    }
+    function boxes(ids: string[]) {
+      return (
+        <section>
+          {ids.map((id) => (
+            <Box key={id} id={id} animation="Glitch" />
+          ))}
+        </section>
+      );
+    }
+    const ids = (count: number) =>
+      Array.from({ length: count }, (_, i) => 'b' + i);
+
+    it('holds the values of the properties its transition lists name, until the leave activates', async () => {
+      render(page('box', undefined, undefined), container);
+      const box = element('box');
+      frame();
+      frame();
+      const asked = jasmine.createSpy('getAnimations').and.returnValue([]);
+      box.getAnimations = asked;
+      stubComputed((node) => node === box, {
+        'transition-property': 'opacity, margin',
+        'transition-duration': '1s',
+        'transition-delay': '0s',
+        opacity: '0.4',
+        'margin-top': '3px',
+        'margin-bottom': '3px',
+        'margin-left': '0px',
+        'margin-right': '0px',
+      });
+      render(page(null), container);
+      frame();
+      expect(box.style.opacity).toBe('0.4');
+      expect(box.style.marginTop).toBe('3px');
+      expect(asked).not.toHaveBeenCalled();
+      frame();
+      expect(box.style.opacity).toBe('');
+      expect(box.style.marginTop).toBe('');
+    });
+
+    for (const [count, exact] of [
+      [16, true],
+      [17, false],
+    ] as const) {
+      it(`${exact ? 'asks' : 'does not ask'} ${count} elements that transition all for their animations`, async () => {
+        render(boxes(ids(count)), container);
+        frame();
+        frame();
+        const asked = jasmine.createSpy('getAnimations').and.returnValue([]);
+        for (const id of ids(count)) element(id).getAnimations = asked;
+        stubComputed(
+          (node) =>
+            ids(count).includes((node as HTMLElement).dataset?.id ?? ''),
+          {
+            'transition-property': 'all',
+            'transition-duration': '1s',
+            'transition-delay': '0s',
+            opacity: '0.5',
+          },
+        );
+        const removed = ids(count).map(element);
+        render(boxes([]), container);
+        frame();
+        expect(asked.calls.count()).toBe(exact ? count : 0);
+        for (const box of removed)
+          expect(box.style.opacity).toBe(exact ? '' : '0.5');
+      });
+    }
+  });
+
   // Section 13: the expiry of global animation sources never started, and then counted frames
   describe('global animation sources', () => {
     beforeEach(async () => {

@@ -20,6 +20,7 @@ import {
   setDisplay,
   setTransform,
   solve,
+  transitionEntries,
   waitForTransitions,
 } from './utils';
 import {
@@ -90,6 +91,8 @@ interface Leave {
   // The enter that the leave interrupts, the values that the enter's transitions had reached, and
   // the inline declarations that holding them replaced
   enter: Enter | null;
+  // Whether the values the enter reached are read exactly, decided for the leaves of a pass together
+  exact: boolean | null;
   reached: Array<[string, string]>;
   held: SavedStyle[];
   // The application's inline width and height
@@ -211,10 +214,94 @@ function _didAppear(
   }
 }
 
-// The values that the running transitions of dom have reached, except its width and height
-function reachedValues(dom: AnimatedElement): Array<[string, string]> {
+// Leaves that interrupt an enter and have not been measured. The first of them that is measured
+// decides for all: an element's own animation query sorts every animation of the document, so the
+// exact query is used only for a few of them.
+let interrupting: Leave[] = [];
+const EXACT_INTERRUPTS = 16;
+
+// Longhands of the shorthands a transition list may name
+const LONGHANDS: Record<string, string[]> = {
+  margin: ['margin-top', 'margin-right', 'margin-bottom', 'margin-left'],
+  padding: ['padding-top', 'padding-right', 'padding-bottom', 'padding-left'],
+  inset: ['top', 'right', 'bottom', 'left'],
+  'border-width': [
+    'border-top-width',
+    'border-right-width',
+    'border-bottom-width',
+    'border-left-width',
+  ],
+  'border-color': [
+    'border-top-color',
+    'border-right-color',
+    'border-bottom-color',
+    'border-left-color',
+  ],
+  'border-radius': [
+    'border-top-left-radius',
+    'border-top-right-radius',
+    'border-bottom-right-radius',
+    'border-bottom-left-radius',
+  ],
+};
+// What a transition of all holds when the enter's own transitions are not queried: the properties
+// that enter and leave animations commonly transition, those of index.css included
+const TRANSITIONED_BY_ALL = [
+  'opacity',
+  'transform',
+  'translate',
+  'scale',
+  'rotate',
+  'filter',
+  'clip-path',
+  'box-shadow',
+  'color',
+  'background-color',
+  'max-width',
+  'max-height',
+  'min-width',
+  'min-height',
+  ...LONGHANDS.inset,
+  ...LONGHANDS.margin,
+  ...LONGHANDS.padding,
+  ...LONGHANDS['border-width'],
+];
+
+// The values that the running transitions of dom have reached, except its width and height. The
+// properties come from the computed transition lists; a list with all asks the element's own
+// animations when exact, and holds the common properties otherwise. Holding a property that
+// does not transition keeps its current value, as it would be anyway.
+function reachedValues(
+  dom: AnimatedElement,
+  exact: boolean,
+): Array<[string, string]> {
+  const style = window.getComputedStyle(dom);
+  const entries = transitionEntries(style);
+  if (entries === null) return [];
+  const properties: string[] = [];
+  for (const [name] of entries) {
+    if (name === 'all') {
+      if (exact) return animatedValues(dom, style);
+      properties.push(...TRANSITIONED_BY_ALL);
+    } else {
+      properties.push(...(LONGHANDS[name] ?? [name]));
+    }
+  }
   const reached: Array<[string, string]> = [];
-  let style: CSSStyleDeclaration | null = null;
+  for (const property of properties) {
+    if (property === 'width' || property === 'height') continue;
+    const value = style.getPropertyValue(property);
+    if (value) reached.push([property, value]);
+  }
+  return reached;
+}
+
+// The values that the running transitions of dom have reached, from its own animations
+function animatedValues(
+  dom: AnimatedElement,
+  style: CSSStyleDeclaration,
+): Array<[string, string]> {
+  const reached: Array<[string, string]> = [];
   for (const animation of dom.getAnimations?.() || []) {
     if (
       'transitionProperty' in animation &&
@@ -222,7 +309,6 @@ function reachedValues(dom: AnimatedElement): Array<[string, string]> {
     ) {
       const property = (animation as CSSTransition).transitionProperty;
       if (property !== 'width' && property !== 'height') {
-        style ??= window.getComputedStyle(dom);
         reached.push([property, style.getPropertyValue(property)]);
       }
     }
@@ -286,11 +372,13 @@ export function componentWillDisappear(
       : getDimensions(dom),
     deferred,
     enter: enter ?? null,
+    exact: null,
     reached: [],
     held: [],
     sizes: [],
     hold: null,
   };
+  if (enter !== undefined) interrupting.push(leave);
   queueAnimation((phase) => {
     _willDisappear(phase, dom, callback, leave);
   }, dom.parentNode);
@@ -321,7 +409,15 @@ function _willDisappear(
         dimensions.width = measured.width;
         dimensions.height = measured.height;
       }
-      if (leave.enter !== null) leave.reached = reachedValues(dom);
+      if (leave.enter !== null) {
+        if (leave.exact === null) {
+          const leaves = interrupting;
+          interrupting = [];
+          const exact = leaves.length <= EXACT_INTERRUPTS;
+          for (const other of leaves) other.exact = exact;
+        }
+        leave.reached = reachedValues(dom, leave.exact ?? true);
+      }
       if (move !== undefined) leave.hold = reachedOffset(move);
       return;
     case AnimationPhase.INITIALIZE:

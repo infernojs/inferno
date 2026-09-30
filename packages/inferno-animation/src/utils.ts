@@ -454,22 +454,22 @@ function parseTime(value: string | undefined): number {
   return value.trimEnd().endsWith('ms') ? time / 1000 : time;
 }
 
-// The transitions that the computed transition lists of style can run: entries with a positive
-// combined duration (a shorter duration or delay list repeats), and the longest of them in seconds.
-// Lists that can't be parsed count as one transition of unknown duration, as before.
-function runnableTransitions(style: CSSStyleDeclaration): {
-  count: number;
-  longest: number;
-} {
+/**
+ * The properties that the computed transition lists of style can transition: entries with a
+ * positive combined duration (a shorter duration or delay list repeats; a property listed again
+ * replaces the earlier entry), with their combined durations in seconds. Null when the lists can't
+ * be read.
+ */
+export function transitionEntries(
+  style: CSSStyleDeclaration,
+): Array<[string, number]> | null {
   const properties = style.getPropertyValue('transition-property');
-  if (!properties) return { count: 1, longest: 0 };
+  if (!properties) return null;
   const names = properties.split(',');
   const durations = style.getPropertyValue('transition-duration').split(',');
   const delays = style.getPropertyValue('transition-delay').split(',');
-  let count = 0;
-  let longest = 0;
+  const entries: Array<[string, number]> = [];
   for (let i = 0; i < names.length; i++) {
-    // A property listed again replaces the earlier entry
     const name = names[i].trim();
     let repeated = false;
     for (let j = i + 1; j < names.length && !repeated; j++) {
@@ -479,12 +479,24 @@ function runnableTransitions(style: CSSStyleDeclaration): {
     const combined =
       Math.max(parseTime(durations[i % durations.length]), 0) +
       parseTime(delays[i % delays.length]);
-    if (combined > 0) {
-      count++;
-      if (combined > longest) longest = combined;
-    }
+    if (combined > 0) entries.push([name, combined]);
   }
-  return { count, longest };
+  return entries;
+}
+
+// The transitions that style can run and the longest of them in seconds. Lists that can't be read
+// count as one transition of unknown duration, as before.
+function runnableTransitions(style: CSSStyleDeclaration): {
+  count: number;
+  longest: number;
+} {
+  const entries = transitionEntries(style);
+  if (entries === null) return { count: 1, longest: 0 };
+  let longest = 0;
+  for (const [, combined] of entries) {
+    if (combined > longest) longest = combined;
+  }
+  return { count: entries.length, longest };
 }
 
 interface TransitionWait {
