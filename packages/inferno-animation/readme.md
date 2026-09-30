@@ -177,11 +177,13 @@ removals before them have shifted their group. That needs move hooks on the
 groups: inside plain elements the items start from the shifted positions.
 
 An element hidden with `display: none` has no position: one that becomes visible
-in a reordering update appears in place. When a CSS keyframe animation sets an
-item's `transform`, which would override the move's transform, also after it has
-finished with `animation-fill-mode: forwards`, the item moves with the
-`translate` property instead, and the move classes' `transform` transition
-applies to `translate`.
+in a reordering update appears in place. An item that runs a CSS animation, also
+one that has finished with `animation-fill-mode: forwards`, or whose `transform`
+a script animation (`element.animate`) sets, moves with the `translate` property
+instead, because the animation would override the move's transform. The move
+classes' `transform` transition then applies to `translate`. A CSS animation is
+recognized by its computed `animation-name`, so an item moves with `translate`
+also when its animation leaves the transform alone; the movement looks the same.
 
 Elements still entering or leaving, or running an author CSS transition, are
 excluded from move transforms. On a reorder those elements move directly to
@@ -208,8 +210,20 @@ mounted does not animate when a sibling keyed fragment removes an item on its
 own, for example through `setState` inside that fragment.
 
 A leave that interrupts an enter starts from the size and values the enter has
-reached. An element that leaves before its enter has started its transitions is
-removed at once, without a leave animation: nothing of it has been visible.
+reached: those of the properties that the element's computed transition lists
+name. For a list with `all`, such as the one of `index.css`, the values are
+read exactly while at most 16 leaves of an update interrupt an enter; beyond
+that, the properties that enter and leave animations commonly transition are
+held (opacity, transforms, filter, clip path, shadows, colors, insets, margins,
+paddings, border widths, and minimum and maximum sizes). An element that leaves
+before its enter has started its transitions is removed at once, without a leave
+animation: nothing of it has been visible.
+
+An enter, leave or move ends when the transitions that its element's computed
+transition lists can run have ended or been cancelled, or after the longest of
+them plus 100 ms. Entries with a zero duration and delay never run and are not
+waited for, and transitions of `::before` and `::after` belong to those
+pseudo-elements.
 
 A leaving element that was moving stays where its move has brought it, also
 when its whole list is removed or replaced. Its offset is kept in the

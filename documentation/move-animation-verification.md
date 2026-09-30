@@ -6,7 +6,8 @@ Verified against master `1d7245f8e` and the original staged feature snapshot on
 on the same day cut the cost of the fix, measured against master and against the
 first revision ("original fix" below). A third on 2026-09-28 limits move
 animations to order and membership changes and measures leaving elements after
-the commit.
+the commit. A fourth on 2026-09-30 cuts the cost of the animations themselves
+(see "Animation cost").
 
 ## Implementation decisions
 
@@ -81,11 +82,11 @@ Tests are in `packages/inferno/__tests__/moveAnimationRegressions.spec.tsx`,
 
 - TypeScript `--noEmit`, the package build, and ESLint and Prettier on changed
   files pass.
-- Full Jest: **3,489 passed**, 17 browser-only tests skipped. Separate server suite
+- Full Jest: **3,595 passed**, 44 browser-only tests skipped. Separate server suite
   without a DOM: **13 passed**.
 - Browser matrix, **24 configurations passed**: Firefox and headless Chromium ×
-  Babel/TypeScript/SWC × compat off/on × minification off/on (2,759 specs without
-  and 2,942 with compat). A windowed Chromium on the verification machine fails the
+  Babel/TypeScript/SWC × compat off/on × minification off/on (2,894 specs without
+  and 3,077 with compat). A windowed Chromium on the verification machine fails the
   same 46 frame-dependent specs for this branch and for the original fix alike.
 - New regressions: class hooks assigned in the constructor or `componentWillMount`,
   the first hooked item of an existing list, a list hydrated before any hook, a list
@@ -112,14 +113,18 @@ pnpm run test:transformers
 
 ## Bundle size
 
-Brotli bytes, same toolchain for all three sources:
+Brotli bytes, same toolchain for all sources:
 
-| Bundle | Master | Original fix | Now |
-| --- | ---: | ---: | ---: |
-| `inferno` min UMD | 8,212 | 8,312 | 8,435 |
-| `inferno` ESM + terser | 8,149 | 8,265 | 8,371 |
-| Apps without inferno-animation (8 lab apps) | — | +72 to +160 | -81 to +23 |
-| Apps with inferno-animation (5 lab apps) | — | +1,623 to +1,742 | +2,173 to +2,229 |
+| Bundle | Master | Original fix | Head | Now |
+| --- | ---: | ---: | ---: | ---: |
+| `inferno` min UMD | 8,212 | 8,312 | 8,435 | 8,435 |
+| `inferno` ESM + terser | 8,149 | 8,265 | 8,371 | 8,371 |
+| Apps without inferno-animation (9 lab apps) | — | +72 to +160 | -81 to +23 | -81 to +23 |
+| Apps that import inferno-animation (5 lab apps) | — | +1,623 to +1,742 | +2,623 to +2,686 | +2,637 to +2,698 |
+| Apps that animate (3 lab apps) | — | — | +3,242 to +5,206 | +4,125 to +6,260 |
+
+"Head" is `866924483`, "Now" the revision described under "Animation cost", which adds about
+1 KB to the apps that animate (jfb keyed move: 16,201 to 17,271 bytes).
 
 Bundlers remove the move checks from apps without the package, which end up at
 master's size. The published core carries the owner counting and the adapter
@@ -187,3 +192,90 @@ Deterministic d8 samples with empty custom hooks (reconciler and registry only),
 steady state after 800 warm-up iterations: a 100-item list re-render costs +12%
 over master with class components (original fix +73%) and +21% with function
 components (+101%); a swap of class components costs +10% (+70%).
+
+## Animation cost
+
+A fourth revision on 2026-09-30 cut the cost of the animations themselves, without changing
+what they detect or how they look. Measured in the InfernoProf Chromium build (lab
+`run --mode alloc` and `domcalls`, three iterations) against master `1d7245f8e`, the series
+`473b876a1` and the glitch fixes `866924483` ("head").
+
+Chrome answers `getAnimations()` by collecting every animation of the document and sorting them
+in composite order, and comparing two CSS transitions walks the siblings of their elements. An
+element's own query takes that path as soon as the element has an animation, including a
+transition cancelled earlier in the same task. With 1000 running transitions, one query cost
+up to 180 billion instructions, and head queried per batch and per leaving element. The engine
+now asks the computed style where it can:
+
+- Completion: an enter, leave or move waits for the transitions that its computed transition
+  lists can run (a combined duration above zero). One capture listener per root node and one
+  timer per fallback delay and task replace two listeners and a timer per element. Head counted
+  zero-duration entries, which never end, so items stayed "moving" until the timeout and the
+  next update retargeted every survivor. Transition events of pseudo-elements no longer end the
+  element's wait, and `registerTransitionListener`'s cancel is idempotent.
+- Keyframed moves: a CSS animation is known from the computed `animation-name`, and only an item
+  without one is asked for its script animations. Its own query answers without the
+  document-wide sort when it has no animation. A retargeted item still has the move transition
+  that the reset has just cancelled, so in a batch with retargets one query of the parent
+  answers for every item.
+- Author transitions: the computed transition lists tell which moved elements could run a
+  transition besides the move's own. The parent is queried at most once per pass, and only
+  then. A moving element transitions its own property only for its move, which replaces the
+  query after activation. The same lists decide whether the move's property can transition at
+  all; only then are the element's transitions disabled for the start offset.
+- Interrupted enters: a leave holds the values of the properties that the element's transition
+  lists name. With `all`, the values come from the element's animations while at most 16 leaves
+  of an update interrupt an enter, and from the commonly animated properties beyond that (see
+  the README).
+- Inline styles: an element without inline declarations is not read property by property, and
+  the priority of a value the engine wrote is known.
+- Allocations: the common paths no longer split strings or filter arrays, solve the start offset
+  without matrices, and create an item's arrays only when it needs them.
+
+Renderer main-thread instructions per operation, from the input to the end of the next frame
+(median of three iterations; the ops of "Series" and "Head" that freeze take 8–10 s):
+
+| Operation, million instructions | Master | Series | Head | Now |
+| --- | ---: | ---: | ---: | ---: |
+| 100 items shuffle | 28.0 | 44.3 | 45.4 | 43.2 |
+| … after 30 warm-up runs | 26.8 | 41.3 | 42.3 | 40.6 |
+| 100 items with a keyframe animation shuffle | 45.2 | 62.7 | 87.9 | 75.2 |
+| 5 groups of 20 items reverse | 34.3 | 52.5 | 56.6 | 49.5 |
+| 100 items shuffle again during their moves | 40.6 | 60.7 | 63.7 | 59.5 |
+| every 5th of 100 leaves during moves | 10.8 | 59.3 | 60.0 | 53.6 |
+| 1000 items shuffle | 489 | 663 | 682 | 488 |
+| 1000 items during their moves: one goes last | 351 | 1,151 | 1,155 | 599 |
+| 500 moving items reverse back while 500 enter | 405 | 847 | 817 | 499 |
+| 500 items that just moved reverse while 500 enter | 286 | 700 | 687 | 292 |
+| 1000 entering items leave | 598 | 613 | 191,651 | 482 |
+| jfb fade: clear 1000 rows during their enters | 455 | 435 | 186,527 | 147² |
+| jfb move: clear 1000 rows during their enters | 458 | 127 | 171,330 | 482 |
+| jfb move: append 1000 rows to 1000 | 1,057 | 191,094 | 193,660 | 1,060 |
+| jfb move: remove one of 1000 | 26.4 | 1,141 | 1,165 | 655¹ |
+| jfb move: swap two of 1000 | 131 | 99.6 | 100.0 | 102 |
+
+¹ Depends on how many items the removal retargets: 655 when the moves of the previous removal
+still run, down to 89 in other runs when they have ended.
+² 481 in two other runs: the leaves start from however far the enters have got.
+
+The 100-item cases move `AnimatedMoveComponent`s in 150 ms; "during their moves" and "while
+… enter" use 1 s transitions. The 1000-item move cases were added to the lab for this revision:
+the first version of the keyframed-move change asked every retargeted item for its own
+animations, which took 59.7 billion instructions (3 s) in the "reverse back while 500 enter"
+case.
+
+| DOM calls in the 1.2 s window | Master | Series | Head | Now |
+| --- | ---: | ---: | ---: | ---: |
+| 100 items shuffle | 1,484 | 2,689 | 3,293 | 2,197 |
+| every 5th of 100 leaves during moves | 662 | 6,115 | 7,525 | 5,834 |
+| 1000 items shuffle | 14,944 | 26,949 | 32,953 | 21,957 |
+
+Allocation over the 1.2 s window after 30 warm-up runs (V8's sampling heap profiler, collected
+objects included): the 100-item shuffle allocates 196 KiB (head 267 KiB), the 1000-item shuffle
+1,184 KiB (head 1,706 KiB). Per moved item, the engine adds no listener and no timer of its own;
+after four leave cycles of `leave-mid-move` the page holds 5 listeners (head 163) and the same
+DOM nodes, and heap snapshots show no surviving objects of inferno-animation.
+
+The remaining cost over master comes from what master doesn't do: survivors slide into the gap
+of a removal, entering and leaving items are excluded from moves, and author transitions keep
+running.
