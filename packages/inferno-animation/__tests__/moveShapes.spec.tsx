@@ -347,8 +347,7 @@ describe('move shapes with index geometry', () => {
   it('does not inspect the keyframes of running animations while committing', async () => {
     render(view(START), container);
     const getKeyframes = jasmine.createSpy('getKeyframes').and.returnValue([]);
-    const parent = container.firstElementChild as HTMLElement;
-    parent.getAnimations = () =>
+    item('B').getAnimations = () =>
       [
         { playState: 'running', effect: { target: item('B'), getKeyframes } },
       ] as any;
@@ -356,6 +355,52 @@ describe('move shapes with index geometry', () => {
     expect(getKeyframes).not.toHaveBeenCalled();
     await Promise.resolve();
     expect(getKeyframes).toHaveBeenCalled();
+  });
+
+  it('moves an element whose script animation sets its transform with translate', async () => {
+    render(view(START), container);
+    item('B').getAnimations = () =>
+      [
+        {
+          playState: 'running',
+          effect: {
+            target: item('B'),
+            getKeyframes: () => [{ transform: 'scale(1.1)' }],
+          },
+        },
+      ] as any;
+    render(view(['E', 'A', 'B', 'C', 'D']), container);
+    await Promise.resolve();
+    expect(item('B').style.getPropertyValue('translate')).toBe(`0px -${ROW}px`);
+    expect(item('B').style.transform).toBe('');
+  });
+
+  it('asks only elements without a CSS animation for their script animations', async () => {
+    render(view(START), container);
+    const asked = jasmine.createSpy('getAnimations').and.returnValue([]);
+    for (const id of START) item(id).getAnimations = asked;
+    const computed = window.getComputedStyle;
+    spyOn(window, 'getComputedStyle').and.callFake(
+      (node: Element, pseudo?: string | null) => {
+        const style = computed.call(window, node, pseudo);
+        return node === item('C')
+          ? new Proxy(style, {
+              get: (target, key) =>
+                key === 'animationName'
+                  ? 'pulse'
+                  : typeof target[key] === 'function'
+                    ? target[key].bind(target)
+                    : target[key],
+            })
+          : style;
+      },
+    );
+    render(view(['E', 'A', 'B', 'C', 'D']), container);
+    await Promise.resolve();
+    expect(asked.calls.all().map((call) => call.object)).not.toContain(
+      item('C'),
+    );
+    expect(item('C').style.getPropertyValue('translate')).toBe(`0px -${ROW}px`);
   });
 
   it('reads the positions that leaving items have moved to before writing any of them', async () => {

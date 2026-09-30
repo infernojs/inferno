@@ -367,6 +367,8 @@ interface MoveItem {
   linear: Linear;
   // Carries the offset: transform, or translate while a keyframe animation sets the transform
   property: 'transform' | 'translate';
+  // A CSS animation runs on the element, or has filled forwards
+  keyframed: boolean;
   baseTransform: string;
   // The element's own translate property; an offset in translate would replace it
   translate: string;
@@ -403,10 +405,10 @@ interface MoveBatch {
   // Items that take over an element's running move, and whether any item moved
   retargets: number;
   moved: boolean;
-  // Elements with an author transition, and elements whose transform a keyframe animation sets,
-  // when read before measuring
+  // Elements with an author transition, when read before measuring
   authors: Set<AnimatedElement> | null;
-  keyframed: Set<AnimatedElement> | null;
+  // Elements whose transform a script animation sets, when read with the parent's animations
+  scripted: Set<AnimatedElement> | null;
   // How the transforms around the parent map offsets to the viewport, once something moves
   space: Linear | null;
   cancel?: () => void;
@@ -439,40 +441,88 @@ function transitionTarget(
   const target = (animation.effect as KeyframeEffect | null)?.target;
   return target?.parentNode === parent ? (target as AnimatedElement) : null;
 }
-function animatesTransform(animation: Animation): boolean {
+// Whether a script animation sets the transform of node; an animation that has finished sets it
+// while it fills forwards. An element without animations answers its own query without a
+// document-wide one, but a retargeted element still has the move transition that RESET_MOVES has
+// just cancelled: in a batch with retargets, one query of the parent answers for every item.
+function scriptAnimatesTransform(
+  batch: MoveBatch,
+  node: AnimatedElement,
+): boolean {
+  if (batch.retargets !== 0) {
+    if (batch.scripted === null) readChildAnimations(batch, false);
+    return batch.scripted!.has(node);
+  }
+  for (const animation of node.getAnimations?.() || []) {
+    if (!('transitionProperty' in animation) && setsTransform(animation))
+      return true;
+  }
+  return false;
+}
+function setsTransform(animation: Animation): boolean {
   const effect = animation.effect as KeyframeEffect | null;
-  return Boolean(
-    effect?.getKeyframes?.().some((keyframe) => 'transform' in keyframe),
+  return (
+    effect?.getKeyframes?.().some((keyframe) => 'transform' in keyframe) ===
+    true
   );
 }
-// The children of parent that run an author transition. Those whose transform a keyframe animation
-// sets are added to keyframed; an animation that has finished sets it while it fills forwards.
-function authorTransitions(
-  parent: Node,
-  keyframed: Set<AnimatedElement> | null,
-): Set<AnimatedElement> {
+// A computed animation-name list with an animation in it
+function hasAnimationName(names: string | undefined): boolean {
+  if (!names) return false;
+  for (const name of names.split(',')) {
+    const trimmed = name.trim();
+    if (trimmed !== '' && trimmed !== 'none') return true;
+  }
+  return false;
+}
+// The children of parent that run an author transition, read before the patch
+function authorTransitions(parent: Node): Set<AnimatedElement> {
   const authors = new Set<AnimatedElement>();
   for (const animation of parentTransitions(parent)) {
+    if (!('transitionProperty' in animation)) continue;
     const node = transitionTarget(animation, parent);
     if (node === null) continue;
-    if ('transitionProperty' in animation) {
-      const item = moving.get(node);
-      if (
-        animation.playState !== 'finished' &&
-        animation.playState !== 'idle' &&
-        animation !== item?.ownedTransition &&
-        animation !== item?.previous?.ownedTransition
-      )
-        authors.add(node);
-    } else if (keyframed !== null && animatesTransform(animation)) {
-      keyframed.add(node);
-    }
+    const item = moving.get(node);
+    if (
+      animation.playState !== 'finished' &&
+      animation.playState !== 'idle' &&
+      animation !== item?.ownedTransition &&
+      animation !== item?.previous?.ownedTransition
+    )
+      authors.add(node);
   }
   return authors;
 }
-function readChildAnimations(batch: MoveBatch): void {
-  batch.keyframed = new Set();
-  batch.authors = authorTransitions(batch.parent, batch.keyframed);
+// Reads the children of the batch's parent that run an author transition, when authors is set,
+// and those whose transform a script animation sets (not one of a pseudo-element, as the
+// element's own query)
+function readChildAnimations(batch: MoveBatch, authors: boolean): void {
+  const parent = batch.parent;
+  const found = new Set<AnimatedElement>();
+  const scripted = new Set<AnimatedElement>();
+  for (const animation of parentTransitions(parent)) {
+    const node = transitionTarget(animation, parent);
+    if (node === null) continue;
+    if (!('transitionProperty' in animation)) {
+      if (
+        !scripted.has(node) &&
+        !(animation.effect as KeyframeEffect).pseudoElement &&
+        setsTransform(animation)
+      )
+        scripted.add(node);
+      continue;
+    }
+    const item = moving.get(node);
+    if (
+      animation.playState !== 'finished' &&
+      animation.playState !== 'idle' &&
+      animation !== item?.ownedTransition &&
+      animation !== item?.previous?.ownedTransition
+    )
+      found.add(node);
+  }
+  if (authors) batch.authors = found;
+  batch.scripted = scripted;
 }
 
 // How far the patch in progress has shifted the children of parent. Their list is patched after
@@ -543,14 +593,14 @@ export function componentWillMove(
     retargets: 0,
     moved: false,
     authors: null,
-    keyframed: null,
+    scripted: null,
     space: null,
     animation,
     activeClasses: cls.active.split(' ').filter((name) => name !== ''),
     ownerClasses: null,
   };
   const skipped: MoveItem[] = [];
-  const authors = authorTransitions(parent, null);
+  const authors = authorTransitions(parent);
   for (
     let child = parent.firstChild;
     child !== null;
@@ -614,6 +664,7 @@ function addMoveItem(
     dy: 0,
     linear: IDENTITY,
     property: 'transform',
+    keyframed: false,
     baseTransform: '',
     translate: 'none',
     offset: [],
@@ -781,6 +832,7 @@ function measureMove(
     const transform = style.transform;
     item.baseTransform = transform === 'none' ? '' : transform;
     item.translate = style.translate || 'none';
+    item.keyframed = hasAnimationName(style.animationName);
     item.linear = ownLinear(style);
     item.instant =
       item.transitions.length === 0 &&
@@ -901,13 +953,13 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
   // moves it with translate. Before a running move is reset they are read in READ_MOVES;
   // otherwise once after measuring, and only when something moved.
   if (phase === AnimationPhase.READ_MOVES) {
-    if (batch.retargets !== 0) readChildAnimations(batch);
+    if (batch.retargets !== 0) readChildAnimations(batch, true);
   } else if (
     phase === AnimationPhase.SELECT_MOVES &&
     batch.authors === null &&
     batch.moved
   ) {
-    readChildAnimations(batch);
+    readChildAnimations(batch, true);
   }
   // Nested moves subtract the offset of the element around them that carries them. The elements
   // that start a move are known once they are measured, and those that an author transition
@@ -979,10 +1031,11 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
           restoreTransitions(item);
           finishMove(item);
         } else if (
-          // An offset in translate would replace the element's own translate
-          batch.keyframed?.has(node) &&
+          // An offset in translate would replace the element's own translate. A CSS animation is
+          // known from the computed style; a script animation is asked for only without one.
           item.translate === 'none' &&
-          'translate' in node.style
+          'translate' in node.style &&
+          (item.keyframed || scriptAnimatesTransform(batch, node))
         ) {
           item.property = 'translate';
         }

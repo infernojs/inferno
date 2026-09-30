@@ -472,21 +472,75 @@ describe('coordinated layout moves', () => {
     render(null, container);
     complete();
   });
-  it('queries browser animations a constant number of times per parent', async () => {
-    let queries = 0;
-    const getAnimations = () => {
-      queries++;
+  it('queries the animations of a parent a constant number of times, and of a moved element once', async () => {
+    // A subtree query sorts every animation of the document; an element without animations
+    // answers its own query at once
+    let subtreeQueries = 0;
+    const elementQueries = new Map<Element, number>();
+    const parent = container.firstElementChild!;
+    parent.getAnimations = () => {
+      subtreeQueries++;
       return [];
     };
-    const parent = container.firstElementChild!;
-    parent.getAnimations = getAnimations;
     for (const node of Array.from(parent.children))
-      node.getAnimations = getAnimations;
+      node.getAnimations = () => {
+        elementQueries.set(node, (elementQueries.get(node) ?? 0) + 1);
+        return [];
+      };
     render(list(['D', 'A', 'B', 'C']), container);
     await Promise.resolve();
     frame();
-    expect(queries).toBeLessThanOrEqual(3);
+    expect(subtreeQueries).toBeLessThanOrEqual(3);
+    for (const count of elementQueries.values()) expect(count).toBe(1);
     expect(card('A').classList.contains('Card-move-active')).toBe(true);
+  });
+
+  it('answers for retargeted elements with one query of the parent, which finds their script animations', async () => {
+    render(list(['D', 'A', 'B', 'C']), container);
+    await Promise.resolve();
+    frame();
+    expect(card('B').classList.contains('Card-move-active')).toBe(true);
+    // A retargeted element still has the move transition that the reset cancels, so its own
+    // query would sort every animation of the document
+    let subtreeQueries = 0;
+    let elementQueries = 0;
+    const parent = container.firstElementChild!;
+    parent.getAnimations = () => {
+      subtreeQueries++;
+      return [
+        {
+          playState: 'running',
+          effect: {
+            target: card('B'),
+            pseudoElement: null,
+            getKeyframes: () => [{ transform: 'scale(1.1)' }],
+          },
+        },
+        {
+          playState: 'running',
+          effect: {
+            target: card('C'),
+            pseudoElement: '::before',
+            getKeyframes: () => [{ transform: 'scale(1.1)' }],
+          },
+        },
+      ] as any;
+    };
+    for (const node of Array.from(parent.children))
+      node.getAnimations = () => {
+        elementQueries++;
+        return [];
+      };
+    render(list(['C', 'D', 'A', 'B']), container);
+    await Promise.resolve();
+    // Before the patch and after it
+    expect(subtreeQueries).toBe(2);
+    expect(elementQueries).toBe(0);
+    expect(card('B').style.getPropertyValue('translate')).not.toBe('');
+    expect(card('B').style.transform).toBe('');
+    // An animation of a pseudo-element leaves the element's transform alone
+    expect(card('C').style.getPropertyValue('translate')).toBe('');
+    expect(card('C').style.transform).not.toBe('');
   });
 
   it('measures leaving elements together after the commit', async () => {
