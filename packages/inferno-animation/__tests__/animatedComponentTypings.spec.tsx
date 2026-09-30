@@ -9,8 +9,17 @@ describe('inferno-animation AnimatedComponent typings', () => {
     document.body.appendChild(container);
   });
 
-  afterEach(function () {
+  afterEach(function (done) {
     render(null, container);
+    function finish() {
+      if (container.firstChild) {
+        setTimeout(finish, 5);
+      } else {
+        container.remove();
+        done();
+      }
+    }
+    finish();
   });
 
   it('Should be possible to define typed props for AnimatedComponent', () => {
@@ -26,6 +35,7 @@ describe('inferno-animation AnimatedComponent typings', () => {
 
     render(<MyComponent number={1} />, container);
 
-    expect(container.innerHTML).toBe('<div>1</div>');
+    expect(container.firstChild.tagName).toBe('DIV');
+    expect(container.textContent).toBe('1');
   });
 });

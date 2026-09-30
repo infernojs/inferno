@@ -5,8 +5,8 @@ import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerHTML';
 import {
-  type AnimationQueues,
   isLastValueSameLinkEvent,
+  NO_ANIMATIONS,
   normalizeEventName,
 } from './utils/common';
 import {
@@ -74,23 +74,18 @@ function patchStyle(lastAttrValue, nextAttrValue, dom): void {
   }
 }
 
-function patchDangerInnerHTML(
-  lastValue,
-  nextValue,
-  lastVNode,
-  dom,
-  animations: AnimationQueues,
-): boolean {
+function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom): boolean {
   const lastHtml = lastValue?.__html || '';
   const nextHtml = nextValue?.__html || '';
 
   if (lastHtml !== nextHtml) {
     if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
       if (!isNull(lastVNode)) {
+        // innerHTML replaces the children at once: their leave hooks have nothing to animate
         if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
-          unmountAllChildren(lastVNode.children as VNode[], animations);
+          unmountAllChildren(lastVNode.children as VNode[], NO_ANIMATIONS);
         } else if (lastVNode.childFlags === ChildFlags.HasVNodeChildren) {
-          unmount(lastVNode.children, animations);
+          unmount(lastVNode.children, NO_ANIMATIONS);
         }
       }
       dom.innerHTML = nextHtml;
@@ -116,7 +111,6 @@ export function patchProp(
   isSVG: boolean,
   hasControlledValue: boolean,
   lastVNode: VNode | null,
-  animations: AnimationQueues,
 ): boolean {
   switch (prop) {
     case 'children':
@@ -164,13 +158,7 @@ export function patchProp(
       patchStyle(lastValue, nextValue, dom);
       break;
     case 'dangerouslySetInnerHTML':
-      return patchDangerInnerHTML(
-        lastValue,
-        nextValue,
-        lastVNode,
-        dom,
-        animations,
-      );
+      return patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom);
     default:
       if (syntheticEvents[prop]) {
         handleSyntheticEvent(prop, lastValue, nextValue, dom);
@@ -203,14 +191,7 @@ export function patchProp(
   return false;
 }
 
-export function mountProps(
-  vNode,
-  flags,
-  props,
-  dom,
-  isSVG,
-  animations: AnimationQueues,
-): void {
+export function mountProps(vNode, flags, props, dom, isSVG): void {
   let hasControlledValue: boolean = false;
   const isFormElement = (flags & VNodeFlags.FormElement) > 0;
   if (isFormElement) {
@@ -221,16 +202,7 @@ export function mountProps(
   }
   for (const prop in props) {
     // do not add a hasOwnProperty check here, it affects performance
-    patchProp(
-      prop,
-      null,
-      props[prop],
-      dom,
-      isSVG,
-      hasControlledValue,
-      null,
-      animations,
-    );
+    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null);
   }
   if (isFormElement) {
     processElement(flags, vNode, dom, props, true, hasControlledValue);

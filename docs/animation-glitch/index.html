@@ -10,15 +10,15 @@
     <h1>Move animation glitches in keyed lists</h1>
     <p class="intro">
       Components with a move hook (<code>componentWillMove</code>, <code>onComponentWillMove</code>, used by
-      <code>inferno-animation</code>) change how keyed lists are patched. Each section reproduces one problem.
+      <code>inferno-animation</code>) prepare keyed lists before their layout changes. Each section checks a previous glitch.
       Animated cards are orange, plain cards are grey. The status line compares what happened with what should happen.
     </p>
 
     <section>
-      <h2>1. Wrong order when animated and plain items move together</h2>
+      <h2>1. Animated and plain items move into the correct order</h2>
       <p>
-        Only card 3 is animated. Its move is deferred until the end of the patch, but card 4 is placed right away
-        in front of card 3's old position. The list should read <b>0 1 4 3 2</b>.
+        Only card 3 has a move hook. Deferring its DOM move used to place card 4 incorrectly.
+        All DOM moves now follow the same reconciliation order. The list should read <b>0 1 4 3 2</b>.
       </p>
       <div id="order-list" class="list"></div>
       <div class="buttons">
@@ -30,26 +30,27 @@
     </section>
 
     <section>
-      <h2>2. Animations measure the list after the update has already changed it</h2>
+      <h2>2. Animations measure the list before it changes</h2>
       <p>
-        All cards are animated. Moving D to the top and adding X in the same render inserts X before the move hooks
-        run, so <code>inferno-animation</code> takes the "before" positions from a list that already contains X:
-        A, B and C jump one row and then slide one row, instead of sliding two rows, and D starts from the wrong place.
+        All cards are animated. Moving D to the top and adding X must measure the original A B C D layout:
+        A, B and C should slide two rows without jumping. Insertion-only and removal-only updates should
+        also animate the retained cards, even though their relative order is unchanged.
       </p>
       <div id="measure-list" class="list"></div>
       <div class="buttons">
         <button id="measure-run">Move D to the top and add X</button>
+        <button id="measure-insert">Reset and prepend X</button>
+        <button id="measure-remove">Reset and remove B</button>
         <button id="measure-reset">Reset</button>
       </div>
       <div id="measure-status" class="status"></div>
     </section>
 
     <section>
-      <h2>3. A move hook in a nested component crashes the render</h2>
+      <h2>3. Move hooks work through nested components</h2>
       <p>
-        The hook to call is chosen by the type of the list item component but taken from the component it renders.
-        Reversing either list throws a <code>TypeError</code> before any card has moved, so the cards keep the old
-        order although the list was rendered reversed.
+        The callback must use the type and props of the component that owns the hook.
+        Reversing either list should animate to C B A without throwing a <code>TypeError</code>.
       </p>
       <div class="columns">
         <div>
@@ -74,11 +75,11 @@
     </section>
 
     <section>
-      <h2>4. The move animation is skipped when the animated component renders another component</h2>
+      <h2>4. Composed components animate like direct elements</h2>
       <p>
         Both lists use <code>AnimatedMoveComponent</code>. On the left it renders an element, on the right it renders
-        a function component that renders the same element. Only the left list animates: the hook of the right list
-        is never called.
+        a function component that renders the same element. Both lists should animate and receive the same
+        number of preparation callbacks.
       </p>
       <div class="columns">
         <div>
@@ -94,6 +95,262 @@
         <button id="skip-run">Shuffle both</button>
       </div>
       <div id="skip-status" class="status"></div>
+    </section>
+
+    <h1 class="part">Edge cases to verify manually</h1>
+    <p class="intro">
+      Sections 5&ndash;15 use <code>AnimatedMoveComponent</code> and <code>AnimatedAllComponent</code> with 1.5&nbsp;s moves,
+      enters and leaves. Each section says what should happen and what used to go wrong. The status line measures the
+      first frame of the animation or its end result, so wait for the previous animation to finish before pressing a button
+      again. A red status means that the glitch reproduced.
+    </p>
+
+    <section>
+      <h2>5. Moves in a transformed coordinate space</h2>
+      <p>
+        A move measures boxes in viewport pixels and applies the offset as a CSS <code>translate</code> in the item's own
+        coordinate space, so it converts the offset into that space. Cards should start exactly where they were and slide
+        to their new places. Before the conversion the cards started at the wrong distance and jumped at the start of the
+        move: 40&nbsp;% short inside a <code>transform: scale(0.6)</code> ancestor, 40&nbsp;% short with
+        <code>scale: 0.6</code> on the cards themselves (the individual transform properties apply before
+        <code>transform</code>), and twice too far in an SVG whose <code>viewBox</code> scales its content by 2.
+        The cards of the last list are children of a shadow root, whose host is scaled: a list in a shadow root used to
+        throw when it moved, which stopped every animation of that update. CSS <code>zoom</code> and 3D transforms are
+        not taken into account.
+      </p>
+      <div class="columns">
+        <div>
+          <h3>List inside <code>transform: scale(0.6)</code></h3>
+          <div class="scaled"><div id="space-scaled-list" class="list"></div></div>
+          <div id="space-scaled-status" class="status"></div>
+        </div>
+        <div>
+          <h3>Cards with <code>scale: 0.6</code></h3>
+          <div id="space-property-list" class="list"></div>
+          <div id="space-property-status" class="status"></div>
+        </div>
+        <div>
+          <h3>SVG <code>&lt;g&gt;</code> items, <code>viewBox</code> at half size</h3>
+          <div id="space-svg-list" class="list"></div>
+          <div id="space-svg-status" class="status"></div>
+        </div>
+        <div>
+          <h3>Shadow root in a host with <code>scale(0.6)</code></h3>
+          <div id="space-shadow-host" class="scaled"></div>
+          <div id="space-shadow-status" class="status"></div>
+        </div>
+      </div>
+      <div class="buttons">
+        <button id="space-run">Shuffle all four</button>
+        <button id="space-reset">Reset</button>
+      </div>
+    </section>
+
+    <section>
+      <h2>6. An item that becomes visible in the same update as a reorder</h2>
+      <p>
+        Card C starts with <code>display: none</code>. The button moves E to the top and shows C in the same update.
+        C should simply appear in its place (between B and D) while the others slide. A hidden element has an empty box
+        at the viewport origin: C used to be treated as moved from the top-left corner of the window and flew in from
+        there.
+      </p>
+      <div id="hidden-list" class="list"></div>
+      <div class="buttons">
+        <button id="hidden-run">Move E to the top and show C</button>
+        <button id="hidden-reset">Reset</button>
+      </div>
+      <div id="hidden-status" class="status"></div>
+    </section>
+
+    <section>
+      <h2>7. An item running a CSS keyframe animation on <code>transform</code></h2>
+      <p>
+        Card B pulses with a CSS <code>@keyframes</code> animation that sets <code>transform</code>, and card D has
+        popped in with one that has finished and keeps its last keyframe (<code>animation-fill-mode: forwards</code>).
+        Moving E to the top should slide B and D down one row like A and C: they move with the <code>translate</code>
+        property. A keyframe animation overrides an inline <code>transform</code>, so B and D used to jump to their new
+        places while their neighbours slid.
+      </p>
+      <div id="pulse-list" class="list"></div>
+      <div class="buttons">
+        <button id="pulse-run">Move E to the top</button>
+        <button id="pulse-reset">Reset</button>
+      </div>
+      <div id="pulse-status" class="status"></div>
+    </section>
+
+    <section>
+      <h2>8. Removing an item while it moves</h2>
+      <p>
+        The buttons move E to the top and remove cards 0.6&nbsp;s later, halfway through the moves. The cards that leave
+        should stay where they are on screen and leave from there. The leave used to finish the move first, so E jumped
+        to the top of the list and collapsed there. Removing the whole list or replacing every card did the same to all
+        cards. With the first button E slides out to the right while it fades and collapses: its leave animates
+        <code>transform</code>, which keeping E in place must not stop, so the position is kept in
+        <code>translate</code>. With the other buttons the cards fade and collapse in place.
+      </p>
+      <div id="remove-moving-list" class="list"></div>
+      <div class="buttons">
+        <button id="remove-moving-run">Move E to the top, remove it after 0.6 s</button>
+        <button id="remove-moving-all">... remove the list after 0.6 s</button>
+        <button id="remove-moving-replace">... replace every card after 0.6 s</button>
+        <button id="remove-moving-reset">Reset</button>
+      </div>
+      <div id="remove-moving-status" class="status"></div>
+    </section>
+
+    <section>
+      <h2>9. Removing an item while it enters</h2>
+      <p>
+        The button adds X and removes it 0.6&nbsp;s later, before its enter animation has finished. X should shrink and fade
+        out from its current size and opacity over the 1.5&nbsp;s leave. The enter transitions that the leave interrupts
+        fire <code>transitioncancel</code>, which the leave used to count as its own transitions ending, so X was removed
+        after a few frames. When X is removed in the next frame, before its enter has started, nothing of it has been
+        visible and it should be removed at once: it used to show at full opacity and fade out.
+      </p>
+      <div id="remove-entering-list" class="list"></div>
+      <div class="buttons">
+        <button id="remove-entering-run">Add X, remove it after 0.6 s</button>
+        <button id="remove-entering-early">Add X, remove it in the next frame</button>
+        <button id="remove-entering-reset">Reset</button>
+      </div>
+      <div id="remove-entering-status" class="status"></div>
+    </section>
+
+    <section>
+      <h2>10. Nested lists reordered in one update</h2>
+      <p>
+        The groups and their cards have move hooks. The buttons reverse the groups and the cards inside them in one
+        update. Everything should start where it was: the groups slide past each other and the cards slide within them.
+        Each card's offset contains its group's movement, which the group's own transform adds again: the cards used to
+        start far outside their groups and fly in. When the first group is removed in the same update, the cards are
+        measured after the groups have moved up into its place: they used to start that much too high. On the right the
+        groups have no box of their own. G1 moves two rows down and its card c two rows up, so c should not move at all:
+        it used to start two rows higher and slide back.
+      </p>
+      <div class="columns">
+        <div>
+          <div id="nested-list" class="list"></div>
+          <div class="buttons">
+            <button id="nested-run">Reverse the groups and their cards</button>
+            <button id="nested-remove">Reset, remove G1 and reverse the rest</button>
+            <button id="nested-reset">Reset</button>
+          </div>
+          <div id="nested-status" class="status"></div>
+        </div>
+        <div>
+          <div id="nested-still-list" class="list"></div>
+          <div class="buttons">
+            <button id="nested-still-run">Move G1 below G2 and c to the top of G1</button>
+            <button id="nested-still-reset">Reset</button>
+          </div>
+          <div id="nested-still-status" class="status"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>11. A displaced item that starts a CSS transition in the same update</h2>
+      <p>
+        The cards have <code>transition: background-color 1s</code>. The button moves E to the top and highlights B in the
+        same update. B is displaced by one row without being moved in the DOM. The readme documents that elements running
+        an author transition are excluded from moves, so B jumps down while A, C and D slide. Check whether that is
+        acceptable: selecting an item and re-sorting the list at once is a common pattern. (A card that is moved in the DOM
+        does not start the transition, so it slides normally.)
+      </p>
+      <div id="highlight-list" class="list"></div>
+      <div class="buttons">
+        <button id="highlight-run">Move E to the top and highlight B</button>
+        <button id="highlight-reset">Reset</button>
+      </div>
+      <div id="highlight-status" class="status"></div>
+    </section>
+
+    <section>
+      <h2>12. Inline width and height of an entering element</h2>
+      <p>
+        Each added box is rendered with <code>style="width: 160px; height: 56px"</code>. It should appear and keep that
+        size. The enter animation writes its own inline <code>width</code> and <code>height</code>, and used to remove
+        them when it ended, together with the ones the application rendered. The box snapped to the stylesheet size
+        (full width, 36&nbsp;px) at the end of the enter, and Inferno does not restore the style until the prop changes.
+        A box that is removed should keep its size while it fades out: the leave used to remove the inline size as
+        well, so the box snapped to the full width when its leave started. The inline height takes precedence over the
+        animation classes, so these boxes do not grow or collapse.
+      </p>
+      <div id="inline-size-list" class="list"></div>
+      <div class="buttons">
+        <button id="inline-size-run">Add a box</button>
+        <button id="inline-size-remove">Remove the last box</button>
+        <button id="inline-size-reset">Reset</button>
+      </div>
+      <div id="inline-size-status" class="status"></div>
+    </section>
+
+    <section>
+      <h2>13. A global animation source used much later</h2>
+      <p>
+        The logo has <code>globalAnimationKey</code>. <i>Move in one update</i> removes it on the left and shows it on the
+        right in the same task: the logo should fly from left to right (the intended global animation). <i>Remove</i>
+        and, more than a second later, <i>Show on the right</i> should be a plain enter, because the source expires after
+        one second. Within that second the logo should still fly, which allows for a page that loads before it mounts.
+        The expiry used to never start, so the logo still flew from where it was removed, however long ago, and unused
+        sources stayed in memory.
+      </p>
+      <div class="columns global">
+        <div id="global-left" class="pane"></div>
+        <div id="global-right" class="pane"></div>
+      </div>
+      <div class="buttons">
+        <button id="global-move">Move in one update</button>
+        <button id="global-remove">Remove</button>
+        <button id="global-show">Show on the right</button>
+        <button id="global-reset">Reset</button>
+      </div>
+      <div id="global-status" class="status"></div>
+    </section>
+
+    <section>
+      <h2>14. The inline transform of an element that enters from a global source</h2>
+      <p>
+        The tile moves from the left pane to the right one with <code>globalAnimationKey</code>. On the right it is rendered
+        with <code>style="transform: rotate(-12deg)"</code>. It should fly over and end up tilted. The global enter writes
+        its own <code>transform</code> and <code>transform-origin</code>, and used to clear both when it activated, together
+        with the ones the application rendered, so the tile flew in untilted and stayed that way.
+      </p>
+      <div class="columns global">
+        <div id="tilt-left" class="pane"></div>
+        <div id="tilt-right" class="pane"></div>
+      </div>
+      <div class="buttons">
+        <button id="tilt-run">Move in one update</button>
+        <button id="tilt-reset">Reset</button>
+      </div>
+      <div id="tilt-status" class="status"></div>
+    </section>
+
+    <section>
+      <h2>15. Random updates</h2>
+      <p>
+        Inserts, removes and moves cards at the chosen interval, sometimes twice in one task. Watch for cards that jump,
+        flicker, overlap or leave gaps. <i>Stop and check</i> waits for the animations to finish and compares the DOM with
+        the expected order, and reports cards left with inline styles or animation classes.
+      </p>
+      <div id="stress-list" class="list"></div>
+      <div class="buttons">
+        <label>
+          Interval
+          <select id="stress-interval">
+            <option value="120">120 ms</option>
+            <option value="300" selected>300 ms</option>
+            <option value="700">700 ms</option>
+            <option value="1600">1600 ms</option>
+          </select>
+        </label>
+        <button id="stress-start">Start</button>
+        <button id="stress-stop">Stop and check</button>
+        <button id="stress-reset">Reset</button>
+      </div>
+      <div id="stress-status" class="status"></div>
     </section>
   </body>
 </html>

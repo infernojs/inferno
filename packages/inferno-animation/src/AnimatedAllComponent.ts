@@ -5,6 +5,7 @@ import {
   componentWillDisappear,
   componentWillMove,
 } from './animations';
+import { preparedOwnerMayMove } from './moveAnimations';
 
 interface AnimationProp {
   animation?: string | AnimationClass;
@@ -31,6 +32,8 @@ export abstract class AnimatedAllComponent<P, S> extends Component<
     parent: ParentDOM,
     dom: HTMLElement | SVGElement,
   ): void {
-    componentWillMove(parentVNode, parent, dom, this.props);
+    if (preparedOwnerMayMove()) {
+      componentWillMove(parentVNode, parent, dom, this.props);
+    }
   }
 }

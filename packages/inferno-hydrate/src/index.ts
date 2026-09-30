@@ -96,7 +96,7 @@ function hydrateComponent(
       lifecycle,
       animations,
     );
-    _MCCC(ref, instance, lifecycle, animations);
+    _MCCC(ref, instance, lifecycle);
   } else {
     const input = _HI(renderFunctionalComponent(vNode, context));
     currentNode = hydrateVNode(
@@ -109,7 +109,7 @@ function hydrateComponent(
       animations,
     );
     vNode.children = input;
-    _MFCC(vNode, lifecycle, animations);
+    _MFCC(vNode, lifecycle);
   }
 
   return currentNode;
@@ -270,7 +270,7 @@ function hydrateElement(
     );
 
     if (!isNull(props)) {
-      _MP(vNode, flags, props, dom, isSVG, animations);
+      _MP(vNode, flags, props, dom, isSVG);
     }
     if (isNullOrUndef(className)) {
       if (dom.className !== '') {

@@ -145,7 +145,12 @@ module.exports = function (
         'inferno-mobx': resolve('inferno-mobx'),
         'inferno-redux': resolve('inferno-redux'),
         'inferno-router': resolve('inferno-router'),
-        'inferno-server': resolve('inferno-server'),
+        // Animation specs also exercise renderToString. The package entrypoint
+        // imports Node streams, so use its standalone string renderer here.
+        'inferno-server': path.join(
+          __dirname,
+          '../../packages/inferno-server/src/renderToString.ts',
+        ),
         'inferno-shared': resolve('inferno-shared'),
         'inferno-test-utils': resolve('inferno-test-utils'),
         'inferno-utils': path.join(
