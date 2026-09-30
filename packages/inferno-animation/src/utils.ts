@@ -229,6 +229,16 @@ export function saveStyles(
   style: CSSStyleDeclaration,
   properties: string[],
 ): SavedStyle[] {
+  // An element without inline declarations has none to read
+  if (style.length === 0) {
+    return properties.map((property) => ({
+      property,
+      value: '',
+      priority: '',
+      applied: '',
+      appliedPriority: '',
+    }));
+  }
   return properties.map((property) => ({
     property,
     value: style.getPropertyValue(property),
@@ -238,14 +248,16 @@ export function saveStyles(
   }));
 }
 
-// Records the values the animation has written
+// Records the values the animation has written, with the priority it wrote them with. A write
+// that left no declaration has no priority either.
 export function markApplied(
   style: CSSStyleDeclaration,
   saved: SavedStyle[],
+  priority = '',
 ): void {
   for (const entry of saved) {
     entry.applied = style.getPropertyValue(entry.property);
-    entry.appliedPriority = style.getPropertyPriority(entry.property);
+    entry.appliedPriority = entry.applied === '' ? '' : priority;
   }
 }
 

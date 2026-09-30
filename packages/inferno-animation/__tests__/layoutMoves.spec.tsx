@@ -101,6 +101,35 @@ describe('coordinated layout moves', () => {
     expect(timers.calls.count()).toBeLessThanOrEqual(1);
   });
 
+  it('reads no inline declarations of moving items that have none', async () => {
+    const rows = Array.from(container.querySelectorAll('li'));
+    const inline = new Set(rows.map((row) => row.style));
+    let values = 0;
+    let priorities = 0;
+    const getPropertyValue = CSSStyleDeclaration.prototype.getPropertyValue;
+    const getPropertyPriority =
+      CSSStyleDeclaration.prototype.getPropertyPriority;
+    spyOn(CSSStyleDeclaration.prototype, 'getPropertyValue').and.callFake(
+      function (this: CSSStyleDeclaration, name: string) {
+        if (inline.has(this)) values++;
+        return getPropertyValue.call(this, name);
+      },
+    );
+    spyOn(CSSStyleDeclaration.prototype, 'getPropertyPriority').and.callFake(
+      function (this: CSSStyleDeclaration, name: string) {
+        if (inline.has(this)) priorities++;
+        return getPropertyPriority.call(this, name);
+      },
+    );
+    render(list(['D', 'C', 'B', 'A']), container);
+    await Promise.resolve();
+    frame();
+    expect(card('A').classList.contains('Card-move-active')).toBe(true);
+    // The offsets the moves wrote, once at the start and once at activation
+    expect(values).toBeLessThanOrEqual(2 * rows.length);
+    expect(priorities).toBe(0);
+  });
+
   it('measures each sibling once before and once after a reorder with insertion', async () => {
     render(list(['D', 'X', 'A', 'B', 'C']), container);
     await Promise.resolve();

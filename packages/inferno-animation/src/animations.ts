@@ -792,20 +792,25 @@ function addMoveItem(
 
 function disableTransitions(item: MoveItem): void {
   const style = item.node.style;
-  item.transitions = saveStyles(style, transitionProperties);
-  // A declaration that the shorthand serializes is written back as it was read: longhands written
-  // one by one make the values it left out explicit, which older WebKit then includes in the
-  // shorthand. Pending-substitution shorthands (and minimal DOM implementations) may not expose
-  // longhand values. Either way the declaration is preserved as an indivisible unit.
-  if (
-    style.getPropertyValue('transition') ||
-    item.transitions.every((entry) => !entry.value)
-  ) {
+  if (style.length === 0) {
+    // No inline declaration to keep: cleanup removes the shorthand
     item.transitions = saveStyles(style, ['transition']);
+  } else {
+    item.transitions = saveStyles(style, transitionProperties);
+    // A declaration that the shorthand serializes is written back as it was read: longhands
+    // written one by one make the values it left out explicit, which older WebKit then includes in
+    // the shorthand. Pending-substitution shorthands (and minimal DOM implementations) may not
+    // expose longhand values. Either way the declaration is preserved as an indivisible unit.
+    if (
+      style.getPropertyValue('transition') ||
+      item.transitions.every((entry) => !entry.value)
+    ) {
+      item.transitions = saveStyles(style, ['transition']);
+    }
   }
   // Only displaced elements without an author transition reach this write.
   style.setProperty('transition', 'none', 'important');
-  markApplied(style, item.transitions);
+  markApplied(style, item.transitions, 'important');
 }
 function restoreTransitions(item: MoveItem): void {
   restoreStyles(item.node.style, item.transitions);
@@ -815,7 +820,7 @@ function writeOffset(item: MoveItem, value: string): void {
   const style = item.node.style;
   const saved = item.offset[0];
   style.setProperty(saved.property, value, saved.priority);
-  markApplied(style, item.offset);
+  markApplied(style, item.offset, saved.priority);
 }
 function restoreMoveStyles(item: MoveItem): void {
   item.cancel?.();
@@ -1033,7 +1038,7 @@ function transitionTranslate(item: MoveItem): void {
     list.map((name) => (name === 'transform' ? 'translate' : name)).join(', '),
     'important',
   );
-  markApplied(style, item.overrides);
+  markApplied(style, item.overrides, 'important');
 }
 
 // Whether a retargeted item can run a transition besides its running move
