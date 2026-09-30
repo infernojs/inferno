@@ -20,6 +20,10 @@
 //   leave-mid-move     AnimatedAllComponent: every 5th leaves while 1 s moves run
 //   leave-mid-enter    AnimatedComponent: 20 items leave while their 1 s enter runs
 //   leave-mid-enter-1k AnimatedComponent: 1000 items that are all entering (1 s) leave
+//   move-mid-move-1k   one of 1000 items goes last while the 1 s moves of all of them run
+//   move-mid-enter-1k  AnimatedAllComponent: 500 items reverse while 500 new ones enter, then
+//                      reverse back while those 1 s moves and enters run
+//   moved-mid-enter-1k the same with the usual 150 ms moves, 400 ms later: the moves have ended
 //   nested-groups      5 animated groups of 20 animated items: groups and items all reverse
 //   global-switch      20 tiles with a globalAnimationKey move from one page to another
 // prepare(case) empties the container, mounts the start state and resolves once earlier
@@ -63,6 +67,11 @@ const IDS_1K = range(1000);
 const ORDER_A_1K = permutation(IDS_1K, 1);
 const ORDER_B_1K = permutation(IDS_1K, 2);
 const LABELS_1K = IDS_1K.map((i) => `item ${i}`);
+// The first item goes last, so every item moves; then the item at index 900 goes last
+const ORDER_1K_ROTATED = IDS_1K.slice(1).concat(0);
+const ORDER_1K_TAIL = ORDER_1K_ROTATED.filter((id) => id !== 901).concat(901);
+const IDS_500 = range(500);
+const ORDER_1K_HEAD_REVERSED = IDS_500.slice().reverse().concat(IDS_1K.slice(500));
 
 class AnimatedItem extends AnimatedMoveComponent {
   render() {
@@ -242,6 +251,28 @@ const CASES = {
     op: [[], LABELS_1K],
     settle: 1400,
   },
+  'move-mid-move-1k': {
+    view: (s) => wrap(1, 'slow', list(true)(s)),
+    start: [IDS_1K, LABELS_1K],
+    prime: [ORDER_1K_ROTATED, LABELS_1K],
+    op: [ORDER_1K_TAIL, LABELS_1K],
+    settle: 1400,
+  },
+  'move-mid-enter-1k': {
+    view: (s) => wrap(1, 'slow', list('all')(s)),
+    start: [IDS_500, LABELS_1K],
+    prime: [ORDER_1K_HEAD_REVERSED, LABELS_1K],
+    op: [IDS_1K, LABELS_1K],
+    settle: 1400,
+  },
+  'moved-mid-enter-1k': {
+    view: (s) => wrap(1, 'slow-enter', list('all')(s)),
+    start: [IDS_500, LABELS_1K],
+    prime: [ORDER_1K_HEAD_REVERSED, LABELS_1K],
+    primeWait: 400,
+    op: [IDS_1K, LABELS_1K],
+    settle: 1400,
+  },
   'nested-groups': { view: (s) => <Groups reversed={s} />, start: false, op: true },
   'global-switch': {
     view: (s) => (s ? <Page key="b" name="b" order={TILES_REVERSED} /> : <Page key="a" name="a" order={TILES} />),
@@ -337,6 +368,9 @@ installHarness({
       show(current.prime);
       // The prime's enters activate and its moves start from the next frames
       await frames(2);
+      if (current.primeWait) {
+        await wait(current.primeWait);
+      }
     }
     return null;
   },

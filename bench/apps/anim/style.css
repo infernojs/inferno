@@ -48,6 +48,12 @@
   transition: opacity 1000ms linear;
 }
 
+/* Long enters and leaves with the usual moves */
+.slow-enter .Item-enter-active,
+.slow-enter .Item-leave-active {
+  transition: opacity 1000ms linear;
+}
+
 /* Items that run a transform keyframe animation while they move */
 @keyframes pulse {
   from {
