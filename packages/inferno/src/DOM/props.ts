@@ -146,23 +146,38 @@ export function patchProp(
     // The JSX plugins lowercase some of these names, createVNode and createElement keep them as written
     case 'allowfullscreen':
     case 'allowFullScreen':
+    case 'async':
     case 'autofocus':
     case 'autoFocus':
     case 'autoplay':
     case 'autoPlay':
     case 'controls':
     case 'default':
+    case 'defer':
     case 'disabled':
+    case 'disablepictureinpicture':
+    case 'disablePictureInPicture':
+    case 'disableremoteplayback':
+    case 'disableRemotePlayback':
     case 'formnovalidate':
     case 'formNoValidate':
+    case 'inert':
+    case 'itemscope':
+    case 'itemScope':
     case 'loop':
+    case 'nomodule':
+    case 'noModule':
     case 'novalidate':
     case 'noValidate':
     case 'open':
+    case 'playsinline':
+    case 'playsInline':
     case 'readonly':
     case 'readOnly':
     case 'required':
     case 'reversed':
+    case 'scoped':
+    case 'seamless':
       dom.toggleAttribute(prop.toLowerCase(), !!nextValue);
       break;
     case 'defaultChecked':

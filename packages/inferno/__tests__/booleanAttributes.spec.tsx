@@ -92,6 +92,69 @@ describe('Boolean attributes', () => {
     });
   }
 
+  // The obsolete scoped and seamless have no DOM property left, only the attribute
+  for (const [type, name] of [
+    ['style', 'scoped'],
+    ['iframe', 'seamless'],
+  ]) {
+    it(`Should set and remove the ${name} attribute of ${type}`, () => {
+      render(element(type, { [name]: false }), container);
+      const dom = container.firstChild;
+
+      expect(dom.hasAttribute(name)).toBe(false);
+
+      render(element(type, { [name]: true }), container);
+      expect(dom.hasAttribute(name)).toBe(true);
+
+      render(element(type, { [name]: false }), container);
+      expect(dom.hasAttribute(name)).toBe(false);
+    });
+  }
+
+  // More boolean attributes, [element type, camelCase prop name, attribute name]
+  const moreAttributes = [
+    ['script', 'async', 'async'],
+    ['script', 'defer', 'defer'],
+    ['video', 'disablePictureInPicture', 'disablepictureinpicture'],
+    ['video', 'disableRemotePlayback', 'disableremoteplayback'],
+    ['div', 'inert', 'inert'],
+    ['div', 'itemScope', 'itemscope'],
+    ['script', 'noModule', 'nomodule'],
+    ['video', 'playsInline', 'playsinline'],
+  ];
+
+  for (const [type, camelCase, name] of moreAttributes) {
+    for (const prop of new Set([camelCase, name])) {
+      it(`Should set and remove the ${name} attribute of ${type} through the ${prop} prop`, () => {
+        render(element(type, { [prop]: false }), container);
+        const dom = container.firstChild;
+
+        expect(dom.hasAttribute(name)).toBe(false);
+
+        render(element(type, { [prop]: true }), container);
+        expect(dom.hasAttribute(name)).toBe(true);
+
+        render(element(type, { [prop]: false }), container);
+        expect(dom.hasAttribute(name)).toBe(false);
+      });
+    }
+  }
+
+  it('Should not add playsInline, itemScope and noModule written in JSX as false', () => {
+    render(
+      <div itemScope={false}>
+        <video playsInline={false} />
+        <script noModule={false} />
+      </div>,
+      container,
+    );
+    const div = container.firstChild;
+
+    expect(div.hasAttribute('itemscope')).toBe(false);
+    expect(div.querySelector('video').hasAttribute('playsinline')).toBe(false);
+    expect(div.querySelector('script').hasAttribute('nomodule')).toBe(false);
+  });
+
   it('Should set and remove readOnly written in JSX', () => {
     render(<input readOnly={false} />, container);
     const input = container.firstChild;
