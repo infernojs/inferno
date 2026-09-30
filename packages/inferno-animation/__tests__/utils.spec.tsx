@@ -7,6 +7,7 @@ import {
   removeClassName,
   setDimensions,
   setDisplay,
+  transitionEntries,
   waitForTransitions,
 } from '../src/utils';
 
@@ -146,6 +147,41 @@ describe('inferno-animation utils', () => {
       done();
     });
     el.dispatchEvent(new Event('load'));
+  });
+
+  describe('transitionEntries', () => {
+    function lists(property: string, duration: string, delay: string) {
+      return {
+        getPropertyValue: (name: string) =>
+          name === 'transition-property'
+            ? property
+            : name === 'transition-duration'
+              ? duration
+              : name === 'transition-delay'
+                ? delay
+                : '',
+      } as CSSStyleDeclaration;
+    }
+
+    it('applies the first duration and delay to a single property', () => {
+      expect(
+        transitionEntries(lists('opacity', '1s, 2s', '250ms, 3s')),
+      ).toEqual([['opacity', 1.25]]);
+      expect(transitionEntries(lists(' transform ', '0s', '0s, 1s'))).toEqual(
+        [],
+      );
+      expect(transitionEntries(lists('all', '0s', '2s'))).toEqual([['all', 2]]);
+      expect(transitionEntries(lists('', '', ''))).toBeNull();
+    });
+
+    it('repeats shorter lists, and a property listed again replaces its earlier entry', () => {
+      expect(
+        transitionEntries(lists('opacity, transform, opacity', '1s, 2s', '0s')),
+      ).toEqual([
+        ['transform', 2],
+        ['opacity', 1],
+      ]);
+    });
   });
 
   describe('waitForTransitions', () => {

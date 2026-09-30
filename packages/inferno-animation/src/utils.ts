@@ -19,6 +19,10 @@ export function addClassName(
   node: HTMLElement | SVGElement,
   className: string,
 ): void {
+  if (className.indexOf(' ') === -1) {
+    if (className !== '') node.classList.add(className);
+    return;
+  }
   const classNameList = getClassNameList(className);
 
   for (let i = 0; i < classNameList.length; i++) {
@@ -30,6 +34,10 @@ export function removeClassName(
   node: HTMLElement | SVGElement,
   className: string,
 ): void {
+  if (className.indexOf(' ') === -1) {
+    if (className !== '') node.classList.remove(className);
+    return;
+  }
   const classNameList = getClassNameList(className);
 
   for (let i = 0; i < classNameList.length; i++) {
@@ -162,6 +170,7 @@ export function matrix(value: string | undefined): Linear {
 
 // The computed rotate property, when it rotates around the z axis. Computed angles are in degrees.
 function rotateLinear(value: string | undefined): Linear {
+  if (!value || value === 'none') return IDENTITY;
   const match = /^(?:z |0 0 1 )?(-?[\d.e+-]+)deg$/.exec(value || '');
   if (match === null) return IDENTITY;
   const angle = (Number(match[1]) * Math.PI) / 180;
@@ -181,7 +190,11 @@ function scaleLinear(value: string | undefined): Linear {
  * property, so they also apply to an offset written into the transform.
  */
 export function ownLinear(style: CSSStyleDeclaration): Linear {
-  return multiply(rotateLinear(style.rotate), scaleLinear(style.scale));
+  const rotate = rotateLinear(style.rotate);
+  const scale = scaleLinear(style.scale);
+  if (rotate === IDENTITY) return scale;
+  if (scale === IDENTITY) return rotate;
+  return multiply(rotate, scale);
 }
 
 /**
@@ -466,6 +479,13 @@ function parseTime(value: string | undefined): number {
   return value.trimEnd().endsWith('ms') ? time / 1000 : time;
 }
 
+// The first entry of a computed list
+function firstEntry(list: string): string {
+  const comma = list.indexOf(',');
+  return comma === -1 ? list : list.slice(0, comma);
+}
+const NO_ENTRIES: Array<[string, number]> = [];
+
 /**
  * The properties that the computed transition lists of style can transition: entries with a
  * positive combined duration (a shorter duration or delay list repeats; a property listed again
@@ -477,9 +497,18 @@ export function transitionEntries(
 ): Array<[string, number]> | null {
   const properties = style.getPropertyValue('transition-property');
   if (!properties) return null;
+  const durationList = style.getPropertyValue('transition-duration');
+  const delayList = style.getPropertyValue('transition-delay');
+  // One property, as in most computed styles: only the first duration and delay apply
+  if (properties.indexOf(',') === -1) {
+    const combined =
+      Math.max(parseTime(firstEntry(durationList)), 0) +
+      parseTime(firstEntry(delayList));
+    return combined > 0 ? [[properties.trim(), combined]] : NO_ENTRIES;
+  }
   const names = properties.split(',');
-  const durations = style.getPropertyValue('transition-duration').split(',');
-  const delays = style.getPropertyValue('transition-delay').split(',');
+  const durations = durationList.split(',');
+  const delays = delayList.split(',');
   const entries: Array<[string, number]> = [];
   for (let i = 0; i < names.length; i++) {
     const name = names[i].trim();
@@ -496,23 +525,26 @@ export function transitionEntries(
   return entries;
 }
 
-// The transitions that style can run and the longest of them in seconds. Lists that can't be read
-// count as one transition of unknown duration, as before.
-function runnableTransitions(style: CSSStyleDeclaration): {
-  count: number;
-  longest: number;
-} {
+// The number of transitions that style can run and the longest of them in seconds, which
+// runnableTransitions leaves in these. Lists that can't be read count as one transition of
+// unknown duration, as before.
+let runnableCount = 0;
+let runnableLongest = 0;
+function runnableTransitions(style: CSSStyleDeclaration): void {
   const entries = transitionEntries(style);
-  if (entries === null) return { count: 1, longest: 0 };
-  let longest = 0;
-  for (const [, combined] of entries) {
-    if (combined > longest) longest = combined;
+  runnableCount = entries === null ? 1 : entries.length;
+  runnableLongest = 0;
+  if (entries !== null) {
+    for (let i = 0; i < entries.length; i++) {
+      if (entries[i][1] > runnableLongest) runnableLongest = entries[i][1];
+    }
   }
-  return { count: entries.length, longest };
 }
 
 interface TransitionWait {
   node: Element;
+  // The next wait of the same element
+  next: TransitionWait | null;
   // Transitions still to end or be cancelled; each property counts once
   left: number;
   seen: Set<string> | null;
@@ -531,7 +563,7 @@ interface TimerGroup {
   live: number;
 }
 
-const waitsByNode = new Map<Element, TransitionWait[]>();
+const waitsByNode = new Map<Element, TransitionWait>();
 const rootWaits = new Map<Node, number>();
 // Fallback timers of the current task by delay: waits registered in one task share them
 let taskGroups: Map<number, TimerGroup> | null = null;
@@ -539,27 +571,37 @@ let taskGroups: Map<number, TimerGroup> | null = null;
 function onTransitionEvent(event: Event): void {
   // Transitions of ::before and ::after target their element as well
   if ((event as TransitionEvent).pseudoElement) return;
-  const waits = waitsByNode.get(event.target as Element);
-  if (waits === undefined) return;
   const name = (event as TransitionEvent).propertyName;
-  for (const wait of waits.slice()) {
-    if (wait.done) continue;
-    if (name) {
+  let wait: TransitionWait | null | undefined = waitsByNode.get(
+    event.target as Element,
+  );
+  while (wait !== undefined && wait !== null) {
+    const next: TransitionWait | null = wait.next;
+    // A property counts once; with one transition to wait for, the first event ends the wait
+    if (name && (wait.left > 1 || wait.seen !== null)) {
       if (wait.seen === null) wait.seen = new Set();
-      else if (wait.seen.has(name)) continue;
+      if (wait.seen.has(name)) {
+        wait = next;
+        continue;
+      }
       wait.seen.add(name);
     }
     if (--wait.left <= 0) finishWait(wait, true);
+    wait = next;
   }
 }
 
 function releaseWait(wait: TransitionWait): void {
   wait.done = true;
-  const waits = waitsByNode.get(wait.node);
-  if (waits !== undefined) {
-    const index = waits.indexOf(wait);
-    if (index !== -1) waits.splice(index, 1);
-    if (waits.length === 0) waitsByNode.delete(wait.node);
+  let head: TransitionWait | null | undefined = waitsByNode.get(wait.node);
+  if (head === wait) {
+    if (wait.next === null) waitsByNode.delete(wait.node);
+    else waitsByNode.set(wait.node, wait.next);
+  } else {
+    while (head !== undefined && head !== null && head.next !== wait) {
+      head = head.next;
+    }
+    if (head !== undefined && head !== null) head.next = wait.next;
   }
   const root = wait.root;
   if (root !== null) {
@@ -623,11 +665,13 @@ export function waitForTransitions(
   node: Element,
   done: () => void,
 ): () => void {
-  const { count, longest } = runnableTransitions(window.getComputedStyle(node));
+  runnableTransitions(window.getComputedStyle(node));
+  const longest = runnableLongest;
   const root = node.getRootNode();
   const wait: TransitionWait = {
     node,
-    left: count,
+    next: waitsByNode.get(node) ?? null,
+    left: runnableCount,
     seen: null,
     done: false,
     callback: done,
@@ -635,9 +679,7 @@ export function waitForTransitions(
     group: null,
     onLoad: null,
   };
-  const waits = waitsByNode.get(node);
-  if (waits === undefined) waitsByNode.set(node, [wait]);
-  else waits.push(wait);
+  waitsByNode.set(node, wait);
   const rootCount = rootWaits.get(root) ?? 0;
   if (rootCount === 0) {
     root.addEventListener('transitionend', onTransitionEvent, true);

@@ -8,7 +8,6 @@ import {
   type Linear,
   markApplied,
   matrix,
-  multiply,
   ownLinear,
   parentSpace,
   removeClassName,
@@ -19,7 +18,6 @@ import {
   setDimensions,
   setDisplay,
   setTransform,
-  solve,
   transitionEntries,
   waitForTransitions,
 } from './utils';
@@ -45,26 +43,31 @@ export interface AnimationClass {
   start: string;
 }
 
+// The classes of an animation name, which nothing modifies, by name and prefix
+const namedClasses = new Map<string, AnimationClass>();
+
 function getAnimationClass(
   animationProp: AnimationClass | string | undefined | null,
   prefix: string,
 ): AnimationClass {
-  let animCls: AnimationClass;
-
   if (!isNullOrUndef(animationProp) && typeof animationProp === 'object') {
-    animCls = animationProp;
-  } else {
-    const animationName = animationProp || 'inferno-animation';
-    const placeholder = animationName + prefix;
+    return animationProp;
+  }
+  const placeholder = (animationProp || 'inferno-animation') + prefix;
+  let animCls = namedClasses.get(placeholder);
+  if (animCls === undefined) {
     animCls = {
       active: placeholder + '-active',
       end: placeholder + '-end',
       start: placeholder,
     };
+    namedClasses.set(placeholder, animCls);
   }
-
   return animCls;
 }
+
+// A saved-style list without entries, shared: restoring it changes nothing
+const NO_STYLES: SavedStyle[] = [];
 
 type AnimatedElement = HTMLElement | SVGElement;
 
@@ -119,8 +122,8 @@ export function componentDidAppear(dom: AnimatedElement, props): void {
     display: setDisplay(dom, 'none'),
     activated: false,
     cancelled: false,
-    sizes: [],
-    transforms: [],
+    sizes: NO_STYLES,
+    transforms: NO_STYLES,
   };
   entering.set(dom, enter);
   const sourceState =
@@ -374,8 +377,8 @@ export function componentWillDisappear(
     enter: enter ?? null,
     exact: null,
     reached: [],
-    held: [],
-    sizes: [],
+    held: NO_STYLES,
+    sizes: NO_STYLES,
     hold: null,
   };
   if (enter !== undefined) interrupting.push(leave);
@@ -399,9 +402,8 @@ function _willDisappear(
 ): void {
   const { cls, dimensions } = leave;
   const style = dom.style;
-  const move = moving.get(dom);
   switch (phase) {
-    case AnimationPhase.MEASURE_LEAVES:
+    case AnimationPhase.MEASURE_LEAVES: {
       if (leave.deferred) {
         const measured = getDimensions(dom);
         dimensions.x = measured.x;
@@ -418,10 +420,13 @@ function _willDisappear(
         }
         leave.reached = reachedValues(dom, leave.exact ?? true);
       }
+      const move = moving.get(dom);
       if (move !== undefined) leave.hold = reachedOffset(move);
       return;
-    case AnimationPhase.INITIALIZE:
+    }
+    case AnimationPhase.INITIALIZE: {
       // The element stays where its move has brought it
+      const move = moving.get(dom);
       if (move !== undefined) {
         finishMove(move);
         if (leave.hold !== null) holdOffset(dom, leave.hold);
@@ -434,6 +439,7 @@ function _willDisappear(
       markApplied(style, leave.sizes);
       addClassName(dom, cls.start);
       return;
+    }
     case AnimationPhase.ACTIVATE_TRANSITIONS:
       // 2. Activate transition (after a reflow)
       addClassName(dom, cls.active);
@@ -566,7 +572,7 @@ function setsTransform(animation: Animation): boolean {
 }
 // A computed animation-name list with an animation in it
 function hasAnimationName(names: string | undefined): boolean {
-  if (!names) return false;
+  if (!names || names === 'none') return false;
   for (const name of names.split(',')) {
     const trimmed = name.trim();
     if (trimmed !== '' && trimmed !== 'none') return true;
@@ -614,7 +620,8 @@ function mayRunOther(
   own: string | null,
 ): boolean {
   if (runnable === null) return true;
-  for (const [name] of runnable) {
+  for (let i = 0; i < runnable.length; i++) {
+    const name = runnable[i][0];
     if (name !== own && name !== '-webkit-' + own) return true;
   }
   return false;
@@ -625,7 +632,8 @@ function mayTransition(
   property: string,
 ): boolean {
   if (runnable === null) return true;
-  for (const [name] of runnable) {
+  for (let i = 0; i < runnable.length; i++) {
+    const name = runnable[i][0];
     if (name === property || name === 'all' || name === '-webkit-' + property)
       return true;
   }
@@ -774,9 +782,9 @@ function addMoveItem(
     keyframed: false,
     baseTransform: '',
     translate: 'none',
-    offset: [],
-    transitions: [],
-    overrides: [],
+    offset: NO_STYLES,
+    transitions: NO_STYLES,
+    overrides: NO_STYLES,
     initialized: false,
     addedClasses: '',
     starting: false,
@@ -994,17 +1002,23 @@ function startMove(item: MoveItem, outer: MoveItem | null): void {
   const dx = outer === null ? item.dx : item.dx - outer.dx;
   const dy = outer === null ? item.dy : item.dy - outer.dy;
   // The offset in the element's coordinates. Its own rotate and scale apply to an offset in its
-  // transform, but not to one in translate, which applies before them.
-  const offset = solve(
-    item.property === 'translate'
-      ? batch.space!
-      : multiply(batch.space!, item.linear),
-    dx,
-    dy,
-  );
+  // transform, but not to one in translate, which applies before them: m maps the offset to the
+  // viewport, and the offset is its solution for (dx, dy).
+  const space = batch.space!;
+  const own =
+    item.property === 'translate' || item.linear === IDENTITY
+      ? null
+      : item.linear;
+  const a = own === null ? space[0] : space[0] * own[0] + space[2] * own[1];
+  const b = own === null ? space[1] : space[1] * own[0] + space[3] * own[1];
+  const c = own === null ? space[2] : space[0] * own[2] + space[2] * own[3];
+  const d = own === null ? space[3] : space[1] * own[2] + space[3] * own[3];
+  const determinant = a * d - b * c;
+  const x = (d * dx - c * dy) / determinant;
+  const y = (a * dy - b * dx) / determinant;
   if (
-    offset === null ||
-    (Math.abs(offset.x) < 0.01 && Math.abs(offset.y) < 0.01)
+    Math.abs(determinant) < 1e-9 ||
+    (Math.abs(x) < 0.01 && Math.abs(y) < 0.01)
   ) {
     restoreTransitions(item);
     finishMove(item);
@@ -1012,7 +1026,6 @@ function startMove(item: MoveItem, outer: MoveItem | null): void {
   }
   item.offset = saveStyles(node.style, [item.property]);
   item.initialized = true;
-  // Without a transition the start offset applies at once
   // Without a transition of the move's property the start offset applies at once
   if (!item.transitions.length && mayTransition(item.runnable, item.property)) {
     disableTransitions(item);
@@ -1020,8 +1033,8 @@ function startMove(item: MoveItem, outer: MoveItem | null): void {
   writeOffset(
     item,
     item.property === 'translate'
-      ? `${offset.x}px ${offset.y}px`
-      : `translate(${offset.x}px,${offset.y}px) ${item.baseTransform}`,
+      ? `${x}px ${y}px`
+      : `translate(${x}px,${y}px) ${item.baseTransform}`,
   );
 }
 
@@ -1092,8 +1105,11 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
       ? startingAncestor(batch.parent)
       : null;
   if (verify) {
-    const leavers = batch.items.filter(isLeaving);
-    if (leavers.length !== 0) finishHeld(leavers);
+    let leavers: MoveItem[] | null = null;
+    for (const item of batch.items) {
+      if (isLeaving(item)) (leavers ??= []).push(item);
+    }
+    if (leavers !== null) finishHeld(leavers);
   }
   for (const item of batch.items) {
     if (item.done || item.superseded) continue;
