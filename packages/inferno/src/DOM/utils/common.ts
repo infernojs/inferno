@@ -55,7 +55,7 @@ export function updateMoveHooks(lastVNode: VNode, nextVNode: VNode): void {
   const lastRef = lastVNode.ref;
   if (
     isNullOrUndef(lastRef) ||
-    typeof (lastRef as any).onComponentWillMove !== 'function'
+    !isFunction((lastRef as any).onComponentWillMove)
   ) {
     (moveAnimations as MoveAnimationAdapter).updateHooks(
       lastRef,
