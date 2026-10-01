@@ -35,6 +35,9 @@ jobs:
       - name: Test with coverage
         run: pnpm run test:coverage
 
+      - name: Test without a DOM
+        run: pnpm run test:node-nodom
+
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
 
