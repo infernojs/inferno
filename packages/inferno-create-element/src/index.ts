@@ -76,14 +76,8 @@ export function createElement<P>(
     }
   } else {
     flags = VNodeFlags.ComponentUnknown;
-    if (!isUndefined(definedChildren)) {
-      if (!props) {
-        props = {} as P & Props<P>;
-      }
-      props.children = definedChildren;
-    }
 
-    if (!isNullOrUndef(props)) {
+    if (!isNullOrUndef(props) || !isUndefined(definedChildren)) {
       newProps = {};
 
       for (const prop in props) {
@@ -112,6 +106,9 @@ export function createElement<P>(
               break;
           }
         }
+      }
+      if (!isUndefined(definedChildren)) {
+        (newProps as Record<string, unknown>).children = definedChildren;
       }
     }
 

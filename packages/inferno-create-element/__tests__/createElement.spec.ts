@@ -248,4 +248,23 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
       '<button class="FancyButton">Click me!</button>',
     );
   });
+
+  it('Should not write children into the props passed for a component', () => {
+    const Bold = (props: { title: string; children?: any }) =>
+      createElement('b', null, props.children);
+    const props = { title: 't' };
+
+    render(
+      createElement(
+        'div',
+        null,
+        createElement(Bold, props, 'first'),
+        createElement(Bold, props),
+      ),
+      container,
+    );
+
+    expect(container.innerHTML).toBe('<div><b>first</b><b></b></div>');
+    expect(props).toEqual({ title: 't' });
+  });
 });
