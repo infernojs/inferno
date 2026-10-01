@@ -365,7 +365,7 @@ function createFactory(type): (type) => VNode {
 function render(
   rootInput,
   container,
-  cb = null,
+  cb: (() => void) | null = null,
   context = EMPTY_OBJ,
 ): Component | undefined {
   renderInternal(rootInput, container, cb, context);

@@ -23,6 +23,16 @@ describe('Compat Children', () => {
     render(element, container);
   }
 
+  it('Should accept and call a render callback', () => {
+    let calls = 0;
+
+    render(createElement('div', null, 'text'), container, () => {
+      calls++;
+    });
+
+    expect(calls).toBe(1);
+  });
+
   describe('using createElement', () => {
     it('should create a VNode with the correct className', function () {
       const element = createElement('div', { className: 'foo', test: 'hi' });
