@@ -1,6 +1,7 @@
 import { Component, type InfernoNode } from 'inferno';
 import { type Location, parsePath, type Path } from 'history';
 import { combinePath, invariant } from './utils';
+import { normalizeToLocation, splitLocation } from './locationUtils';
 import { isString } from 'inferno-shared';
 
 export interface RedirectProps {
@@ -59,12 +60,14 @@ export class Redirect extends Component<RedirectProps, any> {
 
   public perform(): void {
     const { history } = this.context.router;
-    const { push = false, to } = this.props;
+    const { push = false, to: toProp } = this.props;
+    // history v5 takes the state as its own argument, as in Link
+    const { to, state } = splitLocation(normalizeToLocation(toProp));
 
     if (push) {
-      history.push(to);
+      history.push(to, state);
     } else {
-      history.replace(to);
+      history.replace(to, state);
     }
   }
 
