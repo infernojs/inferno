@@ -43,6 +43,20 @@ describe('svg', () => {
     );
   });
 
+  it('Should map fontVariant to the font-variant attribute', () => {
+    render(
+      createElement('svg', null, [
+        createElement('text', { fontVariant: 'small-caps' }, 'Text'),
+      ]),
+      container,
+    );
+
+    const text = container.firstChild.firstChild;
+
+    expect(text.getAttribute('font-variant')).toBe('small-caps');
+    expect(text.hasAttribute('fontVariant')).toBe(false);
+  });
+
   it('Should work with namespace svg attributes', () => {
     render(
       createElement('svg', null, [
