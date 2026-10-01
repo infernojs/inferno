@@ -3,6 +3,8 @@ import { streamQueueAsString } from 'inferno-server';
 
 import concatStream from 'concat-stream';
 import { createElement } from 'inferno-create-element';
+import { Writable } from 'node:stream';
+import { pipeline } from 'node:stream/promises';
 
 class StatefulComponent extends Component<{ value: string }> {
   render() {
@@ -769,6 +771,55 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       return await streamPromise(<Test />).then(function (output) {
         expect(output[1]).toEqual('<div>1</div>');
       });
+    });
+  });
+
+  describe('end of stream', () => {
+    const tree = () => (
+      <div>
+        <StatefulPromiseComponent index={1} />
+        <span>after</span>
+      </div>
+    );
+    const expected =
+      '<div><span>Stateless Item 1: I waited long enough!</span><span>after</span></div>';
+
+    it('Should end the stream so that for await finishes', async () => {
+      let html = '';
+
+      for await (const chunk of streamQueueAsString(tree())) {
+        html += chunk;
+      }
+
+      expect(html).toBe(expected);
+    });
+
+    it('Should end the stream so that pipeline finishes', async () => {
+      let html = '';
+
+      await pipeline(
+        streamQueueAsString(tree()),
+        new Writable({
+          write(chunk, _encoding, callback) {
+            html += chunk;
+            callback();
+          },
+        }),
+      );
+
+      expect(html).toBe(expected);
+    });
+
+    it('Should mark the stream as ended', async () => {
+      const stream = streamQueueAsString(tree());
+
+      await new Promise((resolve) => {
+        stream.on('end', resolve);
+        stream.resume();
+      });
+      await new Promise((resolve) => setTimeout(resolve, 0));
+
+      expect(stream.readableEnded).toBe(true);
     });
   });
 });

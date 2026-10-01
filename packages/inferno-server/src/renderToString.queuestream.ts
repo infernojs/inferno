@@ -89,7 +89,9 @@ export class RenderQueueStream extends Readable {
       this.collector[0] = null;
       // End of content
     } else if (chunk === Infinity) {
-      this.emit('end');
+      // Removed so that a pushQueue call that is already scheduled does not push after the end
+      this.collector.shift();
+      this.push(null);
     }
   }
 
