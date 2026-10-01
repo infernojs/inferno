@@ -1,6 +1,7 @@
 import {
   _HI as normalizeRoot,
   createComponentVNode,
+  findDOMFromVNode,
   type InfernoNode,
   render,
   type VNode,
@@ -47,13 +48,31 @@ function innerVNode<T>(
   );
 }
 
-function makeProxy(target: VNode): { $V: InfernoNode } {
+// Stands in for the container when the reaction re-renders through render(). $V is the rendered vNode.
+// When the root element changes, patch inserts, replaces or removes nodes through the container, so
+// those calls go to the real parent of the nodes.
+function makeProxy(target: VNode) {
   return {
     get $V() {
       return target.children;
     },
     set $V(value) {
       target.children = value;
+    },
+    appendChild(dom: Node): void {
+      // After the rendered nodes, so the siblings of the component keep their order
+      const last = findDOMFromVNode(target.children as VNode, false) as Node;
+
+      (last.parentNode as Node).insertBefore(dom, last.nextSibling);
+    },
+    insertBefore(dom: Node, nextNode: Node): void {
+      (nextNode.parentNode as Node).insertBefore(dom, nextNode);
+    },
+    removeChild(dom: Node): void {
+      (dom.parentNode as Node).removeChild(dom);
+    },
+    replaceChild(dom: Node, lastDom: Node): void {
+      (lastDom.parentNode as Node).replaceChild(dom, lastDom);
     },
   };
 }

@@ -322,6 +322,52 @@ describe('Stateless components observerWrap', () => {
     ).not.toBeDefined();
   });
 
+  it('replaces the root element when an observable change renders another element or nothing', () => {
+    const store = observable({ mode: 'div' });
+    const Toggle = observerWrap(() => {
+      if (store.mode === 'div') {
+        return <div>shown</div>;
+      }
+      if (store.mode === 'span') {
+        return <span>shown</span>;
+      }
+      return null;
+    });
+
+    render(
+      <section>
+        <i>before</i>
+        <Toggle />
+        <b>after</b>
+      </section>,
+      container,
+    );
+    expect(container.innerHTML).toBe(
+      '<section><i>before</i><div>shown</div><b>after</b></section>',
+    );
+
+    runInAction(() => {
+      store.mode = 'span';
+    });
+    expect(container.innerHTML).toBe(
+      '<section><i>before</i><span>shown</span><b>after</b></section>',
+    );
+
+    runInAction(() => {
+      store.mode = 'none';
+    });
+    expect(container.innerHTML).toBe(
+      '<section><i>before</i><b>after</b></section>',
+    );
+
+    runInAction(() => {
+      store.mode = 'div';
+    });
+    expect(container.innerHTML).toBe(
+      '<section><i>before</i><div>shown</div><b>after</b></section>',
+    );
+  });
+
   it('keep views alive', () => {
     let yCalcCount = 0;
     const data = observable({
