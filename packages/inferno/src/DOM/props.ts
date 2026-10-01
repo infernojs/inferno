@@ -132,14 +132,18 @@ export function patchProp(
     case 'selected':
       dom[prop] = !!nextValue;
       break;
+    // A string value is kept, for example hidden="until-found" or capture="user"
     case 'capture':
     case 'hidden':
       if (isString(nextValue)) {
         dom.setAttribute(prop, nextValue);
-        break;
+      } else if (nextValue) {
+        dom.setAttribute(prop, '');
+      } else {
+        dom.removeAttribute(prop);
       }
+      break;
     // The JSX plugins lowercase some of these names, createVNode and createElement keep them as written
-    // falls through
     case 'allowfullscreen':
     case 'allowFullScreen':
     case 'autofocus':

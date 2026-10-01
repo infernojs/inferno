@@ -175,4 +175,27 @@ describe('Boolean attributes', () => {
     expect(div.hasAttribute('hidden')).toBe(true);
     expect(div.hidden).toBe(true);
   });
+
+  it('Should replace a string value of hidden and capture when it changes to true', () => {
+    render(
+      <div hidden="until-found">
+        <input type="file" capture="user" />
+      </div>,
+      container,
+    );
+    const div = container.firstChild;
+    const input = div.firstChild;
+
+    expect(div.getAttribute('hidden')).toBe('until-found');
+    expect(input.getAttribute('capture')).toBe('user');
+
+    render(
+      <div hidden={true}>
+        <input type="file" capture={true} />
+      </div>,
+      container,
+    );
+    expect(div.getAttribute('hidden')).toBe('');
+    expect(input.getAttribute('capture')).toBe('');
+  });
 });
