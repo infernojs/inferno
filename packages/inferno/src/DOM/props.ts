@@ -125,29 +125,41 @@ export function patchProp(
     case 'ref':
     case 'selectedIndex':
       break;
-    case 'autoFocus':
-      (dom as any).autofocus = !!nextValue;
-      break;
-    case 'allowfullscreen':
-    case 'autoplay':
-    case 'capture':
+    // These properties hold the current state, which the attribute only initializes
     case 'checked':
+    case 'indeterminate':
+    case 'muted':
+    case 'selected':
+      dom[prop] = !!nextValue;
+      break;
+    case 'capture':
+    case 'hidden':
+      if (isString(nextValue)) {
+        dom.setAttribute(prop, nextValue);
+        break;
+      }
+    // The JSX plugins lowercase some of these names, createVNode and createElement keep them as written
+    // falls through
+    case 'allowfullscreen':
+    case 'allowFullScreen':
+    case 'autofocus':
+    case 'autoFocus':
+    case 'autoplay':
+    case 'autoPlay':
     case 'controls':
     case 'default':
     case 'disabled':
-    case 'hidden':
-    case 'indeterminate':
+    case 'formnovalidate':
+    case 'formNoValidate':
     case 'loop':
-    case 'muted':
     case 'novalidate':
+    case 'noValidate':
     case 'open':
+    case 'readonly':
     case 'readOnly':
     case 'required':
     case 'reversed':
-    case 'scoped':
-    case 'seamless':
-    case 'selected':
-      dom[prop] = !!nextValue;
+      dom.toggleAttribute(prop.toLowerCase(), !!nextValue);
       break;
     case 'defaultChecked':
     case 'value':

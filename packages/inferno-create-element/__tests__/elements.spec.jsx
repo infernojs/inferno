@@ -739,7 +739,7 @@ describe('Elements (JSX)', () => {
       expect(multipleValue).toBe(true);
     }
 
-    expect(container.firstChild.capture).toBeTruthy(); // true and "true" are both valid
+    expect(container.firstChild.getAttribute('capture')).toBe('capture');
     // expect(container.firstChild.getAttribute('accept')).toBe('image/*');
 
     render(
@@ -766,7 +766,7 @@ describe('Elements (JSX)', () => {
       expect(multipleValue).toBe(true);
     }
 
-    expect(container.firstChild.capture).toBeTruthy(); // true and "true" are both valid;
+    expect(container.firstChild.getAttribute('capture')).toBe('capture');
     // expect(container.firstChild.getAttribute('accept')).toBe('image/*');
   });
 

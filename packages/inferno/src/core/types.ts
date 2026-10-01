@@ -1064,7 +1064,7 @@ export declare namespace Inferno {
       | 'send'
       | null
       | undefined;
-    hidden?: boolean | null | undefined;
+    hidden?: boolean | 'until-found' | null | undefined;
     id?: string | null | undefined;
     lang?: string | null | undefined;
     nonce?: string | null | undefined;
