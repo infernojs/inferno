@@ -11,7 +11,12 @@ import {
   normalizeRoot,
 } from './core/implementation';
 import { linkEvent } from './DOM/events/linkEvent';
-import { renderInternal, createRenderer, render } from './DOM/rendering';
+import {
+  callRenderHooks,
+  renderInternal,
+  createRenderer,
+  render,
+} from './DOM/rendering';
 import {
   AnimationQueues,
   EMPTY_OBJ,
@@ -85,6 +90,7 @@ export {
   rerender,
   version,
   // Internal methods, used by hydration
+  callRenderHooks as _CRH,
   createClassComponentInstance as _CI,
   findElementFromVNode as _FE, // used by inferno-animation
   normalizeRoot as _HI, // used by inferno-mobx

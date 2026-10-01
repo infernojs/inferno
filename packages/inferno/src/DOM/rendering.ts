@@ -49,6 +49,15 @@ if (hasDocumentAvailable) {
   }
 }
 
+// Runs what a render queued after the DOM is ready, hydration uses it too
+export function callRenderHooks(
+  lifecycle: Array<() => void>,
+  animations: AnimationQueues,
+): void {
+  callAll(lifecycle);
+  callAllAnimationHooks(animations.componentDidAppear);
+}
+
 // noinspection JSUnusedAssignment
 export function renderInternal(
   input: VNode | InfernoNode,
@@ -114,8 +123,7 @@ export function renderInternal(
       (parentDOM as any).$V = input as VNode;
     }
   }
-  callAll(lifecycle);
-  callAllAnimationHooks(animations.componentDidAppear);
+  callRenderHooks(lifecycle, animations);
 
   renderCheck.v = false;
   if (isFunction(callback)) {

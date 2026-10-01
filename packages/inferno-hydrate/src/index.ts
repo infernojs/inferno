@@ -9,6 +9,7 @@ import {
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   _CI,
+  _CRH as callRenderHooks,
   _HI,
   _M,
   _MCCC,
@@ -447,12 +448,7 @@ export function hydrate(
       parentDOM.removeChild(dom);
     }
 
-    if (lifecycle.length > 0) {
-      let listener;
-      while ((listener = lifecycle.shift()) !== undefined) {
-        listener();
-      }
-    }
+    callRenderHooks(lifecycle, animations);
   }
 
   (parentDOM as any).$V = input;

@@ -262,4 +262,86 @@ describe('SSR Hydration Extended - (JSX)', () => {
 
     expect(container.textContent).toBe('Okay!');
   });
+
+  describe('Appear hooks of components mounted after a mismatch', () => {
+    beforeEach(() => {
+      spyOn(console, 'error'); // mismatch warnings
+    });
+
+    it('Should call appear hooks of components missing from server markup', () => {
+      const appeared: string[] = [];
+
+      class Card extends Component {
+        public componentDidAppear(dom) {
+          appeared.push('class ' + dom.id);
+        }
+
+        public render() {
+          return <div id="card">class</div>;
+        }
+      }
+
+      function Item() {
+        return <div id="item">function</div>;
+      }
+
+      const container = createContainerWithHTML('<div></div>');
+
+      hydrate(
+        <div>
+          <Card />
+          <Item
+            onComponentDidAppear={(dom) => appeared.push('function ' + dom.id)}
+          />
+        </div>,
+        container,
+      );
+
+      expect(container.innerHTML).toBe(
+        '<div><div id="card">class</div><div id="item">function</div></div>',
+      );
+      expect(appeared.sort()).toEqual(['class card', 'function item']);
+    });
+
+    it('Should call appear hooks of components inside an element whose tag does not match', () => {
+      const appeared: string[] = [];
+
+      class Card extends Component {
+        public componentDidAppear(dom) {
+          appeared.push('class ' + dom.id);
+        }
+
+        public render() {
+          return <div id="card">class</div>;
+        }
+      }
+
+      function Item() {
+        return <div id="item">function</div>;
+      }
+
+      const container = createContainerWithHTML(
+        '<div><span><div id="card">class</div><div id="item">function</div></span></div>',
+      );
+
+      hydrate(
+        <div>
+          <section>
+            <Card />
+            <Item
+              onComponentDidAppear={(dom) =>
+                appeared.push('function ' + dom.id)
+              }
+            />
+          </section>
+        </div>,
+        container,
+      );
+
+      expect(container.innerHTML).toBe(
+        '<div><section><div id="card">class</div><div id="item">function</div></section></div>',
+      );
+      expect(appeared.sort()).toEqual(['class card', 'function item']);
+    });
+  });
 });
