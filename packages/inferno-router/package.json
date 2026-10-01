@@ -63,8 +63,12 @@
     ],
     "moduleName": "Inferno.Router",
     "moduleGlobals": {
+      "history": "HistoryLibrary",
       "inferno": "Inferno"
-    }
+    },
+    "umdBundledDependencies": [
+      "path-to-regexp"
+    ]
   },
   "gitHead": "930f16301f6cdaa85e48641eed9ef49f799fc68a"
 }

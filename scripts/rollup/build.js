@@ -68,6 +68,10 @@ const pkgJSON = JSON.parse(pkgJSONtext);
   // Used in inferno-server
   external.push('stream');
 
+  // Dependencies that have no UMD bundle of their own are bundled into the UMD targets only
+  const umdBundledDependencies = rollupConfig.umdBundledDependencies || [];
+  const umdExternal = external.filter((name) => !umdBundledDependencies.includes(name));
+
   const defaultOptions = {
     name: 'index',
     replace: true,
@@ -131,7 +135,7 @@ const pkgJSON = JSON.parse(pkgJSONtext);
     // Transform
     const { write } = await rollup({
       input: join(cwd, 'tmpDist/index.js'),
-      external: external,
+      external: options.format === 'umd' ? umdExternal : external,
       plugins: rollupPlugins
     }).catch(errorFunc);
 

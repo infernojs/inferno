@@ -16,7 +16,8 @@ export function createPlugins(version, options) {
       preferBuiltins: true
     }),
     commonjs({
-      include: 'node_modules/**'
+      // pnpm resolves packages to the root node_modules, outside of the package directory
+      include: /node_modules/
     })
   ];
 
