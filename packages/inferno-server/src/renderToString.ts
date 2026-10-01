@@ -14,14 +14,17 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildSelectValue,
   isAttributeNameSafe,
   isEmptyFragment,
+  isSelectedOption,
   renderFunctionalComponent,
   validateTagName,
   voidElements,
 } from './utils';
 
-function renderVNodeToString(vNode, parent, context): string {
+// selectValue is the value of the nearest <select>, see isSelectedOption
+function renderVNodeToString(vNode, context, selectValue?: unknown): string {
   vNode = arrayToFragment(vNode);
   const flags = vNode.flags;
   const type = vNode.type;
@@ -88,7 +91,7 @@ function renderVNodeToString(vNode, parent, context): string {
       if (isNumber(renderOutput)) {
         return renderOutput + '';
       }
-      return renderVNodeToString(renderOutput, vNode, childContext);
+      return renderVNodeToString(renderOutput, childContext, selectValue);
     } else {
       const renderOutput = renderFunctionalComponent(vNode, context);
 
@@ -101,7 +104,7 @@ function renderVNodeToString(vNode, parent, context): string {
       if (isNumber(renderOutput)) {
         return renderOutput + '';
       }
-      return renderVNodeToString(renderOutput, vNode, context);
+      return renderVNodeToString(renderOutput, context, selectValue);
     }
   } else if ((flags & VNodeFlags.Element) !== 0) {
     validateTagName(type);
@@ -163,12 +166,7 @@ function renderVNodeToString(vNode, parent, context): string {
             break;
         }
       }
-      if (
-        type === 'option' &&
-        typeof props.value !== 'undefined' &&
-        props.value === parent.props.value
-      ) {
-        // Parent value sets children value
+      if (isSelectedOption(type, props, selectValue)) {
         renderedString += ` selected`;
       }
     }
@@ -177,12 +175,21 @@ function renderVNodeToString(vNode, parent, context): string {
     } else {
       renderedString += `>`;
       const childFlags = vNode.childFlags;
+      const childSelectValue = getChildSelectValue(type, props, selectValue);
 
       if (childFlags === ChildFlags.HasVNodeChildren) {
-        renderedString += renderVNodeToString(children, vNode, context);
+        renderedString += renderVNodeToString(
+          children,
+          context,
+          childSelectValue,
+        );
       } else if (childFlags & ChildFlags.MultipleChildren) {
         for (let i = 0, len = children.length; i < len; ++i) {
-          renderedString += renderVNodeToString(children[i], vNode, context);
+          renderedString += renderVNodeToString(
+            children[i],
+            context,
+            childSelectValue,
+          );
         }
       } else if (childFlags === ChildFlags.HasTextChildren) {
         renderedString += children === '' ? ' ' : escapeText(children);
@@ -202,12 +209,12 @@ function renderVNodeToString(vNode, parent, context): string {
       return '<!--!-->';
     }
     if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-      return renderVNodeToString(children, vNode, context);
+      return renderVNodeToString(children, context, selectValue);
     }
     let renderedString = '';
 
     for (let i = 0, len = children.length; i < len; ++i) {
-      renderedString += renderVNodeToString(children[i], vNode, context);
+      renderedString += renderVNodeToString(children[i], context, selectValue);
     }
 
     return renderedString;
@@ -232,5 +239,5 @@ function renderVNodeToString(vNode, parent, context): string {
 }
 
 export function renderToString(input: any): string {
-  return renderVNodeToString(input, {}, {});
+  return renderVNodeToString(input, {});
 }

@@ -134,6 +134,77 @@ describe('SSR Creation (JSX)', () => {
         '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
     },
     {
+      description: 'should render the selected option inside a fragment',
+      template: () => (
+        <select value="dog">
+          <>
+            <option value="cat">A cat</option>
+            <option value="dog">A dog</option>
+          </>
+        </select>
+      ),
+      result:
+        '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
+    },
+    {
+      description: 'should render the selected option inside an optgroup',
+      template: () => (
+        <select value="dog">
+          <optgroup label="Pets">
+            <option value="cat">A cat</option>
+            <option value="dog">A dog</option>
+          </optgroup>
+        </select>
+      ),
+      result:
+        '<select value="dog"><optgroup label="Pets"><option value="cat">A cat</option><option value="dog" selected>A dog</option></optgroup></select>',
+    },
+    {
+      description:
+        'should render the selected option of a component that returns a fragment',
+      template: () => {
+        function Options() {
+          return (
+            <>
+              <option value="cat">A cat</option>
+              <option value="dog">A dog</option>
+            </>
+          );
+        }
+
+        return (
+          <select value="dog">
+            <Options />
+          </select>
+        );
+      },
+      result:
+        '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
+    },
+    {
+      description:
+        'should render the selected option of a component that returns an option',
+      template: () => {
+        function Option({ value }) {
+          return <option value={value}>{value}</option>;
+        }
+
+        return (
+          <select value="dog">
+            <Option value="cat" />
+            <Option value="dog" />
+          </select>
+        );
+      },
+      result:
+        '<select value="dog"><option value="cat">cat</option><option value="dog" selected>dog</option></select>',
+    },
+    {
+      description: 'should render an option without a select',
+      template: () => <option value="dog">A dog</option>,
+      result: '<option value="dog">A dog</option>',
+    },
+    {
       description: 'should render a text placeholder',
       template: () => (
         <div>
