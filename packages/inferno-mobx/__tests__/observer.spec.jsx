@@ -184,6 +184,30 @@ describe('Mobx Observer', () => {
     done();
   });
 
+  it('passes the lifecycle arguments to the component', () => {
+    const calls = [];
+
+    class Item extends Component {
+      componentDidUpdate(prevProps, prevState) {
+        calls.push({ prevProps, prevState });
+      }
+
+      render() {
+        return <span>{this.props.value}</span>;
+      }
+    }
+
+    const Observed = observer(Item);
+
+    render(<Observed value={1} />, container);
+    render(<Observed value={2} />, container);
+
+    expect(container.innerHTML).toBe('<span>2</span>');
+    expect(calls.length).toBe(1);
+    expect(calls[0].prevProps.value).toBe(1);
+    expect(calls[0].prevState).toBe(null);
+  });
+
   it('does not keep views alive when using static rendering', () => {
     useStaticRendering(true);
 

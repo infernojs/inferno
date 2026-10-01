@@ -66,12 +66,12 @@ function patch(target, funcName, runMixinFirst): void {
     ? mixinFunc
     : runMixinFirst === true
       ? function (...args) {
-          mixinFunc.apply(this, ...args);
-          base.apply(this, ...args);
+          mixinFunc.apply(this, args);
+          base.apply(this, args);
         }
       : function (...args) {
-          base.apply(this, ...args);
-          mixinFunc.apply(this, ...args);
+          base.apply(this, args);
+          mixinFunc.apply(this, args);
         };
 
   // MWE: ideally we freeze here to protect against accidental overwrites in component instances, see #195
