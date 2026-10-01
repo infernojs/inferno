@@ -1,5 +1,4 @@
 import {
-  isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
@@ -13,6 +12,7 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildContext,
   getChildSelectValue,
   isAttributeNameSafe,
   isEmptyFragment,
@@ -44,7 +44,7 @@ export class RenderStream extends Readable {
 
     resolvedPromise
       .then(() => {
-        return this.renderNode(this.initNode, null);
+        return this.renderNode(this.initNode, {});
       })
       .then(() => {
         this.push(null);
@@ -117,14 +117,6 @@ export class RenderStream extends Readable {
     const hasNewAPI = usesNewAPI(type, instance);
     instance.$BS = false;
     instance.$SSR = true;
-    let childContext;
-    if (isFunction(instance.getChildContext)) {
-      childContext = instance.getChildContext();
-    }
-
-    if (!isNullOrUndef(childContext)) {
-      context = { ...context, ...childContext };
-    }
     instance.context = context;
     instance.$BR = true;
 
@@ -140,6 +132,7 @@ export class RenderStream extends Readable {
           instance.state,
           instance.context,
         );
+        const childContext = getChildContext(instance, context);
 
         if (isInvalid(renderOutput)) {
           return this.push('<!--!-->');
@@ -151,7 +144,7 @@ export class RenderStream extends Readable {
           return this.push(renderOutput + '');
         }
 
-        return this.renderNode(renderOutput, context, selectValue);
+        return this.renderNode(renderOutput, childContext, selectValue);
       },
     );
   }

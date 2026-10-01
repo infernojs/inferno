@@ -14,6 +14,7 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildContext,
   getChildSelectValue,
   isAttributeNameSafe,
   isEmptyFragment,
@@ -40,16 +41,6 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
       const hasNewAPI = usesNewAPI(type, instance);
       instance.$BS = false;
       instance.$SSR = true;
-      let childContext;
-      if (isFunction(instance.getChildContext)) {
-        childContext = instance.getChildContext();
-      }
-
-      if (isNullOrUndef(childContext)) {
-        childContext = context;
-      } else {
-        childContext = { ...context, ...childContext };
-      }
       if (instance.props === EMPTY_OBJ) {
         instance.props = props;
       }
@@ -82,6 +73,7 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
         instance.state,
         instance.context,
       );
+      const childContext = getChildContext(instance, context);
       // In case render returns invalid stuff
       if (isInvalid(renderOutput)) {
         return '<!--!-->';

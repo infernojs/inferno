@@ -4,7 +4,7 @@ import {
   type InfernoNode,
   type VNode,
 } from 'inferno';
-import { isArray, throwError } from 'inferno-shared';
+import { isArray, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const rxUnescaped = /["'&<>]/;
@@ -140,6 +140,17 @@ export function usesNewAPI(type, instance): boolean {
   return Boolean(
     type.getDerivedStateFromProps || instance.getSnapshotBeforeUpdate,
   );
+}
+
+// Called after render, the same as on the client, so it sees the state set before render
+export function getChildContext(instance, context): Record<string, unknown> {
+  const childContext = isFunction(instance.getChildContext)
+    ? instance.getChildContext()
+    : null;
+
+  return isNullOrUndef(childContext)
+    ? context
+    : { ...context, ...childContext };
 }
 
 export function createDerivedState(

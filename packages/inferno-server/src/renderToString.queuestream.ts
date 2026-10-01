@@ -6,7 +6,6 @@ import {
   isNullOrUndef,
   isNumber,
   isString,
-  isUndefined,
   throwError,
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
@@ -16,6 +15,7 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildContext,
   getChildSelectValue,
   isAttributeNameSafe,
   isEmptyFragment,
@@ -35,7 +35,7 @@ export class RenderQueueStream extends Readable {
     super();
     this.pushQueue = this.pushQueue.bind(this);
     if (initNode) {
-      this.renderVNodeToQueue(initNode, null, null);
+      this.renderVNodeToQueue(initNode, {}, null);
     }
   }
 
@@ -119,13 +119,6 @@ export class RenderQueueStream extends Readable {
         const hasNewAPI = usesNewAPI(type, instance);
         instance.$BS = false;
         instance.$SSR = true;
-        let childContext;
-        if (!isUndefined(instance.getChildContext)) {
-          childContext = instance.getChildContext();
-        }
-        if (!isNullOrUndef(childContext)) {
-          context = { ...context, ...childContext };
-        }
         if (instance.props === EMPTY_OBJ) {
           instance.props = props;
         }
@@ -156,6 +149,7 @@ export class RenderQueueStream extends Readable {
                     instance.state,
                     instance.context,
                   );
+                  const childContext = getChildContext(instance, context);
                   if (isInvalid(renderOut)) {
                     this.addToQueue('<!--!-->', promisePosition);
                   } else if (isString(renderOut)) {
@@ -165,7 +159,7 @@ export class RenderQueueStream extends Readable {
                   } else {
                     this.renderVNodeToQueue(
                       renderOut,
-                      instance.context,
+                      childContext,
                       promisePosition,
                       selectValue,
                     );
@@ -190,6 +184,7 @@ export class RenderQueueStream extends Readable {
           instance.state,
           instance.context,
         );
+        const childContext = getChildContext(instance, context);
 
         if (isInvalid(renderOutput)) {
           this.addToQueue('<!--!-->', position);
@@ -198,7 +193,12 @@ export class RenderQueueStream extends Readable {
         } else if (isNumber(renderOutput)) {
           this.addToQueue(renderOutput + '', position);
         } else {
-          this.renderVNodeToQueue(renderOutput, context, position, selectValue);
+          this.renderVNodeToQueue(
+            renderOutput,
+            childContext,
+            position,
+            selectValue,
+          );
         }
       } else {
         const renderOutput = renderFunctionalComponent(vNode, context);

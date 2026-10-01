@@ -777,5 +777,57 @@ describe('SSR Creation (JSX)', () => {
 
       await expectServerToMatchClient(() => <Snapshot />);
     });
+
+    it('Should call getChildContext after componentWillMount', async () => {
+      function Consumer(_props, context) {
+        return <span>{context.theme}</span>;
+      }
+
+      class Provider extends Component<unknown, { theme: string }> {
+        public state = { theme: 'light' };
+
+        public componentWillMount() {
+          this.setState({ theme: 'dark' });
+        }
+
+        public getChildContext() {
+          return { theme: this.state.theme };
+        }
+
+        public render() {
+          return <Consumer />;
+        }
+      }
+
+      await expectServerToMatchClient(() => <Provider />);
+    });
+
+    it('Should not give a component its own child context', async () => {
+      class Provider extends Component {
+        public getChildContext() {
+          return { theme: 'dark' };
+        }
+
+        public render() {
+          return <span>{String(this.context.theme)}</span>;
+        }
+      }
+
+      await expectServerToMatchClient(() => (
+        <div>
+          <Provider />
+        </div>
+      ));
+    });
+
+    it('Should give a root component an empty context', async () => {
+      class Root extends Component {
+        public render() {
+          return <span>{String(this.context.theme)}</span>;
+        }
+      }
+
+      await expectServerToMatchClient(() => <Root />);
+    });
   });
 });
