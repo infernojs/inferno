@@ -17,7 +17,10 @@ export default {
     "^inferno(.*?)$": "<rootDir>/packages/inferno$1/src/index.ts",
     "mobx": "<rootDir>/node_modules/mobx/dist/mobx.cjs.development.js"
   },
-  setupFiles: ["<rootDir>/scripts/test/requestAnimationFrame.ts"],
+  setupFiles: [
+    "<rootDir>/scripts/test/requestAnimationFrame.ts",
+    "<rootDir>/scripts/test/request.ts"
+  ],
   testMatch: [
     "<rootDir>/packages/*/__tests__/**/*spec.@(js|ts)?(x)",
     "<rootDir>/packages/*/__tests__/**/*spec.server.@(js|ts)?(x)"

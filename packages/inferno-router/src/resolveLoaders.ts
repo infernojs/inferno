@@ -214,19 +214,6 @@ function createClientSideRequest(
   //       : formData;
   // }
 
-  // Request is undefined when running tests
-  if (process.env.NODE_ENV === 'test' && typeof Request === 'undefined') {
-    // @ts-expect-error minimum to fix tests
-    global.Request = class Request {
-      public url;
-      public signal;
-      constructor(_url: URL | string, _init: RequestInit) {
-        this.url = _url;
-        this.signal = _init.signal;
-      }
-    };
-  }
-
   // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
   return new Request(url, init);
 }
