@@ -295,6 +295,13 @@ options.createVNode = (vNode: VNode) => {
 
 // Credit: preact-compat - https://github.com/developit/preact-compat :)
 function shallowDiffers(a, b): boolean {
+  if (a === b) {
+    return false;
+  }
+  // A component without initial state has null state
+  if (a === null || b === null) {
+    return true;
+  }
   let i;
 
   for (i in a) {

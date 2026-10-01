@@ -124,4 +124,24 @@ describe('ReactPureComponent', function () {
     ReactDOM.render(<Component />, document.createElement('div'));
     expect(renders).toBe(1);
   });
+
+  it('should update when setState is called on a component without initial state', function () {
+    class Loader extends React.PureComponent {
+      componentDidMount() {
+        this.setState({ loaded: true });
+      }
+
+      render() {
+        return <div>{this.state?.loaded ? 'loaded' : 'loading'}</div>;
+      }
+    }
+
+    const container = document.createElement('div');
+    ReactDOM.render(<Loader />, container);
+    expect(container.textContent).toBe('loading');
+
+    return Promise.resolve().then(() => {
+      expect(container.textContent).toBe('loaded');
+    });
+  });
 });
