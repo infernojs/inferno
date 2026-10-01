@@ -1,7 +1,7 @@
 import { Component, createComponentVNode, type VNode } from 'inferno';
 import { matchPath } from './matchPath';
 import { invariant, warning } from './utils';
-import { isArray, isInvalid } from 'inferno-shared';
+import { isArray, isInvalid, isStringOrNumber } from 'inferno-shared';
 import { type IRouteProps, type Match } from './Route';
 import { type RouterContext } from './Router';
 
@@ -46,6 +46,14 @@ function extractFirstMatchFromChildren(
         return nestedMatch;
       }
     }
+    return {
+      match: null,
+      _child: null,
+    };
+  }
+
+  // false, null, undefined and text children can't match
+  if (isInvalid(children) || isStringOrNumber(children)) {
     return {
       match: null,
       _child: null,

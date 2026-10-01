@@ -291,6 +291,44 @@ describe('Switch (jsx)', () => {
     expect(node.innerHTML).toMatch(/one/);
   });
 
+  it('skips false, null, undefined and text children before the matching <Route>', () => {
+    const node = document.createElement('div');
+    const showOne = false;
+
+    render(
+      <MemoryRouter initialEntries={['/two']}>
+        <Switch>
+          {showOne && <Route path="/one" render={() => <h1>one</h1>} />}
+          {null}
+          {undefined}
+          {'text'}
+          <Route path="/two" render={() => <h1>two</h1>} />
+        </Switch>
+      </MemoryRouter>,
+      node,
+    );
+
+    expect(node.innerHTML).toBe('<h1>two</h1>');
+  });
+
+  it('renders nothing when only false, null and undefined children remain', () => {
+    const node = document.createElement('div');
+
+    render(
+      <MemoryRouter initialEntries={['/nomatch']}>
+        <Switch>
+          <Route path="/one" render={() => <h1>one</h1>} />
+          {false}
+          {null}
+          {undefined}
+        </Switch>
+      </MemoryRouter>,
+      node,
+    );
+
+    expect(node.innerHTML).toBe('');
+  });
+
   it('throws with no <Router>', () => {
     const node = document.createElement('div');
     expect(() => {
