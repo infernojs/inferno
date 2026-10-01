@@ -16,6 +16,7 @@ import {
   escapeText,
   getChildContext,
   getChildSelectValue,
+  getTextareaContent,
   isAttributeNameSafe,
   isEmptyFragment,
   isSelectedOption,
@@ -106,6 +107,7 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
     let html;
 
     const isVoidElement = voidElements.has(type);
+    const isTextarea = type === 'textarea';
     const className = vNode.className;
 
     if (isString(className)) {
@@ -118,6 +120,9 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
       for (const prop in props) {
         const value = props[prop];
 
+        if (isTextarea && (prop === 'value' || prop === 'defaultValue')) {
+          continue; // Rendered as the content
+        }
         switch (prop) {
           case 'dangerouslySetInnerHTML':
             html = value?.__html;
@@ -161,6 +166,9 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
       }
       if (isSelectedOption(type, props, selectValue)) {
         renderedString += ` selected`;
+      }
+      if (isTextarea) {
+        html = getTextareaContent(props) ?? html;
       }
     }
     if (isVoidElement) {

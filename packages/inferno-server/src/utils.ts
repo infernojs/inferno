@@ -82,6 +82,13 @@ export function validateTagName(type: string): void {
   }
 }
 
+// A textarea has no value attribute, its value (or defaultValue) is rendered as its content
+export function getTextareaContent(props): string | undefined {
+  const value = isNullOrUndef(props.value) ? props.defaultValue : props.value;
+
+  return isNullOrUndef(value) ? undefined : escapeText(String(value));
+}
+
 // selectValue is the value of the nearest <select>, which selects the options that have the same value.
 // An array value of a multiple select selects every option in it, as on the client.
 export function isSelectedOption(type, props, selectValue): boolean {

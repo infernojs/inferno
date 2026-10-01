@@ -486,6 +486,21 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       result: '<div><b>html</b></div>',
     },
     {
+      description: 'should render the value of a textarea as its content',
+      template: () => <textarea value="hello" />,
+      result: '<textarea>hello</textarea>',
+    },
+    {
+      description: 'should render the defaultValue of a textarea as escaped content',
+      template: () => <textarea defaultValue="a < b" />,
+      result: '<textarea>a &lt; b</textarea>',
+    },
+    {
+      description: 'should prefer the value of a textarea to its defaultValue',
+      template: () => <textarea value="value" defaultValue="default" />,
+      result: '<textarea>value</textarea>',
+    },
+    {
       description: 'should render a text placeholder',
       template: () => (
         <div>

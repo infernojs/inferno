@@ -14,6 +14,7 @@ import {
   escapeText,
   getChildContext,
   getChildSelectValue,
+  getTextareaContent,
   isAttributeNameSafe,
   isEmptyFragment,
   isSelectedOption,
@@ -192,6 +193,7 @@ export class RenderStream extends Readable {
     let renderedString = `<${type}`;
     let html;
     const isVoidElement = voidElements.has(type);
+    const isTextarea = type === 'textarea';
     const className = vNode.className;
 
     if (isString(className)) {
@@ -204,6 +206,9 @@ export class RenderStream extends Readable {
       for (const prop in props) {
         const value = props[prop];
 
+        if (isTextarea && (prop === 'value' || prop === 'defaultValue')) {
+          continue; // Rendered as the content
+        }
         switch (prop) {
           case 'dangerouslySetInnerHTML':
             html = value?.__html;
@@ -246,6 +251,9 @@ export class RenderStream extends Readable {
       }
       if (isSelectedOption(type, props, selectValue)) {
         renderedString += ` selected`;
+      }
+      if (isTextarea) {
+        html = getTextareaContent(props) ?? html;
       }
     }
 
