@@ -829,5 +829,20 @@ describe('SSR Creation (JSX)', () => {
 
       await expectServerToMatchClient(() => <Root />);
     });
+
+    it('Should give props to a component whose constructor does not pass them to super', async () => {
+      class NoProps extends Component<{ text?: string }> {
+        constructor() {
+          super();
+        }
+
+        public render() {
+          return <span>{this.props.text}</span>;
+        }
+      }
+
+      await expectServerToMatchClient(() => <NoProps text="props" />);
+      await expectServerToMatchClient(() => <NoProps />);
+    });
   });
 });

@@ -22,7 +22,7 @@ import {
   validateTagName,
   voidElements,
 } from './utils';
-import type { VNode } from 'inferno';
+import { EMPTY_OBJ, type VNode } from 'inferno';
 import { mergePendingState } from './stream/streamUtils';
 
 const resolvedPromise = Promise.resolve();
@@ -95,7 +95,7 @@ export class RenderStream extends Readable {
 
   public renderComponent(vComponent, context, isClass, selectValue: unknown) {
     const type = vComponent.type;
-    const props = vComponent.props;
+    const props = vComponent.props || EMPTY_OBJ;
 
     if (!isClass) {
       const renderOutput = renderFunctionalComponent(vComponent, context);
@@ -117,6 +117,9 @@ export class RenderStream extends Readable {
     const hasNewAPI = usesNewAPI(type, instance);
     instance.$BS = false;
     instance.$SSR = true;
+    if (instance.props === EMPTY_OBJ) {
+      instance.props = props;
+    }
     instance.context = context;
     instance.$BR = true;
 
