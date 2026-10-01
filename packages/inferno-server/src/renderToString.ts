@@ -17,6 +17,7 @@ import {
   isAttributeNameSafe,
   isEmptyFragment,
   renderFunctionalComponent,
+  validateTagName,
   voidElements,
 } from './utils';
 
@@ -103,6 +104,8 @@ function renderVNodeToString(vNode, parent, context): string {
       return renderVNodeToString(renderOutput, vNode, context);
     }
   } else if ((flags & VNodeFlags.Element) !== 0) {
+    validateTagName(type);
+
     let renderedString = `<${type}`;
     let html;
 
@@ -189,10 +192,6 @@ function renderVNodeToString(vNode, parent, context): string {
       if (!isVoidElement) {
         renderedString += `</${type}>`;
       }
-    }
-
-    if (String(type).match(/[\s\n/='"\0<>]/)) {
-      throw renderedString;
     }
 
     return renderedString;

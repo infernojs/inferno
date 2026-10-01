@@ -19,6 +19,7 @@ import {
   isAttributeNameSafe,
   isEmptyFragment,
   renderFunctionalComponent,
+  validateTagName,
   voidElements,
 } from './utils';
 import { mergePendingState } from './stream/streamUtils';
@@ -203,6 +204,8 @@ export class RenderQueueStream extends Readable {
       }
       // If an element
     } else if ((flags & VNodeFlags.Element) > 0) {
+      validateTagName(type);
+
       let renderedString = `<${type}`;
       let html;
       const isVoidElement = voidElements.has(type);
@@ -260,10 +263,6 @@ export class RenderQueueStream extends Readable {
         }
       }
       renderedString += `>`;
-
-      if (String(type).match(/[\s\n/='"\0<>]/)) {
-        throw renderedString;
-      }
 
       // Voided element, push directly to queue
       if (isVoidElement) {

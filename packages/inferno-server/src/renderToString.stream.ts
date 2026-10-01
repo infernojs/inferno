@@ -16,6 +16,7 @@ import {
   isAttributeNameSafe,
   isEmptyFragment,
   renderFunctionalComponent,
+  validateTagName,
   voidElements,
 } from './utils';
 import type { VNode } from 'inferno';
@@ -184,6 +185,9 @@ export class RenderStream extends Readable {
   public renderElement(vNode, context) {
     const type = vNode.type;
     const props = vNode.props;
+
+    validateTagName(type);
+
     let renderedString = `<${type}`;
     let html;
     const isVoidElement = voidElements.has(type);
@@ -243,10 +247,6 @@ export class RenderStream extends Readable {
 
     renderedString += `>`;
     this.push(renderedString);
-
-    if (String(type).match(/[\s\n/='"\0<>]/)) {
-      throw renderedString;
-    }
 
     if (isVoidElement) {
       return;
