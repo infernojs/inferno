@@ -185,6 +185,32 @@ describe('Forward Ref', () => {
     expect(btn.current).toBe(container.querySelector('button'));
   });
 
+  it('Should forward a ref passed through spread props together with lifecycle hooks', () => {
+    const FancyButton = forwardRef((props, ref) => (
+      <button ref={ref}>{props.children}</button>
+    ));
+    const calls: string[] = [];
+    let button = null;
+    const props = {
+      ref: (btn) => {
+        button = btn;
+      },
+    };
+
+    render(
+      <FancyButton
+        onComponentDidMount={() => calls.push('didMount')}
+        {...props}
+      >
+        Click me!
+      </FancyButton>,
+      container,
+    );
+
+    expect(button).toBe(container.querySelector('button'));
+    expect(calls).toEqual(['didMount']);
+  });
+
   describe('Validations', () => {
     it('Should log error if input is: Component, vNode or invalid value', () => {
       const consoleSpy = spyOn(console, 'error');

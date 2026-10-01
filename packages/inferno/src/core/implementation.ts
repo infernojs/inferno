@@ -271,8 +271,12 @@ export function normalizeProps(vNode: VNode): VNode {
     }
     if (props.ref !== void 0) {
       if (flags & VNodeFlags.ForwardRef) {
-        // The ref is forwarded as is, same as the ref argument of createComponentVNode
-        vNode.ref = mergeDefaultHooks(flags, vNode.type, props.ref);
+        // The ref is forwarded as is. vNode.ref holds the hooks given as props and the defaultHooks,
+        // they are added to the ref the same way mergeDefaultHooks adds the defaultHooks.
+        vNode.ref =
+          isNullOrUndef(props.ref) || isNullOrUndef(vNode.ref)
+            ? (props.ref ?? vNode.ref)
+            : mergeUnsetProperties(props.ref, vNode.ref);
       } else if (flags & VNodeFlags.ComponentFunction) {
         vNode.ref = { ...vNode.ref, ...props.ref };
       } else {
