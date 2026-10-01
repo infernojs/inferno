@@ -84,6 +84,28 @@ describe('SSR Creation (JSX)', () => {
       result: '<input value="123">',
     },
     {
+      description: 'should ignore defaultValue when value is 0',
+      template: () => <input value={0} defaultValue="foo" />,
+      result: '<input value="0">',
+    },
+    {
+      description: 'should ignore defaultValue when value is an empty string',
+      template: () => <input defaultValue="foo" value="" />,
+      result: '<input value="">',
+    },
+    {
+      description: 'should render defaultValue when value is null',
+      template: () => <input value={null} defaultValue="foo" />,
+      result: '<input value="foo">',
+    },
+    {
+      description: 'should ignore defaultChecked when checked is false',
+      template: () => (
+        <input type="checkbox" checked={false} defaultChecked={true} />
+      ),
+      result: '<input type="checkbox">',
+    },
+    {
       description: 'should render input w/defaultChecked falsy, no checked',
       template: () => <input type="radio" defaultChecked={false} />,
       result: '<input type="radio">',
