@@ -135,6 +135,13 @@ export const voidElements = new Set([
   'wbr',
 ]);
 
+// Same check as the client: these components skip the legacy lifecycles
+export function usesNewAPI(type, instance): boolean {
+  return Boolean(
+    type.getDerivedStateFromProps || instance.getSnapshotBeforeUpdate,
+  );
+}
+
 export function createDerivedState(
   instance,
   nextProps,

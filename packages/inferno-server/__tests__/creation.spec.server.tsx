@@ -1,5 +1,10 @@
-import { renderToStaticMarkup, renderToString } from 'inferno-server';
-import { Component, createFragment } from 'inferno';
+import {
+  renderToStaticMarkup,
+  renderToString,
+  streamAsString,
+  streamQueueAsString,
+} from 'inferno-server';
+import { Component, createFragment, render } from 'inferno';
 import { createElement } from 'inferno-create-element';
 import { ChildFlags } from 'inferno-vnode-flags';
 import { hydrate } from 'inferno-hydrate';
@@ -716,6 +721,61 @@ describe('SSR Creation (JSX)', () => {
       }
 
       expect(renderToString(<Test />)).toBe('<div>1</div>');
+    });
+  });
+
+  // Renders the same tree with all three server renderers and on the client
+  describe('Class component setup matches the client', () => {
+    function streamToString(stream): Promise<string> {
+      return new Promise((resolve, reject) => {
+        let html = '';
+
+        stream.on('data', (chunk) => {
+          html += chunk;
+        });
+        stream.on('error', reject);
+        stream.on('end', () => resolve(html));
+      });
+    }
+
+    async function expectServerToMatchClient(template: () => any) {
+      const container = document.createElement('div');
+
+      render(template(), container);
+      const client = container.innerHTML;
+      render(null, container);
+
+      expect(renderToString(template())).toBe(client);
+      expect(await streamToString(streamAsString(template()))).toBe(client);
+      expect(await streamToString(streamQueueAsString(template()))).toBe(
+        client,
+      );
+    }
+
+    beforeEach(() => {
+      spyOn(console, 'error'); // legacy lifecycle warnings of the client
+    });
+
+    it('Should not call componentWillMount of a component with getSnapshotBeforeUpdate', async () => {
+      class Snapshot extends Component<unknown, { text: string }> {
+        public state = { text: 'initial' };
+
+        public componentWillMount() {
+          this.setState({ text: 'componentWillMount' });
+        }
+
+        public getSnapshotBeforeUpdate() {
+          return null;
+        }
+
+        public componentDidUpdate() {}
+
+        public render() {
+          return <div>{this.state.text}</div>;
+        }
+      }
+
+      await expectServerToMatchClient(() => <Snapshot />);
     });
   });
 });

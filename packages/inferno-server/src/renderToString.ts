@@ -19,6 +19,7 @@ import {
   isEmptyFragment,
   isSelectedOption,
   renderFunctionalComponent,
+  usesNewAPI,
   validateTagName,
   voidElements,
 } from './utils';
@@ -36,7 +37,7 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
 
     if (isClass) {
       const instance = new type(props, context);
-      const hasNewAPI = Boolean(type.getDerivedStateFromProps);
+      const hasNewAPI = usesNewAPI(type, instance);
       instance.$BS = false;
       instance.$SSR = true;
       let childContext;
