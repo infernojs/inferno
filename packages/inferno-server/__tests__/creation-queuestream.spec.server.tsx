@@ -95,18 +95,17 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         ),
       result: '<div><span style="border-left: 10px;"></span></div>',
     },
-    // TODO: Fix this
-    // {
-    //   description: "should render select element with selected property",
-    //   template: () =>
-    //     createElement('select', {
-    //       value: 'dog'
-    //     }, [
-    //       createElement('option', {value: 'cat'}, 'A cat'),
-    //       createElement('option', {value: 'dog'}, 'A dog')
-    //     ]),
-    //   result: '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
-    // },
+    {
+      description:
+        'should render select element with selected property (createElement)',
+      template: () =>
+        createElement('select', { value: 'dog' }, [
+          createElement('option', { value: 'cat' }, 'A cat'),
+          createElement('option', { value: 'dog' }, 'A dog'),
+        ]),
+      result:
+        '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
+    },
     {
       description:
         'should render div with span child and border-left style object',
@@ -434,17 +433,17 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       template: () => <WrappedInput value="foo" />,
       result: '<input type="text" value="foo">',
     },
-    // {
-    //   description: 'should render select element with selected property',
-    //   template: () => (
-    //     <select value="dog">
-    //       <option value="cat">A cat</option>
-    //       <option value="dog">A dog</option>
-    //     </select>
-    //   ),
-    //   result:
-    //     '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>'
-    // },
+    {
+      description: 'should render select element with selected property',
+      template: () => (
+        <select value="dog">
+          <option value="cat">A cat</option>
+          <option value="dog">A dog</option>
+        </select>
+      ),
+      result:
+        '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
+    },
     {
       description: 'should render a text placeholder',
       template: () => (

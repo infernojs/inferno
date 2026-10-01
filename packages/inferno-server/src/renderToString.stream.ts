@@ -13,8 +13,10 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildSelectValue,
   isAttributeNameSafe,
   isEmptyFragment,
+  isSelectedOption,
   renderFunctionalComponent,
   validateTagName,
   voidElements,
@@ -51,7 +53,7 @@ export class RenderStream extends Readable {
       });
   }
 
-  public renderNode(vNode, context) {
+  public renderNode(vNode, context, selectValue?: unknown) {
     vNode = arrayToFragment(vNode);
     const flags = vNode.flags;
 
@@ -60,36 +62,37 @@ export class RenderStream extends Readable {
         vNode,
         context,
         flags & VNodeFlags.ComponentClass,
+        selectValue,
       );
     }
     if ((flags & VNodeFlags.Element) > 0) {
-      return this.renderElement(vNode, context);
+      return this.renderElement(vNode, context, selectValue);
     }
     if ((flags & VNodeFlags.Fragment) !== 0) {
-      return this.renderFragment(vNode, context);
+      return this.renderFragment(vNode, context, selectValue);
     }
 
     this.renderText(vNode);
   }
 
-  public renderFragment(vNode, context) {
+  public renderFragment(vNode, context, selectValue: unknown) {
     if (isEmptyFragment(vNode)) {
       return this.push('<!--!-->');
     }
     if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-      return this.renderNode(vNode.children, context);
+      return this.renderNode(vNode.children, context, selectValue);
     }
 
     return (vNode.children as VNode[]).reduce(async (p, child) => {
       return await p.then(async () => {
-        return await Promise.resolve(this.renderNode(child, context)).then(
-          () => !!(child.flags & VNodeFlags.Text),
-        );
+        return await Promise.resolve(
+          this.renderNode(child, context, selectValue),
+        ).then(() => !!(child.flags & VNodeFlags.Text));
       });
     }, Promise.resolve(false));
   }
 
-  public renderComponent(vComponent, context, isClass) {
+  public renderComponent(vComponent, context, isClass, selectValue: unknown) {
     const type = vComponent.type;
     const props = vComponent.props;
 
@@ -106,7 +109,7 @@ export class RenderStream extends Readable {
         return this.push(renderOutput + '');
       }
 
-      return this.renderNode(renderOutput, context);
+      return this.renderNode(renderOutput, context, selectValue);
     }
 
     const instance = new type(props, context);
@@ -147,7 +150,7 @@ export class RenderStream extends Readable {
           return this.push(renderOutput + '');
         }
 
-        return this.renderNode(renderOutput, context);
+        return this.renderNode(renderOutput, context, selectValue);
       },
     );
   }
@@ -156,9 +159,10 @@ export class RenderStream extends Readable {
     children: VNode[] | VNode | string,
     context: any,
     childFlags: ChildFlags,
+    selectValue: unknown,
   ) {
     if (childFlags === ChildFlags.HasVNodeChildren) {
-      return this.renderNode(children, context);
+      return this.renderNode(children, context, selectValue);
     }
     if (childFlags === ChildFlags.HasTextChildren) {
       return this.push(
@@ -170,9 +174,9 @@ export class RenderStream extends Readable {
     if (childFlags & ChildFlags.MultipleChildren) {
       return (children as VNode[]).reduce(async (p, child) => {
         return await p.then(async () => {
-          return await Promise.resolve(this.renderNode(child, context)).then(
-            () => !!(child.flags & VNodeFlags.Text),
-          );
+          return await Promise.resolve(
+            this.renderNode(child, context, selectValue),
+          ).then(() => !!(child.flags & VNodeFlags.Text));
         });
       }, Promise.resolve(false));
     }
@@ -182,7 +186,7 @@ export class RenderStream extends Readable {
     this.push(vNode.children === '' ? ' ' : escapeText(vNode.children + ''));
   }
 
-  public renderElement(vNode, context) {
+  public renderElement(vNode, context, selectValue: unknown) {
     const type = vNode.type;
     const props = vNode.props;
 
@@ -243,6 +247,9 @@ export class RenderStream extends Readable {
             }
         }
       }
+      if (isSelectedOption(type, props, selectValue)) {
+        renderedString += ` selected`;
+      }
     }
 
     renderedString += `>`;
@@ -265,7 +272,12 @@ export class RenderStream extends Readable {
     }
 
     return Promise.resolve(
-      this.renderChildren(vNode.children, context, childFlags),
+      this.renderChildren(
+        vNode.children,
+        context,
+        childFlags,
+        getChildSelectValue(type, props, selectValue),
+      ),
     ).then(() => {
       this.push(`</${type}>`);
     });

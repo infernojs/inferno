@@ -16,8 +16,10 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildSelectValue,
   isAttributeNameSafe,
   isEmptyFragment,
+  isSelectedOption,
   renderFunctionalComponent,
   validateTagName,
   voidElements,
@@ -95,7 +97,12 @@ export class RenderQueueStream extends Readable {
     }
   }
 
-  public renderVNodeToQueue(vNode, context, position): void {
+  public renderVNodeToQueue(
+    vNode,
+    context,
+    position,
+    selectValue?: unknown,
+  ): void {
     vNode = arrayToFragment(vNode);
     const flags = vNode.flags;
     const type = vNode.type;
@@ -159,6 +166,7 @@ export class RenderQueueStream extends Readable {
                       renderOut,
                       instance.context,
                       promisePosition,
+                      selectValue,
                     );
                   }
 
@@ -189,7 +197,7 @@ export class RenderQueueStream extends Readable {
         } else if (isNumber(renderOutput)) {
           this.addToQueue(renderOutput + '', position);
         } else {
-          this.renderVNodeToQueue(renderOutput, context, position);
+          this.renderVNodeToQueue(renderOutput, context, position, selectValue);
         }
       } else {
         const renderOutput = renderFunctionalComponent(vNode, context);
@@ -201,7 +209,7 @@ export class RenderQueueStream extends Readable {
         } else if (isNumber(renderOutput)) {
           this.addToQueue(renderOutput + '', position);
         } else {
-          this.renderVNodeToQueue(renderOutput, context, position);
+          this.renderVNodeToQueue(renderOutput, context, position, selectValue);
         }
       }
       // If an element
@@ -263,6 +271,9 @@ export class RenderQueueStream extends Readable {
               break;
           }
         }
+        if (isSelectedOption(type, props, selectValue)) {
+          renderedString += ` selected`;
+        }
       }
       renderedString += `>`;
 
@@ -273,10 +284,16 @@ export class RenderQueueStream extends Readable {
       } else {
         // Element has children, build them in
         const childFlags = vNode.childFlags;
+        const childSelectValue = getChildSelectValue(type, props, selectValue);
 
         if (childFlags === ChildFlags.HasVNodeChildren) {
           this.addToQueue(renderedString, position);
-          this.renderVNodeToQueue(children, context, position);
+          this.renderVNodeToQueue(
+            children,
+            context,
+            position,
+            childSelectValue,
+          );
           this.addToQueue('</' + type + '>', position);
           return;
         } else if (childFlags === ChildFlags.HasTextChildren) {
@@ -290,7 +307,12 @@ export class RenderQueueStream extends Readable {
         } else if (childFlags & ChildFlags.MultipleChildren) {
           this.addToQueue(renderedString, position);
           for (let i = 0, len = children.length; i < len; ++i) {
-            this.renderVNodeToQueue(children[i], context, position);
+            this.renderVNodeToQueue(
+              children[i],
+              context,
+              position,
+              childSelectValue,
+            );
           }
           this.addToQueue('</' + type + '>', position);
           return;
@@ -315,10 +337,10 @@ export class RenderQueueStream extends Readable {
       if (isEmptyFragment(vNode)) {
         this.addToQueue('<!--!-->', position);
       } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-        this.renderVNodeToQueue(children, context, position);
+        this.renderVNodeToQueue(children, context, position, selectValue);
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
-          this.renderVNodeToQueue(children[i], context, position);
+          this.renderVNodeToQueue(children[i], context, position, selectValue);
         }
       }
       // Handle errors

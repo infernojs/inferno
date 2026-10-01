@@ -82,6 +82,19 @@ export function validateTagName(type: string): void {
   }
 }
 
+// selectValue is the value of the nearest <select>, which selects the options that have the same value
+export function isSelectedOption(type, props, selectValue): boolean {
+  return (
+    type === 'option' &&
+    typeof props.value !== 'undefined' &&
+    props.value === selectValue
+  );
+}
+
+export function getChildSelectValue(type, props, selectValue): unknown {
+  return type === 'select' ? props?.value : selectValue;
+}
+
 const illegalAttributeNameCache = {};
 const validatedAttributeNameCache = {};
 
