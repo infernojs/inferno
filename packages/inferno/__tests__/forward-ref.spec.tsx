@@ -141,6 +141,50 @@ describe('Forward Ref', () => {
     );
   });
 
+  it('Should forward a callback ref passed through spread props', () => {
+    const FancyButton = forwardRef((props, ref) => (
+      <button ref={ref} className="FancyButton">
+        {props.children}
+      </button>
+    ));
+    let button = null;
+    const props = {
+      ref: (btn) => {
+        button = btn;
+      },
+    };
+
+    render(<FancyButton {...props}>Click me!</FancyButton>, container);
+
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
+    expect(button).toBe(container.querySelector('button'));
+
+    render(null, container);
+
+    expect(button).toBe(null);
+  });
+
+  it('Should forward createRef passed through spread props', () => {
+    const FancyButton = forwardRef<HTMLButtonElement, { className: string }>(
+      (props, ref) => (
+        <button ref={ref} className={props.className}>
+          {props.children}
+        </button>
+      ),
+    );
+    const btn = createRef();
+    const props = { ref: btn, className: 'FancyButton' };
+
+    render(<FancyButton {...props}>Click me!</FancyButton>, container);
+
+    expect(container.innerHTML).toBe(
+      '<button class="FancyButton">Click me!</button>',
+    );
+    expect(btn.current).toBe(container.querySelector('button'));
+  });
+
   describe('Validations', () => {
     it('Should log error if input is: Component, vNode or invalid value', () => {
       const consoleSpy = spyOn(console, 'error');

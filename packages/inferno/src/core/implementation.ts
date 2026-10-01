@@ -270,7 +270,10 @@ export function normalizeProps(vNode: VNode): VNode {
       props.key = undefined;
     }
     if (props.ref !== void 0) {
-      if (flags & VNodeFlags.ComponentFunction) {
+      if (flags & VNodeFlags.ForwardRef) {
+        // The ref is forwarded as is, same as the ref argument of createComponentVNode
+        vNode.ref = mergeDefaultHooks(flags, vNode.type, props.ref);
+      } else if (flags & VNodeFlags.ComponentFunction) {
         vNode.ref = { ...vNode.ref, ...props.ref };
       } else {
         vNode.ref = props.ref;
