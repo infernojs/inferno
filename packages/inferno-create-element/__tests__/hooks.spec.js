@@ -1,4 +1,5 @@
 import { Component, render } from 'inferno';
+import 'inferno-animation';
 import { createElement } from 'inferno-create-element';
 
 describe('lifecycle hooks', () => {
@@ -297,6 +298,52 @@ describe('lifecycle hooks', () => {
       expect(spy.calls.argsFor(0)[0] instanceof HTMLDivElement).toEqual(true);
       expect(typeof spy.calls.argsFor(0)[1] === 'object').toEqual(true);
       expect(typeof spy.calls.argsFor(0)[2] === 'function').toEqual(true);
+    });
+  });
+
+  describe('Move hook', () => {
+    let container;
+
+    beforeEach(function () {
+      container = document.createElement('div');
+    });
+
+    afterEach(function () {
+      render(null, container);
+    });
+
+    it('"onComponentWillMove" hook should fire when a keyed list is reordered', () => {
+      const calls = [];
+      const receivedProps = [];
+
+      function Item(props) {
+        receivedProps.push(props);
+        return createElement('div', null, props.id);
+      }
+
+      const list = (order) =>
+        createElement(
+          'div',
+          null,
+          order.map((id) =>
+            createElement(Item, {
+              key: id,
+              id,
+              onComponentWillMove: (_vNode, _parentDOM, _dom, props) => {
+                calls.push(props.id);
+              },
+            }),
+          ),
+        );
+
+      render(list(['A', 'B']), container);
+      render(list(['B', 'A']), container);
+
+      expect(container.textContent).toBe('BA');
+      expect(calls.sort()).toEqual(['A', 'B']);
+      for (const props of receivedProps) {
+        expect(props.onComponentWillMove).toBeUndefined();
+      }
     });
   });
 

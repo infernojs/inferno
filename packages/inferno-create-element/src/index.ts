@@ -99,6 +99,7 @@ export function createElement<P>(
             case 'onComponentShouldUpdate':
             case 'onComponentWillDisappear':
             case 'onComponentWillMount':
+            case 'onComponentWillMove':
             case 'onComponentWillUnmount':
             case 'onComponentWillUpdate':
               if (!ref) {
