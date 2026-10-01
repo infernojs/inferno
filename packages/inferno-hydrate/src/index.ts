@@ -249,7 +249,11 @@ function hydrateElement(
   const ref = vNode.ref;
 
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
-  if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
+  // Tag names are compared without case: SVG keeps camelCase names such as linearGradient
+  if (
+    dom.nodeType !== 1 ||
+    dom.tagName.toLowerCase() !== (vNode.type as string).toLowerCase()
+  ) {
     if (process.env.NODE_ENV !== 'production') {
       warning(
         "Inferno hydration: Server-side markup doesn't match client-side markup",
