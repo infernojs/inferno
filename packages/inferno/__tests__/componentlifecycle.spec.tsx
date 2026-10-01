@@ -261,6 +261,48 @@ describe('legacy life cycle', () => {
     expect(message.includes('componentWillUpdate')).toBeTruthy();
   });
 
+  it('should name the component by its displayName in the legacy life cycle warning', () => {
+    class Foo extends Component {
+      static displayName = 'PrettyFoo';
+
+      static getDerivedStateFromProps() {}
+
+      componentWillMount() {}
+
+      render() {
+        return <div>Foo</div>;
+      }
+    }
+
+    render(<Foo />, container);
+
+    expect(consoleErrorStub).toHaveBeenCalledTimes(1);
+
+    const message = consoleErrorStub.calls.argsFor(0)[0];
+    expect(message.includes('PrettyFoo contains the following')).toBeTruthy();
+  });
+
+  it('should not name the component by a name field of its instance in the legacy life cycle warning', () => {
+    class Foo extends Component {
+      static getDerivedStateFromProps() {}
+
+      public name = 'instance field';
+
+      componentWillMount() {}
+
+      render() {
+        return <div>Foo</div>;
+      }
+    }
+
+    render(<Foo />, container);
+
+    expect(consoleErrorStub).toHaveBeenCalledTimes(1);
+
+    const message = consoleErrorStub.calls.argsFor(0)[0];
+    expect(message.includes('instance field')).toBeFalsy();
+  });
+
   it('should allow suppress legacy life cycles when mixed with new APIs', () => {
     // build the component and element to be rendered
     class Foo extends Component {

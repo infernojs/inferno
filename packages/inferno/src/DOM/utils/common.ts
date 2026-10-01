@@ -352,14 +352,9 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode): void {
   }
 }
 
-export function getComponentName(instance: any): string {
-  // TODO: Fallback for IE
-  return (
-    instance.name ??
-    instance.displayName ??
-    instance.constructor.name ??
-    ((instance as any).toString().match(/^function\s*([^\s(]+)/) || [])[1]
-  );
+// Takes the component type (class, function or forwardRef object), not an instance
+export function getComponentName(component: any): string {
+  return component.displayName || component.name || component.constructor.name;
 }
 
 export function createDerivedState<TState>(

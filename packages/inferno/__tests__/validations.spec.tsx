@@ -75,6 +75,26 @@ describe('Development warnings', () => {
         );
       });
 
+      it('Should name a component by its displayName', () => {
+        const FooBar = ({ children }) => children;
+        const Tester = ({ children }) => children;
+        Tester.displayName = 'PrettyTester';
+        const errorNode = (
+          <div>
+            <FooBar key="1">2</FooBar>
+            <Tester key="1">1</Tester>
+          </div>
+        );
+
+        expect(() => {
+          render(errorNode, container);
+        }).toThrow(
+          constructInfernoError(
+            'Encountered two children with same key: {1}. Location: \n>> <PrettyTester />\n>> <div>\n',
+          ),
+        );
+      });
+
       it('Should print nice stack of invalid key location', () => {
         // @ts-expect-error unused children
         const FooBar = ({ children }) => (
