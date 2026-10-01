@@ -49,6 +49,11 @@ export function useStaticRendering(useStatic: boolean): void {
   isUsingStaticRendering = useStatic;
 }
 
+// observerPatch and observerWrap don't create reactions for static rendering either
+export function isStaticRendering(): boolean {
+  return isUsingStaticRendering;
+}
+
 /**
  * Errors reporter
  */

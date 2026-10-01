@@ -9,6 +9,7 @@ import {
 import { Reaction } from 'mobx';
 import { throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
+import { isStaticRendering } from './observer';
 
 type Render = (
   properties?: any,
@@ -139,6 +140,10 @@ export function observerWrap<T extends Render>(base: T): typeof base {
     return result;
   }
   function wrapper(this: VNode, props, context): VNode {
+    // A server render is never unmounted, so its reaction would never be disposed
+    if (isStaticRendering()) {
+      return base.call(this, props, context);
+    }
     const [onComponentDidUpdate, onComponentWillUpdate] = getUpdateHooks(
       this.ref,
       props,
