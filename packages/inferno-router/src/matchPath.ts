@@ -80,3 +80,12 @@ export function matchPath(pathname, options: any): Match<any> | null {
     url: path === '/' && url === '' ? '/' : url, // the matched portion of the URL
   };
 }
+
+/**
+ * Fills the params of a path pattern, for example '/new/:id' with { id: 7 } gives '/new/7'.
+ */
+export function generatePath(pattern: string, params = {}): string {
+  return pattern === '/'
+    ? pattern
+    : pathToRegexp.compile(pattern)(params, { pretty: true });
+}
