@@ -329,6 +329,49 @@ describe('Switch (jsx)', () => {
     expect(node.innerHTML).toBe('');
   });
 
+  it('remounts the component when the matched <Route> has another key', () => {
+    const node = document.createElement('div');
+    let mounts = 0;
+    let history;
+
+    class Page extends Component<{ name: string }> {
+      public componentDidMount() {
+        mounts++;
+      }
+
+      public render() {
+        return <h1>{this.props.name}</h1>;
+      }
+    }
+
+    function HistoryCatcher(_props, context) {
+      history = context.router.history;
+      return null;
+    }
+
+    render(
+      <MemoryRouter initialEntries={['/a']}>
+        <div>
+          <HistoryCatcher />
+          <Switch>
+            <Route key="a" path="/a" render={() => <Page name="a" />} />
+            <Route key="b" path="/b" render={() => <Page name="b" />} />
+          </Switch>
+        </div>
+      </MemoryRouter>,
+      node,
+    );
+
+    expect(node.innerHTML).toBe('<div><h1>a</h1></div>');
+    expect(mounts).toBe(1);
+
+    history.push('/b');
+    rerender();
+
+    expect(node.innerHTML).toBe('<div><h1>b</h1></div>');
+    expect(mounts).toBe(2);
+  });
+
   it('throws with no <Router>', () => {
     const node = document.createElement('div');
     expect(() => {

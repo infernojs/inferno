@@ -131,10 +131,16 @@ export class Switch extends Component<IRouteProps, SwitchState> {
 
     if (match) {
       location ??= context.router.route.location;
-      return createComponentVNode(_child.flags, _child.type, {
-        ..._child.props,
-        ...{ location, computedMatch: match },
-      });
+      return createComponentVNode(
+        _child.flags,
+        _child.type,
+        {
+          ..._child.props,
+          ...{ location, computedMatch: match },
+        },
+        _child.key,
+        _child.ref,
+      );
     }
 
     return null;
