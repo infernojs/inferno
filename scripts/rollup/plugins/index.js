@@ -2,14 +2,14 @@ import commonjs from '@rollup/plugin-commonjs';
 import nodeResolve from '@rollup/plugin-node-resolve';
 import replacePlugin from '@rollup/plugin-replace';
 import terser from '@rollup/plugin-terser';
-import { aliasPlugin } from './alias.js';
+import { aliasPlugin, umdAliasPlugin } from './alias.js';
 import babel from '@rollup/plugin-babel';
 import assumptions from '../../babel/assumptions.json' with { type: 'json' };
 import targets from '../../babel/targets.json' with { type: 'json' };
 
 export function createPlugins(version, options) {
   const plugins = [
-    aliasPlugin,
+    options.format === 'umd' ? umdAliasPlugin : aliasPlugin,
     nodeResolve({
       extensions: ['.js', '.json'],
       mainFields: ['module', 'main'],

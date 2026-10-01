@@ -68,9 +68,10 @@ const pkgJSON = JSON.parse(pkgJSONtext);
   // Used in inferno-server
   external.push('stream');
 
-  // Dependencies that have no UMD bundle of their own are bundled into the UMD targets only
+  // Dependencies that have no UMD bundle of their own are bundled into the UMD targets only.
+  // The UMD targets get a stub of stream, see plugins/stream-stub.js
   const umdBundledDependencies = rollupConfig.umdBundledDependencies || [];
-  const umdExternal = external.filter((name) => !umdBundledDependencies.includes(name));
+  const umdExternal = external.filter((name) => name !== 'stream' && !umdBundledDependencies.includes(name));
 
   const defaultOptions = {
     name: 'index',
