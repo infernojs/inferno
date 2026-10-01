@@ -29,11 +29,16 @@ function updateChildOptions(vNode: VNode, value): void {
 
 function updateChildOption(vNode: VNode, value: unknown): void {
   const props: any = vNode.props ?? EMPTY_OBJ;
-  const propsValue = props.value;
   const dom = vNode.dom as any;
+  let propsValue = props.value;
 
-  // we do this as multiple prop may have changed
-  dom.value = propsValue;
+  if (isNullOrUndef(propsValue)) {
+    // Without a value the browser uses the text of the option
+    propsValue = dom.value;
+  } else {
+    // we do this as multiple prop may have changed
+    dom.value = propsValue;
+  }
 
   if (propsValue === value || (isArray(value) && value.includes(propsValue))) {
     dom.selected = true;
