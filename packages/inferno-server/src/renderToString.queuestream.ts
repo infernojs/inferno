@@ -143,6 +143,13 @@ export class RenderQueueStream extends Readable {
                   if (typeof dataForContext === 'object') {
                     instance.props = { ...instance.props, ...dataForContext };
                   }
+                  if (hasNewAPI) {
+                    instance.state = createDerivedState(
+                      instance,
+                      instance.props,
+                      instance.state,
+                    );
+                  }
 
                   const renderOut = instance.render(
                     instance.props,
@@ -177,7 +184,12 @@ export class RenderQueueStream extends Readable {
           }
         }
         if (hasNewAPI) {
-          instance.state = createDerivedState(instance, props, instance.state);
+          // instance.props include the props from getInitialProps, the component renders with them
+          instance.state = createDerivedState(
+            instance,
+            instance.props,
+            instance.state,
+          );
         }
         const renderOutput = instance.render(
           instance.props,

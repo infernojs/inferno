@@ -901,6 +901,57 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     });
   });
 
+  describe('getInitialProps with getDerivedStateFromProps', () => {
+    it('Should apply getDerivedStateFromProps when getInitialProps returns a promise', async () => {
+      class Test extends Component<unknown, { value: number }> {
+        public state = { value: 0 };
+
+        static getDerivedStateFromProps(_props, state) {
+          return { value: state.value + 1 };
+        }
+
+        async getInitialProps() {
+          return { loaded: true };
+        }
+
+        render() {
+          return <div>{this.state.value}</div>;
+        }
+      }
+
+      const output = await streamPromise(<Test />);
+
+      expect(output[1]).toBe('<div>1</div>');
+    });
+
+    for (const [description, getInitialProps] of [
+      ['a promise', async () => ({ text: 'loaded' })],
+      ['an object', () => ({ text: 'loaded' })],
+    ] as const) {
+      it(`Should pass the props from getInitialProps to getDerivedStateFromProps when it returns ${description}`, async () => {
+        class Test extends Component<{ text?: string }, { text?: string }> {
+          public state: { text?: string } = {};
+
+          static getDerivedStateFromProps(props) {
+            return { text: props.text };
+          }
+
+          getInitialProps() {
+            return getInitialProps();
+          }
+
+          render() {
+            return <div>{this.state.text}</div>;
+          }
+        }
+
+        const output = await streamPromise(<Test />);
+
+        expect(output[1]).toBe('<div>loaded</div>');
+      });
+    }
+  });
+
   describe('end of stream', () => {
     const tree = () => (
       <div>
