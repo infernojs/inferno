@@ -61,7 +61,8 @@
     ],
     "moduleName": "Inferno.Redux",
     "moduleGlobals": {
-      "inferno": "Inferno"
+      "inferno": "Inferno",
+      "redux": "Redux"
     }
   },
   "gitHead": "930f16301f6cdaa85e48641eed9ef49f799fc68a"
