@@ -1,4 +1,4 @@
-import { createTextVNode, render } from 'inferno';
+import { createTextVNode, forwardRef, render } from 'inferno';
 import { ChildFlags } from 'inferno-vnode-flags';
 
 describe('Development warnings', () => {
@@ -91,6 +91,27 @@ describe('Development warnings', () => {
         }).toThrow(
           constructInfernoError(
             'Encountered two children with same key: {1}. Location: \n>> <PrettyTester />\n>> <div>\n',
+          ),
+        );
+      });
+
+      it('Should name a forwardRef component by its render function', () => {
+        const FooBar = ({ children }) => children;
+        const Fancy = forwardRef(function FancyButton(props) {
+          return <button>{props.children}</button>;
+        });
+        const errorNode = (
+          <div>
+            <FooBar key="1">2</FooBar>
+            <Fancy key="1">1</Fancy>
+          </div>
+        );
+
+        expect(() => {
+          render(errorNode, container);
+        }).toThrow(
+          constructInfernoError(
+            'Encountered two children with same key: {1}. Location: \n>> <FancyButton />\n>> <div>\n',
           ),
         );
       });

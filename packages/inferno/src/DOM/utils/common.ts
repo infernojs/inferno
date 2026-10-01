@@ -354,7 +354,16 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode): void {
 
 // Takes the component type (class, function or forwardRef object), not an instance
 export function getComponentName(component: any): string {
-  return component.displayName || component.name || component.constructor.name;
+  // Only a forwardRef object has render, it has no name of its own
+  const render = component.render;
+
+  return (
+    component.displayName ||
+    component.name ||
+    render?.displayName ||
+    render?.name ||
+    component.constructor.name
+  );
 }
 
 export function createDerivedState<TState>(
