@@ -120,7 +120,7 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
 
         switch (prop) {
           case 'dangerouslySetInnerHTML':
-            html = value.__html;
+            html = value?.__html;
             break;
           case 'style':
             if (!isNullOrUndef(props.style)) {

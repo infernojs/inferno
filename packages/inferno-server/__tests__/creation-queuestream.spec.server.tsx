@@ -551,6 +551,20 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
         '<select value="cat"><option value="cat" selected>A cat</option><option value="dog">A dog</option></select>',
     },
     {
+      description:
+        'should render the children when dangerouslySetInnerHTML is undefined',
+      template: () => (
+        <div dangerouslySetInnerHTML={undefined}>fallback</div>
+      ),
+      result: '<div>fallback</div>',
+    },
+    {
+      description:
+        'should render the children when dangerouslySetInnerHTML is null',
+      template: () => <div dangerouslySetInnerHTML={null}>fallback</div>,
+      result: '<div>fallback</div>',
+    },
+    {
       description: 'should render a text placeholder',
       template: () => (
         <div>
