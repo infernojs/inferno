@@ -710,4 +710,37 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
 
     expect(container.innerHTML).toBe('<span>1</span><span>2</span>');
   });
+
+  it('should not write children into the props passed to it', () => {
+    const shared = { className: 'item' };
+    const items = [<li>Apple</li>, <li>Banana</li>, <li>Cherry</li>];
+
+    render(
+      <ul>{items.map((item) => cloneVNode(item, shared))}</ul>,
+      container,
+    );
+
+    expect(container.innerHTML).toBe(
+      '<ul><li class="item">Apple</li><li class="item">Banana</li><li class="item">Cherry</li></ul>',
+    );
+    expect(shared).toEqual({ className: 'item' });
+  });
+
+  it('should not write children into the props passed to it for components', () => {
+    function Bold({ children }) {
+      return <b>{children}</b>;
+    }
+    const shared = { id: 'x' };
+
+    render(
+      <div>
+        {cloneVNode(<Bold>one</Bold>, shared)}
+        {cloneVNode(<Bold>two</Bold>, shared)}
+      </div>,
+      container,
+    );
+
+    expect(container.innerHTML).toBe('<div><b>one</b><b>two</b></div>');
+    expect(shared).toEqual({ id: 'x' });
+  });
 });
