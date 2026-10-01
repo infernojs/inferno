@@ -82,17 +82,26 @@ export function validateTagName(type: string): void {
   }
 }
 
-// selectValue is the value of the nearest <select>, which selects the options that have the same value
+// selectValue is the value of the nearest <select>, which selects the options that have the same value.
+// An array value of a multiple select selects every option in it, as on the client.
 export function isSelectedOption(type, props, selectValue): boolean {
+  if (type !== 'option' || typeof props.value === 'undefined') {
+    return false;
+  }
+
   return (
-    type === 'option' &&
-    typeof props.value !== 'undefined' &&
-    props.value === selectValue
+    props.value === selectValue ||
+    (isArray(selectValue) && selectValue.includes(props.value))
   );
 }
 
+// Like the client on mount, the select falls back to its defaultValue
 export function getChildSelectValue(type, props, selectValue): unknown {
-  return type === 'select' ? props?.value : selectValue;
+  if (type !== 'select') {
+    return selectValue;
+  }
+
+  return isNullOrUndef(props?.value) ? props?.defaultValue : props.value;
 }
 
 const illegalAttributeNameCache = {};

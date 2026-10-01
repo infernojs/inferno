@@ -516,6 +516,41 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       result: '<option value="dog">A dog</option>',
     },
     {
+      description:
+        'should render the options selected by the array value of a multiple select',
+      template: () => (
+        <select multiple value={['cat', 'dog']}>
+          <option value="cat">A cat</option>
+          <option value="dog">A dog</option>
+          <option value="fish">A fish</option>
+        </select>
+      ),
+      result:
+        '<select multiple><option value="cat" selected>A cat</option><option value="dog" selected>A dog</option><option value="fish">A fish</option></select>',
+    },
+    {
+      description: 'should render the option selected by the select defaultValue',
+      template: () => (
+        <select defaultValue="dog">
+          <option value="cat">A cat</option>
+          <option value="dog">A dog</option>
+        </select>
+      ),
+      result:
+        '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
+    },
+    {
+      description: 'should prefer the select value to its defaultValue',
+      template: () => (
+        <select value="cat" defaultValue="dog">
+          <option value="cat">A cat</option>
+          <option value="dog">A dog</option>
+        </select>
+      ),
+      result:
+        '<select value="cat"><option value="cat" selected>A cat</option><option value="dog">A dog</option></select>',
+    },
+    {
       description: 'should render a text placeholder',
       template: () => (
         <div>
