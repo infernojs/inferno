@@ -509,13 +509,13 @@ importers:
       inferno-hydrate:
         specifier: 9.1.0
         version: link:../inferno-hydrate
+      inferno-shared:
+        specifier: 9.1.0
+        version: link:../inferno-shared
     devDependencies:
       inferno-hyperscript:
         specifier: 9.1.0
         version: link:../inferno-hyperscript
-      inferno-shared:
-        specifier: 9.1.0
-        version: link:../inferno-shared
       inferno-test-utils:
         specifier: 9.1.0
         version: link:../inferno-test-utils
@@ -640,6 +640,9 @@ importers:
       inferno:
         specifier: 9.1.0
         version: link:../inferno
+      inferno-vnode-flags:
+        specifier: 9.1.0
+        version: link:../inferno-vnode-flags
     devDependencies:
       inferno-create-element:
         specifier: 9.1.0
@@ -650,9 +653,6 @@ importers:
       inferno-shared:
         specifier: 9.1.0
         version: link:../inferno-shared
-      inferno-vnode-flags:
-        specifier: 9.1.0
-        version: link:../inferno-vnode-flags
       mobx:
         specifier: '*'
         version: 7.0.5
