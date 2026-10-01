@@ -3,7 +3,7 @@
   "version": "9.1.0",
   "license": "MIT",
   "type": "module",
-  "description": "Animation helpers inferno. This package can be used to reuse server side rendered html",
+  "description": "Helper components and utils to add CSS animations to Inferno apps",
   "author": {
     "name": "Sebastian Ware",
     "email": "sebastian@urbantalk.se",
@@ -32,7 +32,8 @@
       "types": "./dist/index.d.ts"
     },
     "./dist/index.dev.mjs": "./dist/index.dev.mjs",
-    "./dist/index.mjs": "./dist/index.mjs"
+    "./dist/index.mjs": "./dist/index.mjs",
+    "./index.css": "./index.css"
   },
   "module": "dist/index.mjs",
   "dev:module": "dist/index.dev.mjs",
