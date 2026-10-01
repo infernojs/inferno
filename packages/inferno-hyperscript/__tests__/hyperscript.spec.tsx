@@ -37,6 +37,17 @@ describe('HyperScript (non-JSX)', () => {
     expect(container.innerHTML).toBe('<div class="foo">Hello world!</div>');
   });
 
+  it('Should not write the id and classes of the selector into the props passed to it', () => {
+    const shared = { title: 't' };
+
+    render(h('div', [h('p#a.x', shared), h('p#b.y', shared)]), container);
+
+    expect(container.innerHTML).toBe(
+      '<div><p class="x" title="t" id="a"></p><p class="y" title="t" id="b"></p></div>',
+    );
+    expect(shared).toEqual({ title: 't' });
+  });
+
   const StatelessComponent = () => h('div', 'Hello world!');
 
   describe('Class Component hooks', function () {
