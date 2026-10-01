@@ -170,7 +170,10 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
       const childFlags = vNode.childFlags;
       const childSelectValue = getChildSelectValue(type, props, selectValue);
 
-      if (childFlags === ChildFlags.HasVNodeChildren) {
+      // The html wins over children, as on the client
+      if (html) {
+        renderedString += html;
+      } else if (childFlags === ChildFlags.HasVNodeChildren) {
         renderedString += renderVNodeToString(
           children,
           context,
@@ -186,8 +189,6 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
         }
       } else if (childFlags === ChildFlags.HasTextChildren) {
         renderedString += children === '' ? ' ' : escapeText(children);
-      } else if (html) {
-        renderedString += html;
       }
       if (!isVoidElement) {
         renderedString += `</${type}>`;

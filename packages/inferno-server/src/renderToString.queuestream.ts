@@ -299,6 +299,11 @@ export class RenderQueueStream extends Readable {
         const childFlags = vNode.childFlags;
         const childSelectValue = getChildSelectValue(type, props, selectValue);
 
+        // The html wins over children, as on the client
+        if (html) {
+          this.addToQueue(renderedString + html + '</' + type + '>', position);
+          return;
+        }
         if (childFlags === ChildFlags.HasVNodeChildren) {
           this.addToQueue(renderedString, position);
           this.renderVNodeToQueue(
@@ -328,10 +333,6 @@ export class RenderQueueStream extends Readable {
             );
           }
           this.addToQueue('</' + type + '>', position);
-          return;
-        }
-        if (html) {
-          this.addToQueue(renderedString + html + '</' + type + '>', position);
           return;
         }
         // Close element if it's not void

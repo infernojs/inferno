@@ -478,6 +478,14 @@ describe('SSR Creation Streams - (non-JSX)', () => {
       result: '<div>fallback</div>',
     },
     {
+      description:
+        'should render dangerouslySetInnerHTML instead of the children like the client',
+      template: () => (
+        <div dangerouslySetInnerHTML={{ __html: '<b>html</b>' }}>fallback</div>
+      ),
+      result: '<div><b>html</b></div>',
+    },
+    {
       description: 'should render a text placeholder',
       template: () => (
         <div>
