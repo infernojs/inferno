@@ -119,7 +119,8 @@ function _traverseLoaders(
 
 async function resolveEntry(path, params, request, loader): Promise<any> {
   return (
-    loader({ params, request })
+    // The promise catches a loader that throws before returning a promise, and takes plain values
+    new Promise((resolve) => resolve(loader({ params, request })))
       .then(async (res: any) => {
         // This implementation is based on:
         // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879

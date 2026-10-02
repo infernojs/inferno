@@ -85,6 +85,62 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.innerHTML).toContain(TEXT);
   });
 
+  it('renders error on initial when the loader throws synchronously', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    const TEXT = 'A synchronous error';
+    const loaderFunc = () => {
+      setDone();
+      throw new Error(TEXT);
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route
+          path="/"
+          render={(props: any) => {
+            const err = useLoaderError(props);
+            return <h1>{err?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
+      </MemoryRouter>,
+      container,
+    );
+
+    await waitForRerender();
+
+    expect(container.innerHTML).toContain(TEXT);
+  });
+
+  it('renders on initial when the loader returns its data synchronously', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    const TEXT = 'synchronous';
+    const loaderFunc: any = () => {
+      setDone();
+      return { message: TEXT };
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            return <h1>{data?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
+      </MemoryRouter>,
+      container,
+    );
+
+    await waitForRerender();
+
+    expect(container.innerHTML).toContain(TEXT);
+  });
+
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
