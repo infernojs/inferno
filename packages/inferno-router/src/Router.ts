@@ -122,7 +122,8 @@ export class Router extends Component<IRouterProps, any> {
     this._loaderFetchControllers = [];
 
     const { history, children } = this.props;
-    const loaderEntries = traverseLoaders(history.location.pathname, children);
+    const { pathname, search = '' } = history.location;
+    const loaderEntries = traverseLoaders(pathname + search, children);
     if (loaderEntries.length === 0) {
       this.setState({ match });
       return;

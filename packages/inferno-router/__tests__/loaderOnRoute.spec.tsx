@@ -141,6 +141,47 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.innerHTML).toContain(TEXT);
   });
 
+  it('passes the query string of the location in the request of the loader', async () => {
+    let [setDone, waitForRerender] = createEventGuard();
+    const urls: string[] = [];
+    let history;
+
+    const loaderFunc = async ({ request }) => {
+      urls.push(request.url);
+      setDone();
+      return { message: 'list' };
+    };
+
+    function HistoryCatcher(_props, context) {
+      history = context.router.history;
+      return null;
+    }
+
+    render(
+      <MemoryRouter initialEntries={['/list?page=2']}>
+        <div>
+          <HistoryCatcher />
+          <Route
+            path="/list"
+            render={(props: any) => <h1>{useLoaderData(props)?.message}</h1>}
+            loader={loaderFunc}
+          />
+        </div>
+      </MemoryRouter>,
+      container,
+    );
+
+    await waitForRerender();
+    [setDone, waitForRerender] = createEventGuard();
+
+    history.push('/list?page=3');
+    await waitForRerender();
+
+    expect(urls.length).toBe(2);
+    expect(urls[0]).toContain('/list?page=2');
+    expect(urls[1]).toContain('/list?page=3');
+  });
+
   it('passes null from a loader as its data, not as an error', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
