@@ -248,6 +248,7 @@ describe('SSR Creation (JSX)', () => {
       description:
         'should render the children when dangerouslySetInnerHTML is undefined',
       template: () => (
+        // eslint-disable-next-line inferno/no-danger-with-children
         <div dangerouslySetInnerHTML={undefined}>fallback</div>
       ),
       result: '<div>fallback</div>',
@@ -255,6 +256,7 @@ describe('SSR Creation (JSX)', () => {
     {
       description:
         'should render the children when dangerouslySetInnerHTML is null',
+      // eslint-disable-next-line inferno/no-danger-with-children
       template: () => <div dangerouslySetInnerHTML={null}>fallback</div>,
       result: '<div>fallback</div>',
     },
@@ -262,6 +264,7 @@ describe('SSR Creation (JSX)', () => {
       description:
         'should render dangerouslySetInnerHTML instead of the children like the client',
       template: () => (
+        // eslint-disable-next-line inferno/no-danger-with-children
         <div dangerouslySetInnerHTML={{ __html: '<b>html</b>' }}>fallback</div>
       ),
       result: '<div><b>html</b></div>',
