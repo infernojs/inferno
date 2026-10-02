@@ -25,7 +25,7 @@
     "jasmine-browser-runner": "^5.0.0",
     "jasmine-core": "^7.0.2",
     "saucelabs": "9.2.0",
-    "selenium-webdriver": "^4.49.0",
+    "selenium-webdriver": "^4.50.0",
     "ts-loader": "^9.6.2",
     "webpack": "^5.111.1"
   }
