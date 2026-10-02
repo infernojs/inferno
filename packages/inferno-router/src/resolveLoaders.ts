@@ -125,8 +125,8 @@ async function resolveEntry(path, params, request, loader): Promise<any> {
         // This implementation is based on:
         // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879
 
-        // Check if regular data object (from tests or initialData)
-        if (typeof res.json !== 'function') {
+        // Check if regular data object (from tests or initialData), which can also be null
+        if (isNullOrUndef(res) || typeof res.json !== 'function') {
           return [path, { res }];
         }
 

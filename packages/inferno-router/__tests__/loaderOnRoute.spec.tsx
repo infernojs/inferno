@@ -141,6 +141,34 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.innerHTML).toContain(TEXT);
   });
 
+  it('passes null from a loader as its data, not as an error', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    const loaderFunc = async () => {
+      setDone();
+      return null;
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            const err = useLoaderError(props);
+            return <h1>{`data: ${data}, error: ${err?.message ?? 'none'}`}</h1>;
+          }}
+          loader={loaderFunc}
+        />
+      </MemoryRouter>,
+      container,
+    );
+
+    await waitForRerender();
+
+    expect(container.innerHTML).toBe('<h1>data: null, error: none</h1>');
+  });
+
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {
