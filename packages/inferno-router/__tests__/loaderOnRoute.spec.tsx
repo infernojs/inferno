@@ -182,6 +182,22 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(urls[1]).toContain('/list?page=3');
   });
 
+  it('renders a Route without a path that has a loader, and warns that the loader never runs', () => {
+    const consoleSpy = spyOn(console, 'error');
+    const loaderFunc = async () => ({ message: 'data' });
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route render={() => <h1>pathless</h1>} loader={loaderFunc} />
+      </MemoryRouter>,
+      container,
+    );
+
+    expect(container.innerHTML).toBe('<h1>pathless</h1>');
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy.calls.argsFor(0)[0]).toContain('needs a path');
+  });
+
   it('passes null from a loader as its data, not as an error', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 
