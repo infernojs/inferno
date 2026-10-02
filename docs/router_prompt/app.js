@@ -32,7 +32,7 @@ const CONFIRM_MESSAGE = 'Leave this page? Unsaved changes will be lost.';
 // How long we wait after a POP before deciding what went wrong. window.confirm
 // blocks the main thread, so this timer only runs once any dialog is closed.
 const DIAGNOSE_DELAY = 800;
-// A window.confirm() that returns faster than this never rendered a dialog.
+// A fast false return suggests suppression; the browser exposes no definitive signal.
 const SUPPRESSED_DIALOG_MS = 50;
 
 /* ------------------------------------------------------------------------ *
@@ -43,7 +43,7 @@ const SUPPRESSED_DIALOG_MS = 50;
  * use a HashRouter instead, which is handy when the static server has no SPA
  * fallback and a reload on a deep link would 404.
  * ------------------------------------------------------------------------ */
-const ROUTE_NAMES = ['guarded', 'manual', 'plain'];
+const ROUTE_NAMES = ['guarded', 'custom', 'manual', 'plain'];
 const useHash = /[?&]router=hash(&|$)/.test(window.location.search);
 
 function currentDirectory() {
@@ -63,6 +63,7 @@ const basePath = useHash ? '' : currentDirectory();
 const PATHS = {
   home: basePath + '/',
   guarded: basePath + '/guarded',
+  custom: basePath + '/custom',
   manual: basePath + '/manual',
   plain: basePath + '/plain'
 };
@@ -304,8 +305,7 @@ function instrument() {
     };
   });
 
-  // <Prompt> calls window.confirm() directly. Timing the call tells us whether
-  // a dialog was really shown or whether the browser dismissed it for us.
+  // Timing is diagnostic only: false can mean either Cancel or suppression.
   const nativeConfirm = window.confirm;
 
   window.confirm = function (message) {
@@ -329,7 +329,7 @@ function instrument() {
       'confirm',
       'window.confirm() returned ' + result + ' after ' + ms + 'ms' +
         (result === false && ms < SUPPRESSED_DIALOG_MS
-          ? '   <- too fast to have been answered, the browser dismissed it'
+          ? '   <- likely suppressed by the browser'
           : '')
     );
 
@@ -396,9 +396,9 @@ function diagnose() {
     confirmed.ms < SUPPRESSED_DIALOG_MS
   ) {
     verdict =
-      'BROKEN: window.confirm() returned false after ' + confirmed.ms +
-      'ms without showing anything. The browser suppressed the dialog ' +
-      '(popstate is not a user gesture in WebKit). <Prompt> reads that as ' +
+      'LIKELY SUPPRESSED: window.confirm() returned false after ' + confirmed.ms +
+      'ms. If no dialog appeared, the browser suppressed it. Timing alone ' +
+      'cannot distinguish suppression from Cancel. <Prompt> reads false as ' +
       '"stay here", never calls tx.retry(), and the reverted POP stands.';
   } else if (confirmed !== null && confirmed.result === false) {
     verdict =
@@ -421,7 +421,8 @@ function Nav() {
   return (
     <nav className="nav">
       <Link to={PATHS.home}>Home</Link>
-      <Link to={PATHS.guarded}>Guarded (Prompt)</Link>
+      <Link to={PATHS.custom}>Custom prompt</Link>
+      <Link to={PATHS.guarded}>Native prompt</Link>
       <Link to={PATHS.manual}>Manual block</Link>
       <Link to={PATHS.plain}>Plain page</Link>
     </nav>
@@ -431,11 +432,18 @@ function Nav() {
 function HomePage() {
   return (
     <div className="page">
+      <h2>Test the fix</h2>
+      <ol>
+        <li>Open <Link to={PATHS.plain}>Plain page</Link>, then <Link to={PATHS.custom}>Custom prompt</Link>.</li>
+        <li>Use the browser Back button or swipe back. An in-page dialog should appear.</li>
+        <li>Choose Stay, then try Back again and choose Leave. You should reach Plain page once.</li>
+        <li>Use Forward and repeat. Try leaving through a link too.</li>
+      </ol>
       <h2>How to reproduce</h2>
       <ol>
         <li>
           Open <Link to={PATHS.plain}>Plain page</Link>, then{' '}
-          <Link to={PATHS.guarded}>Guarded (Prompt)</Link> so there is history
+          <Link to={PATHS.guarded}>Native prompt</Link> so there is history
           to go back to.
         </li>
         <li>
@@ -487,7 +495,7 @@ class GuardedPage extends Component {
 
   componentWillMount() {
     setBlockerArmed(this.state.armed);
-    log('page', 'Guarded page mounted with <Prompt when={true}>');
+    log('page', (this.props.custom ? 'Custom' : 'Native') + ' prompt mounted with <Prompt when={true}>');
   }
 
   componentWillUnmount() {
@@ -507,7 +515,7 @@ class GuardedPage extends Component {
     return (
       <div className="page">
         <Prompt when={state.armed} message={CONFIRM_MESSAGE} />
-        <h2>Guarded page</h2>
+        <h2>{props.custom ? 'Custom prompt' : 'Native prompt'}</h2>
         <p>
           This page renders{' '}
           <code>
@@ -519,11 +527,15 @@ class GuardedPage extends Component {
           <input type="checkbox" checked={state.armed} onChange={this.onToggle} />
           <span>Prompt armed</span>
         </label>
-        <p>
+        {props.custom ? <p>
+          This prompt uses the router&rsquo;s <code>getUserConfirmation</code> handler
+          to open an in-page dialog. Test Back, swipe-back, and links, choosing
+          both Stay and Leave.
+        </p> : <p>
           Leaving with a link should prompt. Leaving with the browser back
           button should prompt too, but on iOS Safari it neither prompts nor
           navigates.
-        </p>
+        </p>}
       </div>
     );
   }
@@ -750,6 +762,7 @@ function Shell() {
         <Switch>
           <Route exact path={PATHS.home} component={HomePage} />
           <Route exact path={PATHS.guarded} component={GuardedPage} />
+          <Route exact path={PATHS.custom} render={() => <GuardedPage custom />} />
           <Route exact path={PATHS.manual} component={ManualBlockPage} />
           <Route exact path={PATHS.plain} component={PlainPage} />
           <Route
@@ -759,7 +772,7 @@ function Shell() {
                   <h2>No route for {props.location.pathname}</h2>
                   <p>
                     Expected one of {PATHS.home}, {PATHS.guarded},{' '}
-                    {PATHS.manual}, {PATHS.plain}.
+                    {PATHS.custom}, {PATHS.manual}, {PATHS.plain}.
                   </p>
                 </div>
               );
@@ -786,9 +799,120 @@ log(
 
 const Router = useHash ? HashRouter : BrowserRouter;
 
+class ConfirmationDialog extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.onStay = () => this.props.request.resolve(false);
+    this.onLeave = () => this.props.request.resolve(true);
+    this.onKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        event.preventDefault();
+        this.onStay();
+      } else if (event.key === 'Tab') {
+        // Two focusable controls; keep keyboard focus inside the dialog.
+        event.preventDefault();
+        (document.activeElement === this.stay ? this.leave : this.stay).focus();
+      }
+    };
+  }
+
+  componentDidMount() {
+    this.previousFocus = document.activeElement;
+    if (typeof this.dialog.showModal === 'function') {
+      this.dialog.showModal();
+    } else {
+      this.dialog.setAttribute('open', '');
+    }
+    this.stay.focus();
+  }
+
+  componentWillUnmount() {
+    if (this.previousFocus && this.previousFocus.isConnected) {
+      this.previousFocus.focus();
+    }
+  }
+
+  render({ request }) {
+    return (
+      <dialog
+        className="confirmation-dialog"
+        aria-labelledby="confirmation-title"
+        aria-describedby="confirmation-message"
+        onKeyDown={this.onKeyDown}
+        onCancel={(event) => { event.preventDefault(); this.onStay(); }}
+        ref={(node) => { this.dialog = node; }}
+      >
+        <h2 id="confirmation-title">Leave this page?</h2>
+        <p id="confirmation-message">{request.message}</p>
+        <button type="button" ref={(node) => { this.stay = node; }} onClick={this.onStay}>Stay</button>
+        <button type="button" ref={(node) => { this.leave = node; }} onClick={this.onLeave}>Leave</button>
+      </dialog>
+    );
+  }
+}
+
+class App extends Component {
+  constructor(props, context) {
+    super(props, context);
+    this.state = { confirmation: null };
+    this.unmounted = false;
+    this.setRouter = (router) => { this.router = router; };
+    this.getUserConfirmation = (message, resolve) => {
+      // Only the comparison route uses native confirmation. Applications can
+      // use the custom handler for every route.
+      if (this.router.history.location.pathname !== PATHS.custom) {
+        resolve(window.confirm(message));
+        return;
+      }
+
+      counts.delivered++;
+      log('confirm', 'Custom confirmation opened: ' + message);
+      const request = {
+        message: message,
+        resolve: (allow) => {
+          log('confirm', 'Custom confirmation: ' + (allow ? 'Leave' : 'Stay'));
+          if (allow) {
+            expectRetryPop();
+          } else {
+            forgetRetryPop();
+          }
+          resolve(allow);
+        }
+      };
+      this.setState({ confirmation: request });
+
+      return () => {
+        if (!this.unmounted && this.state.confirmation === request) {
+          this.setState({ confirmation: null });
+        }
+      };
+    };
+  }
+
+  componentDidMount() {
+    this.unlisten = this.router.history.listen(({ action, location }) => {
+      log('ok', 'Committed ' + action + ' -> ' + location.pathname);
+    });
+  }
+
+  componentWillUnmount() {
+    this.unmounted = true;
+    this.unlisten();
+  }
+
+  render(_props, { confirmation }) {
+    return (
+      <>
+        <Router getUserConfirmation={this.getUserConfirmation} ref={this.setRouter}>
+          <Shell />
+        </Router>
+        {confirmation ? <ConfirmationDialog request={confirmation} /> : null}
+      </>
+    );
+  }
+}
+
 render(
-  <Router>
-    <Shell />
-  </Router>,
+  <App />,
   document.getElementById('app')
 );

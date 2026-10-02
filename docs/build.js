@@ -14,7 +14,11 @@ import targets from "../scripts/babel/targets.json" with { type: "json" };
 const isProduction = process.env.NODE_ENV === 'production';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const benchmarks = readdirSync(__dirname).filter(file => statSync(join(__dirname, file)).isDirectory());
+const requestedExamples = process.argv.slice(2);
+const benchmarks = readdirSync(__dirname).filter(file =>
+  statSync(join(__dirname, file)).isDirectory() &&
+  (requestedExamples.length === 0 || requestedExamples.includes(file))
+);
 const resolvePkg = pkg => resolve(__dirname, '../packages', pkg, 'dist', 'index.mjs');
 
 

@@ -1,10 +1,11 @@
 import { Component, createComponentVNode, type VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createBrowserHistory } from 'history';
-import { Router, type TLoaderData } from './Router';
+import { Router, type GetUserConfirmation, type TLoaderData } from './Router';
 import { warning } from './utils';
 
 export interface IBrowserRouterProps {
+  getUserConfirmation?: GetUserConfirmation;
   initialData?: Record<string, TLoaderData>;
   basename?: string;
   forceRefresh?: boolean;
@@ -24,6 +25,7 @@ export class BrowserRouter extends Component<IBrowserRouterProps, any> {
     return createComponentVNode(VNodeFlags.ComponentClass, Router, {
       children: this.props.children,
       history: this.history,
+      getUserConfirmation: this.props.getUserConfirmation,
       initialData: this.props.initialData,
     });
   }

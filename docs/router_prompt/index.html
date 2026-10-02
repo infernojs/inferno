@@ -115,6 +115,22 @@
 		.dialog p {
 			margin: 0 0 10px;
 		}
+		.confirmation-dialog {
+			position: fixed;
+			top: 25%;
+			margin: 0 auto;
+			width: min(90vw, 420px);
+			padding: 20px;
+			border: 1px solid #c8ccd4;
+			border-radius: 8px;
+			background: #fff;
+			color: #202124;
+			box-shadow: 0 8px 40px #0004;
+			z-index: 1;
+		}
+		.confirmation-dialog::backdrop {
+			background: #0006;
+		}
 		footer {
 			flex: 0 0 auto;
 			border-top: 1px solid #ddd;

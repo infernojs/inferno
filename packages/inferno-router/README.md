@@ -30,6 +30,57 @@ The following features aren't supported yet:
 - redirect support
 - not exposing response headers, type or status code to render method
 
+## Navigation confirmation
+
+`<Prompt when={hasUnsavedChanges} message="Discard your changes?" />` blocks
+navigation while `when` is true. By default it uses `window.confirm`. Browsers
+can suppress that native dialog, including on iOS Safari when Back navigation
+triggers confirmation from `popstate`. A suppressed dialog returns `false`, so
+navigation remains blocked.
+
+Use an in-page dialog through `getUserConfirmation` to avoid depending on native
+dialogs. `Router`, `BrowserRouter`, `HashRouter`, and `MemoryRouter` accept this
+prop. The handler receives the message and a callback; call it with `true` for
+Leave or `false` for Stay. It can respond synchronously or later, after the user
+interacts with your dialog:
+
+```tsx
+import {
+  BrowserRouter,
+  Prompt,
+  type GetUserConfirmation,
+} from 'inferno-router';
+
+const getUserConfirmation: GetUserConfirmation = (message, callback) => {
+  // Your application's dialog service renders the UI and returns a close function.
+  return showLeaveDialog({
+    message,
+    onLeave: () => callback(true),
+    onStay: () => callback(false),
+  });
+};
+
+<BrowserRouter getUserConfirmation={getUserConfirmation}>
+  <Prompt when={hasUnsavedChanges} message="Discard your changes?" />
+  {/* routes */}
+</BrowserRouter>;
+```
+
+The optional returned cleanup function runs once when the decision completes or
+is invalidated. It should dismiss that specific dialog. Disabling or unmounting
+the prompt, changing its message, or replacing the handler invalidates pending
+replies. Keep the handler reference stable between renders. While a decision is
+pending, further attempts stay blocked and the first destination is retained.
+Duplicate replies are ignored. After Leave, blocking resumes when the accepted
+navigation commits if the prompt is still mounted and enabled.
+
+Configuring this prop is required to replace native confirmation; upgrading
+alone keeps the existing native default. See the runnable
+[custom and native confirmation demo](../../docs/router_prompt/README.md).
+This API covers navigation within the app. Reloading, closing the tab, and
+leaving the document use the browser-controlled `beforeunload` mechanism
+registered by `history.block`; a custom dialog cannot replace it.
+
 ## Client side usage
 
 ```js

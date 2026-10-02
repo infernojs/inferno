@@ -31,10 +31,17 @@ export interface TLoaderData<Res = any, Err = any> {
 
 type TInitialData = Record<string, TLoaderData>; // key is route path to allow resolving
 
+/** Return an optional cleanup function to dismiss the confirmation when it ends. */
+export type GetUserConfirmation = (
+  message: string,
+  callback: (allow: boolean) => void,
+) => void | (() => void);
+
 export interface IRouterProps {
   history: History;
   children: InfernoNode;
   initialData?: TInitialData;
+  getUserConfirmation?: GetUserConfirmation;
 }
 
 export interface TContextRouter {
@@ -44,6 +51,7 @@ export interface TContextRouter {
     match: Match<any> | null;
   };
   initialData?: TInitialData;
+  getUserConfirmation?: GetUserConfirmation;
   staticContext?: object; // TODO: This should be properly typed
 }
 
@@ -72,6 +80,7 @@ export class Router extends Component<IRouterProps, any> {
     const parentRouter: TContextRouter = this.context.router;
     const router: TContextRouter = { ...parentRouter };
     router.history = this.props.history;
+    router.getUserConfirmation = this.props.getUserConfirmation;
     router.route = {
       location: router.history.location,
       match: this.state?.match, // Why are we sending this? it appears useless.
