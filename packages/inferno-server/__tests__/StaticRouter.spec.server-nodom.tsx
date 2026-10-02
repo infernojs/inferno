@@ -168,6 +168,24 @@ describe('A <StaticRouter>', () => {
       );
     });
 
+    it('strips the basename only as a whole path segment', () => {
+      const pathnames: string[] = [];
+      const LocationChecker = (props) => {
+        pathnames.push(props.location.pathname);
+        return null;
+      };
+
+      for (const location of ['/app', '/app/path', '/application']) {
+        renderToStaticMarkup(
+          <StaticRouter context={{}} basename="/app" location={location}>
+            <Route component={LocationChecker} />
+          </StaticRouter>,
+        );
+      }
+
+      expect(pathnames).toEqual(['/', '/path', '/application']);
+    });
+
     it('reports PUSH actions on the context object', () => {
       const context: Record<string, any> = {};
 
