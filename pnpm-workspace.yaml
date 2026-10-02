@@ -64,3 +64,4 @@ minimumReleaseAgeExclude:
   - rollup@4.63.5
   - babel-plugin-inferno@7.0.0 || 7.1.0
   - mobx@7.0.5
+  - '@types/node@26.6.4'

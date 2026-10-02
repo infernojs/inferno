@@ -20,9 +20,9 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./index.cjs"
     },
     "./dist/index.dev.mjs": "./dist/index.dev.mjs",
     "./dist/index.mjs": "./dist/index.mjs"
@@ -61,7 +61,8 @@
     ],
     "moduleName": "Inferno.Redux",
     "moduleGlobals": {
-      "inferno": "Inferno"
+      "inferno": "Inferno",
+      "redux": "Redux"
     }
   },
   "gitHead": "930f16301f6cdaa85e48641eed9ef49f799fc68a"

@@ -34,7 +34,7 @@ const ATTRS = [
   'font-size-adjust',
   'font-stretch',
   'font-style',
-  'font-constiant',
+  'font-variant',
   'font-weight',
   'glyph-name',
   'glyph-orientation-horizontal',

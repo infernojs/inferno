@@ -85,6 +85,169 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(container.innerHTML).toContain(TEXT);
   });
 
+  it('renders error on initial when the loader throws synchronously', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    const TEXT = 'A synchronous error';
+    const loaderFunc = () => {
+      setDone();
+      throw new Error(TEXT);
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route
+          path="/"
+          render={(props: any) => {
+            const err = useLoaderError(props);
+            return <h1>{err?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
+      </MemoryRouter>,
+      container,
+    );
+
+    await waitForRerender();
+
+    expect(container.innerHTML).toContain(TEXT);
+  });
+
+  it('renders on initial when the loader returns its data synchronously', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    const TEXT = 'synchronous';
+    const loaderFunc: any = () => {
+      setDone();
+      return { message: TEXT };
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            return <h1>{data?.message}</h1>;
+          }}
+          loader={loaderFunc}
+        />
+      </MemoryRouter>,
+      container,
+    );
+
+    await waitForRerender();
+
+    expect(container.innerHTML).toContain(TEXT);
+  });
+
+  it('passes the query string of the location in the request of the loader', async () => {
+    let [setDone, waitForRerender] = createEventGuard();
+    const urls: string[] = [];
+    let history;
+
+    const loaderFunc = async ({ request }) => {
+      urls.push(request.url);
+      setDone();
+      return { message: 'list' };
+    };
+
+    function HistoryCatcher(_props, context) {
+      history = context.router.history;
+      return null;
+    }
+
+    render(
+      <MemoryRouter initialEntries={['/list?page=2']}>
+        <div>
+          <HistoryCatcher />
+          <Route
+            path="/list"
+            render={(props: any) => <h1>{useLoaderData(props)?.message}</h1>}
+            loader={loaderFunc}
+          />
+        </div>
+      </MemoryRouter>,
+      container,
+    );
+
+    await waitForRerender();
+    [setDone, waitForRerender] = createEventGuard();
+
+    history.push('/list?page=3');
+    await waitForRerender();
+
+    expect(urls.length).toBe(2);
+    expect(urls[0]).toContain('/list?page=2');
+    expect(urls[1]).toContain('/list?page=3');
+  });
+
+  it('renders a Route without a path that has a loader, and warns that the loader never runs', () => {
+    const consoleSpy = spyOn(console, 'error');
+    const loaderFunc = async () => ({ message: 'data' });
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route render={() => <h1>pathless</h1>} loader={loaderFunc} />
+      </MemoryRouter>,
+      container,
+    );
+
+    expect(container.innerHTML).toBe('<h1>pathless</h1>');
+    expect(consoleSpy).toHaveBeenCalledTimes(1);
+    expect(consoleSpy.calls.argsFor(0)[0]).toContain('needs a path');
+  });
+
+  it('aborts pending loaders when the router is unmounted', () => {
+    let signal;
+
+    const loaderFunc = async ({ request }) => {
+      signal = request.signal;
+      return await new Promise(() => {});
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route path="/" render={() => <h1>root</h1>} loader={loaderFunc} />
+      </MemoryRouter>,
+      container,
+    );
+
+    expect(signal.aborted).toBe(false);
+
+    render(null, container);
+
+    expect(signal.aborted).toBe(true);
+  });
+
+  it('passes null from a loader as its data, not as an error', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+
+    const loaderFunc = async () => {
+      setDone();
+      return null;
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route
+          path="/"
+          render={(props: any) => {
+            const data = useLoaderData(props);
+            const err = useLoaderError(props);
+            return <h1>{`data: ${data}, error: ${err?.message ?? 'none'}`}</h1>;
+          }}
+          loader={loaderFunc}
+        />
+      </MemoryRouter>,
+      container,
+    );
+
+    await waitForRerender();
+
+    expect(container.innerHTML).toBe('<h1>data: null, error: none</h1>');
+  });
+
   it('Can access initialData (for hydration)', async () => {
     const TEXT = 'bubblegum';
     const Component = (props) => {

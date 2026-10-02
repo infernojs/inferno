@@ -1,6 +1,8 @@
 import {
   errorsReporter,
+  type IInjector,
   inject,
+  type InjectedComponent,
   Observer,
   observer,
   renderReporter,
@@ -22,7 +24,9 @@ function onError(fn: (data: unknown) => void): () => void {
 
 export {
   errorsReporter,
+  type IInjector,
   inject,
+  type InjectedComponent,
   observer,
   onError,
   EventEmitter,

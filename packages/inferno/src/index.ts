@@ -11,13 +11,20 @@ import {
   normalizeRoot,
 } from './core/implementation';
 import { linkEvent } from './DOM/events/linkEvent';
-import { renderInternal, createRenderer, render } from './DOM/rendering';
+import {
+  callRenderHooks,
+  renderInternal,
+  createRenderer,
+  render,
+} from './DOM/rendering';
 import {
   AnimationQueues,
   EMPTY_OBJ,
   findDOMFromVNode,
+  findElementFromVNode,
   Fragment,
   options,
+  setMoveAnimations,
 } from './DOM/utils/common';
 import { Component, type ComponentType, rerender } from './core/component';
 import { mountProps } from './DOM/props';
@@ -83,7 +90,9 @@ export {
   rerender,
   version,
   // Internal methods, used by hydration
+  callRenderHooks as _CRH,
   createClassComponentInstance as _CI,
+  findElementFromVNode as _FE, // used by inferno-animation
   normalizeRoot as _HI, // used by inferno-mobx
   mount as _M,
   mountClassComponentCallbacks as _MCCC,
@@ -93,4 +102,5 @@ export {
   mountProps as _MP,
   renderInternal,
   renderFunctionalComponent as _RFC,
+  setMoveAnimations as _MA, // used by inferno-animation
 };

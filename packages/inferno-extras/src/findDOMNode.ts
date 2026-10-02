@@ -1,6 +1,9 @@
 import { type Component, findDOMFromVNode, type VNode } from 'inferno';
 
-export function findDOMNode(ref: VNode | Component | Node): Node | null {
+// ref is a component instance, a vNode or a DOM node
+export function findDOMNode(
+  ref: VNode | JSX.ElementClass | Node | null | undefined,
+): Node | null {
   if (ref && (ref as Node).nodeType) {
     return ref as Node;
   }

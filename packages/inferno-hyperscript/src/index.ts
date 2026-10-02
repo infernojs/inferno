@@ -18,14 +18,21 @@ import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
 
-function parseTag(tag: string | null, props: any): string {
+// Set by parseTag to the id and the classes of the selector. They are not written into the props
+// passed to h, which may be shared between calls.
+let selectorId: string | null = null;
+let selectorClassName: string | null = null;
+
+function parseTag(tag: string | null): string {
+  selectorId = null;
+  selectorClassName = null;
+
   if (!tag) {
     return 'div';
   }
   if (tag === (Fragment as any)) {
     return tag;
   }
-  const noId = props && isUndefined(props.id);
   const tagParts = tag.split(classIdSplit);
   let tagName: null | string = null;
 
@@ -49,15 +56,12 @@ function parseTag(tag: string | null, props: any): string {
         classes = [];
       }
       classes.push(part.substring(1, part.length));
-    } else if (type === '#' && noId) {
-      props.id = part.substring(1, part.length);
+    } else if (type === '#') {
+      selectorId = part.substring(1, part.length);
     }
   }
   if (classes) {
-    if (props.className) {
-      classes.push(props.className);
-    }
-    props.className = classes.join(' ');
+    selectorClassName = classes.join(' ');
   }
   return tagName || 'div';
 }
@@ -85,12 +89,14 @@ export function h(
   }
   const isElement = isString(_tag);
   _props = _props || {};
-  const tag = isElement ? parseTag(_tag, _props) : _tag;
+  const tag = isElement ? parseTag(_tag) : _tag;
+  const id = selectorId;
+  const classes = selectorClassName;
   const newProps: any = {};
   let key = null;
   let ref: any = null;
   let children = null;
-  let className = null;
+  let className: string | null = null;
 
   for (const prop in _props) {
     if (isElement && (prop === 'className' || prop === 'class')) {
@@ -115,6 +121,14 @@ export function h(
 
   if (isElement) {
     let flags = getFlagsForElementVnode(tag as string);
+
+    // The classes of the selector come first, an id prop wins over the id of the selector
+    if (classes !== null) {
+      className = className ? classes + ' ' + className : classes;
+    }
+    if (id !== null && isUndefined(newProps.id)) {
+      newProps.id = id;
+    }
 
     if (flags & VNodeFlags.Fragment) {
       return createFragment(

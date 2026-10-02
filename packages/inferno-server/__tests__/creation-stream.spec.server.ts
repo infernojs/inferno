@@ -25,13 +25,17 @@ describe('SSR Root Creation Streams - (non-JSX)', () => {
   });
 
   it('should use getChildContext', async () => {
+    function Child(_props, context) {
+      return createElement('a', null, context.hello);
+    }
+
     class TestComponent extends Component {
       getChildContext() {
         return { hello: 'world' };
       }
 
       render() {
-        return createElement('a', null, this.context.hello);
+        return createElement(Child, null);
       }
     }
 

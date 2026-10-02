@@ -6,7 +6,6 @@ import {
   isNullOrUndef,
   isNumber,
   isString,
-  isUndefined,
   throwError,
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
@@ -16,9 +15,15 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildContext,
+  getChildSelectValue,
+  getTextareaContent,
   isAttributeNameSafe,
   isEmptyFragment,
+  isSelectedOption,
   renderFunctionalComponent,
+  usesNewAPI,
+  validateTagName,
   voidElements,
 } from './utils';
 import { mergePendingState } from './stream/streamUtils';
@@ -31,7 +36,7 @@ export class RenderQueueStream extends Readable {
     super();
     this.pushQueue = this.pushQueue.bind(this);
     if (initNode) {
-      this.renderVNodeToQueue(initNode, null, null);
+      this.renderVNodeToQueue(initNode, {}, null);
     }
   }
 
@@ -88,11 +93,18 @@ export class RenderQueueStream extends Readable {
       this.collector[0] = null;
       // End of content
     } else if (chunk === Infinity) {
-      this.emit('end');
+      // Removed so that a pushQueue call that is already scheduled does not push after the end
+      this.collector.shift();
+      this.push(null);
     }
   }
 
-  public renderVNodeToQueue(vNode, context, position): void {
+  public renderVNodeToQueue(
+    vNode,
+    context,
+    position,
+    selectValue?: unknown,
+  ): void {
     vNode = arrayToFragment(vNode);
     const flags = vNode.flags;
     const type = vNode.type;
@@ -105,16 +117,9 @@ export class RenderQueueStream extends Readable {
       // Render the
       if (isClass) {
         const instance = new type(props, context);
-        const hasNewAPI = Boolean(type.getDerivedStateFromProps);
+        const hasNewAPI = usesNewAPI(type, instance);
         instance.$BS = false;
         instance.$SSR = true;
-        let childContext;
-        if (!isUndefined(instance.getChildContext)) {
-          childContext = instance.getChildContext();
-        }
-        if (!isNullOrUndef(childContext)) {
-          context = { ...context, ...childContext };
-        }
         if (instance.props === EMPTY_OBJ) {
           instance.props = props;
         }
@@ -139,12 +144,20 @@ export class RenderQueueStream extends Readable {
                   if (typeof dataForContext === 'object') {
                     instance.props = { ...instance.props, ...dataForContext };
                   }
+                  if (hasNewAPI) {
+                    instance.state = createDerivedState(
+                      instance,
+                      instance.props,
+                      instance.state,
+                    );
+                  }
 
                   const renderOut = instance.render(
                     instance.props,
                     instance.state,
                     instance.context,
                   );
+                  const childContext = getChildContext(instance, context);
                   if (isInvalid(renderOut)) {
                     this.addToQueue('<!--!-->', promisePosition);
                   } else if (isString(renderOut)) {
@@ -154,8 +167,9 @@ export class RenderQueueStream extends Readable {
                   } else {
                     this.renderVNodeToQueue(
                       renderOut,
-                      instance.context,
+                      childContext,
                       promisePosition,
+                      selectValue,
                     );
                   }
 
@@ -171,13 +185,19 @@ export class RenderQueueStream extends Readable {
           }
         }
         if (hasNewAPI) {
-          instance.state = createDerivedState(instance, props, instance.state);
+          // instance.props include the props from getInitialProps, the component renders with them
+          instance.state = createDerivedState(
+            instance,
+            instance.props,
+            instance.state,
+          );
         }
         const renderOutput = instance.render(
           instance.props,
           instance.state,
           instance.context,
         );
+        const childContext = getChildContext(instance, context);
 
         if (isInvalid(renderOutput)) {
           this.addToQueue('<!--!-->', position);
@@ -186,7 +206,12 @@ export class RenderQueueStream extends Readable {
         } else if (isNumber(renderOutput)) {
           this.addToQueue(renderOutput + '', position);
         } else {
-          this.renderVNodeToQueue(renderOutput, context, position);
+          this.renderVNodeToQueue(
+            renderOutput,
+            childContext,
+            position,
+            selectValue,
+          );
         }
       } else {
         const renderOutput = renderFunctionalComponent(vNode, context);
@@ -198,14 +223,17 @@ export class RenderQueueStream extends Readable {
         } else if (isNumber(renderOutput)) {
           this.addToQueue(renderOutput + '', position);
         } else {
-          this.renderVNodeToQueue(renderOutput, context, position);
+          this.renderVNodeToQueue(renderOutput, context, position, selectValue);
         }
       }
       // If an element
     } else if ((flags & VNodeFlags.Element) > 0) {
+      validateTagName(type);
+
       let renderedString = `<${type}`;
       let html;
       const isVoidElement = voidElements.has(type);
+      const isTextarea = type === 'textarea';
       const className = vNode.className;
 
       if (isString(className)) {
@@ -218,9 +246,12 @@ export class RenderQueueStream extends Readable {
         for (const prop in props) {
           const value = props[prop];
 
+          if (isTextarea && (prop === 'value' || prop === 'defaultValue')) {
+            continue; // Rendered as the content
+          }
           switch (prop) {
             case 'dangerouslySetInnerHTML':
-              html = value.__html;
+              html = value?.__html;
               break;
             case 'style':
               if (!isNullOrUndef(props.style)) {
@@ -233,7 +264,7 @@ export class RenderQueueStream extends Readable {
               break;
             case 'defaultValue':
               // Use default values if normal values are not present
-              if (!props.value) {
+              if (isNullOrUndef(props.value)) {
                 renderedString += ` value="${
                   isString(value) ? escapeText(value) : value
                 }"`;
@@ -241,7 +272,7 @@ export class RenderQueueStream extends Readable {
               break;
             case 'defaultChecked':
               // Use default values if normal values are not present
-              if (!props.checked && value === true) {
+              if (isNullOrUndef(props.checked) && value === true) {
                 renderedString += ` checked="${value}"`;
               }
               break;
@@ -258,12 +289,14 @@ export class RenderQueueStream extends Readable {
               break;
           }
         }
+        if (isSelectedOption(type, props, selectValue)) {
+          renderedString += ` selected`;
+        }
+        if (isTextarea) {
+          html = getTextareaContent(props) ?? html;
+        }
       }
       renderedString += `>`;
-
-      if (String(type).match(/[\s\n/='"\0<>]/)) {
-        throw renderedString;
-      }
 
       // Voided element, push directly to queue
       if (isVoidElement) {
@@ -272,10 +305,21 @@ export class RenderQueueStream extends Readable {
       } else {
         // Element has children, build them in
         const childFlags = vNode.childFlags;
+        const childSelectValue = getChildSelectValue(type, props, selectValue);
 
+        // The html wins over children, as on the client
+        if (html) {
+          this.addToQueue(renderedString + html + '</' + type + '>', position);
+          return;
+        }
         if (childFlags === ChildFlags.HasVNodeChildren) {
           this.addToQueue(renderedString, position);
-          this.renderVNodeToQueue(children, context, position);
+          this.renderVNodeToQueue(
+            children,
+            context,
+            position,
+            childSelectValue,
+          );
           this.addToQueue('</' + type + '>', position);
           return;
         } else if (childFlags === ChildFlags.HasTextChildren) {
@@ -289,13 +333,14 @@ export class RenderQueueStream extends Readable {
         } else if (childFlags & ChildFlags.MultipleChildren) {
           this.addToQueue(renderedString, position);
           for (let i = 0, len = children.length; i < len; ++i) {
-            this.renderVNodeToQueue(children[i], context, position);
+            this.renderVNodeToQueue(
+              children[i],
+              context,
+              position,
+              childSelectValue,
+            );
           }
           this.addToQueue('</' + type + '>', position);
-          return;
-        }
-        if (html) {
-          this.addToQueue(renderedString + html + '</' + type + '>', position);
           return;
         }
         // Close element if it's not void
@@ -314,10 +359,10 @@ export class RenderQueueStream extends Readable {
       if (isEmptyFragment(vNode)) {
         this.addToQueue('<!--!-->', position);
       } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-        this.renderVNodeToQueue(children, context, position);
+        this.renderVNodeToQueue(children, context, position, selectValue);
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
-          this.renderVNodeToQueue(children[i], context, position);
+          this.renderVNodeToQueue(children[i], context, position, selectValue);
         }
       }
       // Handle errors

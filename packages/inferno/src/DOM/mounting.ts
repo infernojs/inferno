@@ -16,10 +16,13 @@ import {
 } from '../core/implementation';
 import {
   AnimationQueues,
+  NO_ANIMATIONS,
   documentCreateElement,
   EMPTY_OBJ,
   findDOMFromVNode,
+  findElementFromVNode,
   insertOrAppend,
+  moveAnimations,
   safeCall1,
   setTextContent,
 } from './utils/common';
@@ -248,12 +251,14 @@ export function mountElement(
     }
   }
 
-  if (!isNull(parentDOM)) {
-    insertOrAppend(parentDOM, dom, nextNode);
+  // Props are set before the element enters the document: attribute changes on a connected element cost
+  // style invalidation, and autofocus only works when the attribute is there on insertion.
+  if (!isNull(props)) {
+    mountProps(vNode, flags, props, dom, isSVG);
   }
 
-  if (!isNull(props)) {
-    mountProps(vNode, flags, props, dom, isSVG, animations);
+  if (!isNull(parentDOM)) {
+    insertOrAppend(parentDOM, dom, nextNode);
   }
 
   if (process.env.NODE_ENV !== 'production') {
@@ -303,11 +308,12 @@ export function mountClassComponent(
     lifecycle,
   );
 
-  // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+  // A component that animates its own appearance does not let its children animate. Inside such a
+  // component animations is NO_ANIMATIONS already, so childAnimations stays equal to it.
   let childAnimations = animations;
 
-  if (isFunction(instance.componentDidAppear)) {
-    childAnimations = new AnimationQueues();
+  if (typeof instance.componentDidAppear === 'function') {
+    childAnimations = NO_ANIMATIONS;
   }
   mount(
     instance.$LI,
@@ -318,7 +324,10 @@ export function mountClassComponent(
     lifecycle,
     childAnimations,
   );
-  mountClassComponentCallbacks(vNode.ref, instance, lifecycle, animations);
+  mountClassComponentCallbacks(vNode.ref, instance, lifecycle);
+  if (childAnimations !== animations) {
+    addAppearAnimationHookClass(animations, instance);
+  }
 }
 
 export function mountFunctionalComponent(
@@ -331,10 +340,10 @@ export function mountFunctionalComponent(
   animations: AnimationQueues,
 ): void {
   const ref = vNode.ref;
-  // If we have a componentDidAppear on this component, we shouldn't allow children to animate so we're passing an dummy animations queue
+  // A component that animates its own appearance does not let its children animate
   let childAnimations = animations;
   if (!isNullOrUndef(ref) && isFunction(ref.onComponentDidAppear)) {
-    childAnimations = new AnimationQueues();
+    childAnimations = NO_ANIMATIONS;
   }
 
   mount(
@@ -346,42 +355,66 @@ export function mountFunctionalComponent(
     lifecycle,
     childAnimations,
   );
-  mountFunctionalComponentCallbacks(vNode, lifecycle, animations);
+  mountFunctionalComponentCallbacks(vNode, lifecycle);
+  if (childAnimations !== animations) {
+    addAppearAnimationHookFunctional(animations, vNode);
+  }
 }
 
 function createClassMountCallback(instance) {
   return () => {
     instance.componentDidMount();
+    // A move hook assigned in componentDidMount still counts
+    if (
+      moveAnimations !== null &&
+      typeof instance.componentWillMove === 'function'
+    ) {
+      moveAnimations.mountClass(instance);
+    }
   };
 }
 
 function addAppearAnimationHookClass(
   animations: AnimationQueues,
   instance,
-  dom: Element,
 ): void {
-  animations.componentDidAppear.push(() => {
-    instance.componentDidAppear(dom);
-  });
+  const dom = findElementFromVNode(instance.$LI);
+  if (dom !== null) {
+    (
+      animations.componentDidAppear || (animations.componentDidAppear = [])
+    ).push(() => {
+      instance.componentDidAppear(dom);
+    });
+  }
 }
 
 function addAppearAnimationHookFunctional(
   animations: AnimationQueues,
-  ref,
-  dom: Element,
-  props,
+  vNode: VNode,
 ): void {
-  animations.componentDidAppear.push(() => {
-    ref.onComponentDidAppear(dom, props);
-  });
+  const dom = findElementFromVNode(vNode);
+  const ref = vNode.ref;
+  const props = vNode.props;
+  if (dom !== null) {
+    (
+      animations.componentDidAppear || (animations.componentDidAppear = [])
+    ).push(() => {
+      ref.onComponentDidAppear(dom, props);
+    });
+  }
 }
 
 export function mountClassComponentCallbacks(
   ref,
   instance,
   lifecycle: Array<() => void>,
-  animations: AnimationQueues,
 ): void {
+  if (
+    moveAnimations !== null &&
+    typeof instance.componentWillMove === 'function'
+  ) {
+    moveAnimations.mountClass(instance);
+  }
   mountRef(ref, instance, lifecycle);
 
   if (process.env.NODE_ENV !== 'production') {
@@ -403,9 +436,6 @@ export function mountClassComponentCallbacks(
   if (isFunction(instance.componentDidMount)) {
     lifecycle.push(createClassMountCallback(instance));
   }
-  if (isFunction(instance.componentDidAppear)) {
-    addAppearAnimationHookClass(animations, instance, instance.$LI.dom);
-  }
 }
 
 function createOnMountCallback(ref, vNode) {
@@ -420,22 +450,18 @@ function createOnMountCallback(ref, vNode) {
 export function mountFunctionalComponentCallbacks(
   vNode: VNode,
   lifecycle: Array<() => void>,
-  animations: AnimationQueues,
 ): void {
   const ref = vNode.ref;
-
   if (!isNullOrUndef(ref)) {
+    if (
+      moveAnimations !== null &&
+      typeof ref.onComponentWillMove === 'function'
+    ) {
+      moveAnimations.updateHooks(null, ref);
+    }
     safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);
     if (isFunction(ref.onComponentDidMount)) {
       lifecycle.push(createOnMountCallback(ref, vNode));
-    }
-    if (isFunction(ref.onComponentDidAppear)) {
-      addAppearAnimationHookFunctional(
-        animations,
-        ref,
-        findDOMFromVNode(vNode, true) as Element,
-        vNode.props,
-      );
     }
   }
 }

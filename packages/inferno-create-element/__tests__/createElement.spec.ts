@@ -135,7 +135,7 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
       key: 'key1',
       onComponentDidMount(domNode) {
         expect(app.key).toBe('key1');
-        expect(domNode.tagName).toBe('DIV');
+        expect(domNode!.tagName).toBe('DIV');
         done();
       },
     });
@@ -207,9 +207,8 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
   });
 
   it('Should be possible to forward createRef', () => {
-    // TODO: Investigate how these refs should be typed
     const FancyButton = forwardRef<HTMLButtonElement, { children?: any }>(
-      (props, ref: any) =>
+      (props, ref) =>
         createElement(
           'button',
           { ref, className: 'FancyButton' },
@@ -234,11 +233,7 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
       }
 
       render() {
-        return createElement(
-          FancyButton,
-          { ref: this.btn as any },
-          'Click me!',
-        );
+        return createElement(FancyButton, { ref: this.btn }, 'Click me!');
       }
     }
 
@@ -247,5 +242,24 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
     expect(container.innerHTML).toBe(
       '<button class="FancyButton">Click me!</button>',
     );
+  });
+
+  it('Should not write children into the props passed for a component', () => {
+    const Bold = (props: { title: string; children?: any }) =>
+      createElement('b', null, props.children);
+    const props = { title: 't' };
+
+    render(
+      createElement(
+        'div',
+        null,
+        createElement(Bold, props, 'first'),
+        createElement(Bold, props),
+      ),
+      container,
+    );
+
+    expect(container.innerHTML).toBe('<div><b>first</b><b></b></div>');
+    expect(props).toEqual({ title: 't' });
   });
 });

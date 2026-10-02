@@ -1,6 +1,7 @@
 import { warning } from 'inferno-shared';
 import { Reaction } from 'mobx';
 import { type InfernoNode } from 'inferno';
+import { isStaticRendering } from './observer';
 
 type Render = (this, properties?, state?, context?) => InfernoNode;
 
@@ -75,6 +76,10 @@ export function observerPatch<T extends Target, P, C>(
   const base = proto.render;
   const name = clazz.name;
   proto.render = function (this: T, ...parameters) {
+    // A server render is never unmounted, so its reaction would never be disposed
+    if (isStaticRendering()) {
+      return base.apply(this, parameters);
+    }
     const update = this.forceUpdate.bind(this, undefined);
     const render = makeObserverRender(
       update,
@@ -89,7 +94,7 @@ export function observerPatch<T extends Target, P, C>(
     proto.componentWillUnmount = function (
       this: T & { render: ObserverRender },
     ) {
-      this.render.dispose();
+      this.render.dispose?.();
       this.render = base as ObserverRender;
       unmount.call(this);
     };
@@ -97,7 +102,7 @@ export function observerPatch<T extends Target, P, C>(
     proto.componentWillUnmount = function (
       this: T & { render: ObserverRender },
     ) {
-      this.render.dispose();
+      this.render.dispose?.();
       this.render = base as ObserverRender;
     };
   }

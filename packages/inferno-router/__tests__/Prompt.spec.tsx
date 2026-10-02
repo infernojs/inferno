@@ -1,5 +1,5 @@
-import { Component, render } from 'inferno';
-import { Prompt, StaticRouter } from 'inferno-router';
+import { Component, render, rerender } from 'inferno';
+import { MemoryRouter, Prompt, Route, StaticRouter } from 'inferno-router';
 
 describe('A <Prompt>', () => {
   it('ask if sure to transition', () => {
@@ -84,6 +84,73 @@ describe('A <Prompt>', () => {
     );
 
     promptWhen();
+
+    render(null, node);
+  });
+
+  it('keeps blocking transitions after a confirmed one while it is rendered', () => {
+    const node = document.createElement('div');
+    const confirm = spyOn(window, 'confirm').and.returnValue(true);
+    let history;
+
+    function HistoryCatcher(_props, context) {
+      history = context.router.history;
+      return null;
+    }
+
+    render(
+      <MemoryRouter initialEntries={['/a']}>
+        <div>
+          <HistoryCatcher />
+          <Prompt when={true} message="Leave?" />
+        </div>
+      </MemoryRouter>,
+      node,
+    );
+
+    history.push('/b');
+    rerender();
+    history.push('/c');
+    rerender();
+    history.push('/d');
+    rerender();
+
+    expect(confirm).toHaveBeenCalledTimes(3);
+    expect(history.location.pathname).toBe('/d');
+
+    render(null, node);
+  });
+
+  it('stops blocking when a confirmed transition unmounts it', () => {
+    const node = document.createElement('div');
+    const confirm = spyOn(window, 'confirm').and.returnValue(true);
+    let history;
+
+    function HistoryCatcher(_props, context) {
+      history = context.router.history;
+      return null;
+    }
+
+    render(
+      <MemoryRouter initialEntries={['/a']}>
+        <div>
+          <HistoryCatcher />
+          <Route
+            path="/a"
+            render={() => <Prompt when={true} message="Leave?" />}
+          />
+        </div>
+      </MemoryRouter>,
+      node,
+    );
+
+    history.push('/b');
+    rerender();
+    history.push('/c');
+    rerender();
+
+    expect(confirm).toHaveBeenCalledTimes(1);
+    expect(history.location.pathname).toBe('/c');
 
     render(null, node);
   });

@@ -144,11 +144,16 @@ function stripBasename(
   }
 
   const base = addLeadingSlash(basename);
+  const pathname = location.pathname;
 
-  if (location.pathname.startsWith(base)) {
+  // Only a whole path segment: basename /app is not the start of /application
+  if (
+    pathname.startsWith(base) &&
+    (pathname.length === base.length || pathname.charAt(base.length) === '/')
+  ) {
     return {
       ...location,
-      pathname: location.pathname.substring(base.length),
+      pathname: addLeadingSlash(pathname.substring(base.length)),
     };
   } else {
     return location;

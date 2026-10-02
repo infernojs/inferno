@@ -5,31 +5,40 @@
  * Inlined PropTypes, there is propType checking ATM.
  */
 
-function proptype() {}
-(proptype as any).isRequired = proptype;
+// A validator that does nothing, like its isRequired variant
+export interface Validator {
+  (): void;
+  isRequired: Validator;
+}
 
-function getProptype(): Function {
-  return proptype;
+function proptype(): void {}
+const validator = proptype as Validator;
+validator.isRequired = validator;
+
+// PropTypes.shape(), arrayOf() etc. take the validator configuration
+function getProptype(...config: unknown[]): Validator;
+function getProptype(): Validator {
+  return validator;
 }
 
 const PropTypes = {
   any: getProptype,
-  array: proptype,
+  array: validator,
   arrayOf: getProptype,
-  bool: proptype,
+  bool: validator,
   checkPropTypes: () => null,
   element: getProptype,
-  func: proptype,
+  func: validator,
   instanceOf: getProptype,
   node: getProptype,
-  number: proptype,
-  object: proptype,
+  number: validator,
+  object: validator,
   objectOf: getProptype,
   oneOf: getProptype,
   oneOfType: getProptype,
   shape: getProptype,
-  string: proptype,
-  symbol: proptype,
+  string: validator,
+  symbol: validator,
 };
 
 export default PropTypes;

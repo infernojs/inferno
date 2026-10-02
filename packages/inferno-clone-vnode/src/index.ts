@@ -3,7 +3,6 @@ import {
   createFragment,
   createTextVNode,
   createVNode,
-  EMPTY_OBJ,
   normalizeProps,
   type VNode,
 } from 'inferno';
@@ -45,8 +44,6 @@ export function cloneVNode(vNodeToClone: VNode, props?, ...childArgs): VNode {
     if (props.children !== void 0) {
       children = props.children;
     }
-  } else {
-    props = {};
   }
 
   if (childLen === 1) {
@@ -59,15 +56,12 @@ export function cloneVNode(vNodeToClone: VNode, props?, ...childArgs): VNode {
     }
   }
 
-  props.children = children;
-
+  // The props passed in are not changed, they may be shared between clones
   if (flags & VNodeFlags.Component) {
     return createComponentVNode(
       flags,
       vNodeToClone.type,
-      !vNodeToClone.props && !props
-        ? EMPTY_OBJ
-        : { ...vNodeToClone.props, ...props },
+      { ...vNodeToClone.props, ...props, children },
       key,
       ref,
     );
@@ -92,7 +86,7 @@ export function cloneVNode(vNodeToClone: VNode, props?, ...childArgs): VNode {
       className,
       null,
       ChildFlags.HasInvalidChildren,
-      { ...vNodeToClone.props, ...props },
+      { ...vNodeToClone.props, ...props, children },
       key,
       ref,
     ),

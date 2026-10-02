@@ -49,6 +49,11 @@ export function useStaticRendering(useStatic: boolean): void {
   isUsingStaticRendering = useStatic;
 }
 
+// observerPatch and observerWrap don't create reactions for static rendering either
+export function isStaticRendering(): boolean {
+  return isUsingStaticRendering;
+}
+
 /**
  * Errors reporter
  */
@@ -66,12 +71,12 @@ function patch(target, funcName, runMixinFirst): void {
     ? mixinFunc
     : runMixinFirst === true
       ? function (...args) {
-          mixinFunc.apply(this, ...args);
-          base.apply(this, ...args);
+          mixinFunc.apply(this, args);
+          base.apply(this, args);
         }
       : function (...args) {
-          base.apply(this, ...args);
-          mixinFunc.apply(this, ...args);
+          base.apply(this, args);
+          mixinFunc.apply(this, args);
         };
 
   // MWE: ideally we freeze here to protect against accidental overwrites in component instances, see #195
@@ -269,7 +274,7 @@ const reactiveMixin = {
 /**
  * Observer function / decorator
  */
-export function observer(stores: string[]): <T>(clazz: T) => void;
+export function observer(stores: string[]): <T>(clazz: T) => T;
 export function observer<T>(stores: string[], clazz: T): T;
 export function observer<T>(target: T): T;
 
@@ -464,9 +469,35 @@ function grabStoresByName(storeNames: string[]) {
  * or a function that manually maps the available stores from the context to props:
  * storesToProps(mobxStores, props, context) => newProps
  */
-// TODO: Type
-export function inject(...storeNames: string[]): <T>(target: T) => T;
-export function inject(fn: Function): <T>(target: T) => T;
+// The props of a class or function component
+type ComponentProps<T> = T extends abstract new (
+  props?: infer P,
+  ...args: never[]
+) => unknown
+  ? NonNullable<P>
+  : T extends (props: infer P, ...args: never[]) => unknown
+    ? P
+    : never;
+
+// An instance of the component that inject() creates, wrappedInstance is the instance of a
+// wrapped class component once it has mounted
+export interface IInjector<T> extends Component<ComponentProps<T>> {
+  wrappedInstance:
+    (T extends abstract new (...args: never[]) => infer I ? I : never) | null;
+}
+
+// The component that inject() creates: it has the statics of the target and renders the target
+// with the stores as props
+export type InjectedComponent<T> = Omit<T, 'prototype'> & {
+  new (props: ComponentProps<T>, context?: unknown): IInjector<T>;
+  wrappedComponent: T;
+  isMobxInjector: boolean;
+};
+
+export function inject(
+  ...storeNames: string[]
+): <T>(target: T) => InjectedComponent<T>;
+export function inject(fn: Function): <T>(target: T) => InjectedComponent<T>;
 export function inject(
   /* fn(stores, nextProps) or ...storeNames */ ...args
 ): any {

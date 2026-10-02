@@ -47,6 +47,68 @@ describe('Security - SSR', () => {
     });
   });
 
+  describe('invalid tag names', () => {
+    const invalidTagNames = ['a b', 'a\0b', 'a>', '<', '"', 'a/b', 'a=b'];
+
+    function renderToStringResult(vNode) {
+      try {
+        return { html: renderToString(vNode), error: null };
+      } catch (error) {
+        return { html: '', error };
+      }
+    }
+
+    // Collects everything the stream emits before it fails
+    function streamResult(
+      vNode,
+      method,
+    ): Promise<{ html: string; error: unknown }> {
+      return new Promise((resolve) => {
+        let html = '';
+        let stream;
+
+        try {
+          stream = method(vNode);
+        } catch (error) {
+          resolve({ html, error });
+          return;
+        }
+        stream.on('data', (chunk) => {
+          html += chunk;
+        });
+        stream.on('error', (error) => resolve({ html, error }));
+        stream.on('end', () => resolve({ html, error: null }));
+      });
+    }
+
+    const renderers = [
+      [
+        'renderToString',
+        (vNode) => Promise.resolve(renderToStringResult(vNode)),
+      ],
+      ['streamAsString', (vNode) => streamResult(vNode, streamAsString)],
+      [
+        'streamQueueAsString',
+        (vNode) => streamResult(vNode, streamQueueAsString),
+      ],
+    ] as const;
+
+    for (const [name, renderResult] of renderers) {
+      for (const tagName of invalidTagNames) {
+        it(`Should throw an Error naming the tag and render nothing of <${JSON.stringify(tagName)}> with ${name}`, async () => {
+          const { html, error } = await renderResult(
+            createElement('div', null, createElement(tagName, null, 'child')),
+          );
+
+          expect(error instanceof Error).toBe(true);
+          expect((error as Error).message).toContain(`<${tagName}>`);
+          expect(html).not.toContain('<' + tagName);
+          expect(html).not.toContain('child');
+        });
+      }
+    }
+  });
+
   describe('streams', () => {
     for (const method of [streamAsString, streamQueueAsString]) {
       it(`Should not render invalid attribute names with ${method.name}`, () => {

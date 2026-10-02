@@ -1,6 +1,9 @@
 import { Component, type InfernoNode } from 'inferno';
 import { type Location, parsePath, type Path } from 'history';
 import { combinePath, invariant } from './utils';
+import { normalizeToLocation, splitLocation } from './locationUtils';
+import { generatePath } from './matchPath';
+import { type Match } from './Route';
 import { isString } from 'inferno-shared';
 
 export interface RedirectProps {
@@ -8,6 +11,7 @@ export interface RedirectProps {
   to: string | Partial<Location>;
   exact?: any;
   push?: boolean;
+  computedMatch?: Match<any>;
 }
 
 function getLocationTarget(to): Partial<Path> {
@@ -59,12 +63,23 @@ export class Redirect extends Component<RedirectProps, any> {
 
   public perform(): void {
     const { history } = this.context.router;
-    const { push = false, to } = this.props;
+    const { push = false, to: toProp, computedMatch } = this.props;
+    let location = normalizeToLocation(toProp);
+
+    // In a Switch, the params of the matched from path fill the to path
+    if (computedMatch && location.pathname) {
+      location = {
+        ...location,
+        pathname: generatePath(location.pathname, computedMatch.params),
+      };
+    }
+    // history v5 takes the state as its own argument, as in Link
+    const { to, state } = splitLocation(location);
 
     if (push) {
-      history.push(to);
+      history.push(to, state);
     } else {
-      history.replace(to);
+      history.replace(to, state);
     }
   }
 

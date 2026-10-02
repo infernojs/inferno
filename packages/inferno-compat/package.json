@@ -27,9 +27,9 @@
   ],
   "exports": {
     ".": {
+      "types": "./dist/index.d.ts",
       "import": "./dist/index.mjs",
-      "require": "./index.cjs",
-      "types": "./dist/index.d.ts"
+      "require": "./index.cjs"
     },
     "./dist/index.dev.mjs": "./dist/index.dev.mjs",
     "./dist/index.mjs": "./dist/index.mjs"
@@ -51,11 +51,11 @@
     "inferno-clone-vnode": "9.1.0",
     "inferno-create-element": "9.1.0",
     "inferno-extras": "9.1.0",
-    "inferno-hydrate": "9.1.0"
+    "inferno-hydrate": "9.1.0",
+    "inferno-shared": "9.1.0"
   },
   "devDependencies": {
     "inferno-hyperscript": "9.1.0",
-    "inferno-shared": "9.1.0",
     "inferno-test-utils": "9.1.0",
     "inferno-vnode-flags": "9.1.0"
   },

@@ -33,6 +33,13 @@ export function traverseLoaders(
   return _traverseLoaders(location, tree, base, false);
 }
 
+// Routes are matched against the pathname, the request of a loader gets the query string too
+function getPathname(location: string): string {
+  const end = location.search(/[?#]/);
+
+  return end === -1 ? location : location.substring(0, end);
+}
+
 function _isSwitch(node: any): boolean {
   // Using the same patterns as for _isRoute, but I don't have a test where
   // I pass a Switch via an array, but it is better to be consistent.
@@ -79,7 +86,7 @@ function _traverseLoaders(
       strict = false,
       sensitive = false,
     } = tree.props;
-    const match = matchPath(location, {
+    const match = matchPath(getPathname(location), {
       exact,
       path,
       sensitive,
@@ -109,23 +116,28 @@ function _traverseLoaders(
     }
   }
 
-  // Traverse children
-  const children = tree.children ?? tree.props?.children;
+  // Traverse children. A mounted Switch has its instance as children, so its routes are read from
+  // props, or the routes wouldn't be treated as being in a Switch.
+  const isSwitch = _isSwitch(tree);
+  const children = isSwitch
+    ? tree.props?.children
+    : (tree.children ?? tree.props?.children);
   if (isNullOrUndef(children)) return outp;
 
-  const entries = _traverseLoaders(location, children, base, _isSwitch(tree));
+  const entries = _traverseLoaders(location, children, base, isSwitch);
   return [...outp, ...entries];
 }
 
 async function resolveEntry(path, params, request, loader): Promise<any> {
   return (
-    loader({ params, request })
+    // The promise catches a loader that throws before returning a promise, and takes plain values
+    new Promise((resolve) => resolve(loader({ params, request })))
       .then(async (res: any) => {
         // This implementation is based on:
         // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879
 
-        // Check if regular data object (from tests or initialData)
-        if (typeof res.json !== 'function') {
+        // Check if regular data object (from tests or initialData), which can also be null
+        if (isNullOrUndef(res) || typeof res.json !== 'function') {
           return [path, { res }];
         }
 
@@ -213,19 +225,6 @@ function createClientSideRequest(
   //       ? convertFormDataToSearchParams(formData)
   //       : formData;
   // }
-
-  // Request is undefined when running tests
-  if (process.env.NODE_ENV === 'test' && typeof Request === 'undefined') {
-    // @ts-expect-error minimum to fix tests
-    global.Request = class Request {
-      public url;
-      public signal;
-      constructor(_url: URL | string, _init: RequestInit) {
-        this.url = _url;
-        this.signal = _init.signal;
-      }
-    };
-  }
 
   // Content-Type is inferred (https://fetch.spec.whatwg.org/#dom-request)
   return new Request(url, init);

@@ -11,6 +11,7 @@ export interface IPromptProps {
  */
 export class Prompt extends Component<IPromptProps, any> {
   public unblock;
+  private unmounted = false;
 
   public enable(message): void {
     if (this.unblock) {
@@ -19,8 +20,14 @@ export class Prompt extends Component<IPromptProps, any> {
 
     this.unblock = this.context.router.history.block((tx) => {
       if (message && window.confirm(message)) {
+        // history v5 lets the transition through only without the blocker
         this.unblock();
+        this.unblock = null;
         tx.retry();
+        // Block again, unless the transition unmounted or disabled the prompt
+        if (!this.unmounted && this.props.when) {
+          this.enable(this.props.message);
+        }
       }
     });
   }
@@ -54,6 +61,7 @@ export class Prompt extends Component<IPromptProps, any> {
   }
 
   public componentWillUnmount(): void {
+    this.unmounted = true;
     this.disable();
   }
 

@@ -1,0 +1,406 @@
+import { render, Component } from 'inferno';
+import { type IInjector, inject, observer, Provider } from 'inferno-mobx';
+import { observable } from 'mobx';
+
+describe('inject based context', () => {
+  interface FooProps {
+    foo?: string | number;
+  }
+
+  interface FoobarProps extends FooProps {
+    bar?: number;
+  }
+
+  let container: HTMLDivElement;
+
+  beforeEach(function () {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(function () {
+    render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
+  });
+
+  it('injects a Provider store into a nested injected component as a prop', (done) => {
+    const C = inject('foo')(
+      observer(
+        class Foo extends Component<FooProps> {
+          render() {
+            return (
+              <div>
+                context:
+                {this.props.foo}
+              </div>
+            );
+          }
+        },
+      ),
+    );
+    const B = () => <C />;
+    const A = () => (
+      <Provider foo="bar">
+        <B />
+      </Provider>
+    );
+    render(<A />, container);
+    expect(container.querySelector('div')!.textContent).toBe('context:bar');
+    done();
+  });
+
+  it('props override context', (done) => {
+    const C = inject('foo')(
+      class extends Component<FooProps> {
+        render() {
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
+        }
+      },
+    );
+    const B = () => <C foo={42} />;
+    class A extends Component {
+      render() {
+        return (
+          <Provider foo="bar">
+            <B />
+          </Provider>
+        );
+      }
+    }
+    render(<A />, container);
+    expect(container.querySelector('div')!.textContent).toBe('context:42');
+    done();
+  });
+
+  it('overriding stores is supported', (done) => {
+    const C = inject(
+      'foo',
+      'bar',
+    )(
+      observer(
+        class extends Component<FoobarProps> {
+          render() {
+            return (
+              <div>
+                context:
+                {this.props.foo}
+                {this.props.bar}
+              </div>
+            );
+          }
+        },
+      ),
+    );
+    const B = () => <C />;
+    class A extends Component {
+      render() {
+        return (
+          <Provider foo="bar" bar={1337}>
+            <div>
+              <span>
+                <B />
+              </span>
+              <section>
+                <Provider foo={42}>
+                  <B />
+                </Provider>
+              </section>
+            </div>
+          </Provider>
+        );
+      }
+    }
+
+    render(<A />, container);
+    expect(container.querySelector('span')!.textContent).toBe(
+      'context:bar1337',
+    );
+    expect(container.querySelector('section')!.textContent).toBe(
+      'context:421337',
+    );
+    done();
+  });
+
+  it('store should be available', (done) => {
+    const C = inject('foo')(
+      observer(
+        class extends Component<FooProps> {
+          render() {
+            return (
+              <div>
+                context:
+                {this.props.foo}
+              </div>
+            );
+          }
+        },
+      ),
+    );
+    const B = () => <C />;
+    class A extends Component {
+      render() {
+        return (
+          <Provider baz={42}>
+            <B />
+          </Provider>
+        );
+      }
+    }
+
+    try {
+      render(<A />, container);
+    } catch (e) {
+      expect((e as Error).message).toBe(
+        "MobX injector: Store 'foo' is not available! Make sure it is provided by some Provider",
+      );
+      done();
+    }
+  });
+
+  it('store is not required if prop is available', (done) => {
+    const C = inject('foo')(
+      observer(
+        class extends Component<FooProps> {
+          render() {
+            return (
+              <div>
+                context:
+                {this.props.foo}
+              </div>
+            );
+          }
+        },
+      ),
+    );
+    const B = () => <C foo="bar" />;
+    render(<B />, container);
+    expect(container.querySelector('div')!.textContent).toBe('context:bar');
+    done();
+  });
+
+  it('inject merges (and overrides) props', (done) => {
+    interface MergedProps {
+      a: number;
+      b: number;
+    }
+
+    const C = inject(() => ({ a: 1 }))(
+      observer(
+        class extends Component<MergedProps> {
+          render() {
+            expect(this.props).toEqual({ a: 1, b: 2 });
+            return null;
+          }
+        },
+      ),
+    );
+    const B = () => <C a={2} b={2} />;
+    render(<B />, container);
+    done();
+  });
+
+  it('warning is printed when changing stores', (done) => {
+    let msg: string | undefined;
+    const baseWarn = console.error;
+    console.error = (m) => (msg = m);
+    const a = observable.box(3);
+    const C = observer(
+      ['foo'],
+      class extends Component<FooProps> {
+        render() {
+          return (
+            <div>
+              context:
+              {this.props.foo}
+            </div>
+          );
+        }
+      },
+    );
+    const B = observer(
+      class extends Component {
+        render() {
+          return <C />;
+        }
+      },
+    );
+    const A = observer(
+      class extends Component {
+        render() {
+          return (
+            <section>
+              <span>{a.get()}</span>
+              <Provider foo={a.get()}>
+                <B />
+              </Provider>
+            </section>
+          );
+        }
+      },
+    );
+    render(<A />, container);
+
+    expect(container.querySelector('span')!.textContent).toBe('3');
+    expect(container.querySelector('div')!.textContent).toBe('context:3');
+
+    a.set(42);
+
+    expect(container.querySelector('span')!.textContent).toBe('42');
+    expect(container.querySelector('div')!.textContent).toBe('context:3');
+
+    expect(msg).toBe(
+      "MobX Provider: Provided store 'foo' has changed. Please avoid replacing stores as the change might not propagate to all children",
+    );
+    console.error = baseWarn;
+    done();
+  });
+
+  it('custom storesToProps', (done) => {
+    interface FooStores {
+      foo: string;
+    }
+
+    interface BazProps {
+      baz: number;
+    }
+
+    interface ZoomProps extends BazProps {
+      zoom?: string;
+    }
+
+    const C = inject(
+      (
+        stores: FooStores,
+        props: BazProps,
+        context: { mobxStores: FooStores },
+      ) => {
+        expect(context).toEqual({ mobxStores: { foo: 'bar' } });
+        expect(stores).toEqual({ foo: 'bar' });
+        expect(props).toEqual({ baz: 42 });
+
+        return {
+          zoom: stores.foo,
+          baz: props.baz * 2,
+        };
+      },
+    )(
+      observer(
+        class extends Component<ZoomProps> {
+          render() {
+            return (
+              <div>
+                context:
+                {this.props.zoom}
+                {this.props.baz}
+              </div>
+            );
+          }
+        },
+      ),
+    );
+    class B extends Component {
+      render() {
+        return <C baz={42} />;
+      }
+    }
+
+    const A = () => (
+      <Provider foo="bar">
+        <B />
+      </Provider>
+    );
+    render(<A />, container);
+    expect(container.querySelector('div')!.textContent).toBe('context:bar84');
+    done();
+  });
+
+  it('support static hoisting, wrappedComponent and wrappedInstance', (done) => {
+    class B extends Component {
+      static bla: number;
+      static bla2: object;
+      testField: number;
+
+      render() {
+        this.testField = 1;
+        return <div>{this.testField}</div>;
+      }
+    }
+
+    B.bla = 17;
+    B.bla2 = {};
+    const C = inject('booh')(B);
+
+    expect(C.wrappedComponent).toBe(B);
+    expect(B.bla).toBe(17);
+    expect(C.bla).toBe(17);
+
+    let c: IInjector<typeof B> | null = null;
+    render(<C ref={(i) => (c = i)} booh={42} />, container);
+    expect(c!.wrappedInstance!.testField).toBe(1);
+    done();
+  });
+
+  // DefaultProps only, there are no propTypes in inferno
+  it('propTypes and defaultProps are forwarded', (done) => {
+    const msg: string[] = [];
+    const baseError = console.error;
+    console.error = (m) => msg.push(m);
+
+    interface YProps {
+      y?: number;
+      z?: string;
+    }
+
+    const C = inject('foo')(
+      class extends Component<YProps> {
+        static displayName = 'C';
+        render() {
+          expect(this.props.y).toBe(3);
+          return null;
+        }
+      },
+    );
+    C.defaultProps = {
+      y: 3,
+    };
+    const B = () => <C z="test" />;
+    const A = () => (
+      <Provider foo="bar">
+        <B />
+      </Provider>
+    );
+    render(<A />, container);
+    expect(msg.length).toBe(0);
+    console.error = baseError;
+    done();
+  });
+
+  it('using a custom injector is reactive', (done) => {
+    interface UserStores {
+      user: { name: string };
+    }
+
+    const user = observable({ name: 'Noa' });
+    const mapper = (stores: UserStores) => ({ name: stores.user.name });
+    const DisplayName = (props: { name?: string }) => <h1>{props.name}</h1>;
+    const User = inject(mapper)(DisplayName);
+    const App = () => (
+      <Provider user={user}>
+        <User />
+      </Provider>
+    );
+    render(<App />, container);
+
+    expect(container.querySelector('h1')!.textContent).toBe('Noa');
+
+    user.name = 'Veria';
+    expect(container.querySelector('h1')!.textContent).toBe('Veria');
+    done();
+  });
+});

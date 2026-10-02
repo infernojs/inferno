@@ -53,6 +53,12 @@ interface RouteState {
 class Route extends Component<Partial<IRouteProps>, RouteState> {
   constructor(props: IRouteProps, context: RouterContext) {
     super(props, context);
+    if (process.env.NODE_ENV !== 'production') {
+      warning(
+        isUndefined(props.loader) || Boolean(props.path),
+        '<Route loader> needs a path: the loader of a <Route> without a path never runs.',
+      );
+    }
     const match = this.computeMatch(props, context.router);
     this.state = {
       __loaderData__: match?.loaderData,
@@ -150,8 +156,9 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
       __loaderData__,
     };
 
-    // If we have a loader we don't render until it has been resolved
-    if (!isUndefined(loader) && isUndefined(__loaderData__)) {
+    // If we have a loader we don't render until it has been resolved. Loader data is stored by path,
+    // so the loader of a Route without a path never runs.
+    if (!isUndefined(loader) && props.path && isUndefined(__loaderData__)) {
       return null;
     }
 

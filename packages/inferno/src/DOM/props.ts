@@ -5,8 +5,8 @@ import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerHTML';
 import {
-  type AnimationQueues,
   isLastValueSameLinkEvent,
+  NO_ANIMATIONS,
   normalizeEventName,
 } from './utils/common';
 import {
@@ -67,6 +67,9 @@ function patchStyle(lastAttrValue, nextAttrValue, dom): void {
       }
     }
   } else {
+    if (isString(lastAttrValue)) {
+      domStyle.cssText = '';
+    }
     for (style in nextAttrValue) {
       value = nextAttrValue[style];
       domStyle.setProperty(style, value);
@@ -74,30 +77,25 @@ function patchStyle(lastAttrValue, nextAttrValue, dom): void {
   }
 }
 
-function patchDangerInnerHTML(
-  lastValue,
-  nextValue,
-  lastVNode,
-  dom,
-  animations: AnimationQueues,
-): void {
+function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom): boolean {
   const lastHtml = lastValue?.__html || '';
   const nextHtml = nextValue?.__html || '';
 
   if (lastHtml !== nextHtml) {
     if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
       if (!isNull(lastVNode)) {
+        // innerHTML replaces the children at once: their leave hooks have nothing to animate
         if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
-          unmountAllChildren(lastVNode.children as VNode[], animations);
+          unmountAllChildren(lastVNode.children as VNode[], NO_ANIMATIONS);
         } else if (lastVNode.childFlags === ChildFlags.HasVNodeChildren) {
-          unmount(lastVNode.children, animations);
+          unmount(lastVNode.children, NO_ANIMATIONS);
         }
-        lastVNode.children = null;
-        lastVNode.childFlags = ChildFlags.HasInvalidChildren;
       }
       dom.innerHTML = nextHtml;
+      return true;
     }
   }
+  return false;
 }
 
 function patchDomProp(nextValue: unknown, dom: Element, prop: string): void {
@@ -107,6 +105,7 @@ function patchDomProp(nextValue: unknown, dom: Element, prop: string): void {
   }
 }
 
+// Returns true when innerHTML replaced the previous children.
 export function patchProp(
   prop: string,
   lastValue: any,
@@ -115,8 +114,7 @@ export function patchProp(
   isSVG: boolean,
   hasControlledValue: boolean,
   lastVNode: VNode | null,
-  animations: AnimationQueues,
-): void {
+): boolean {
   switch (prop) {
     case 'children':
     case 'childrenType':
@@ -127,29 +125,60 @@ export function patchProp(
     case 'ref':
     case 'selectedIndex':
       break;
-    case 'autoFocus':
-      (dom as any).autofocus = !!nextValue;
-      break;
-    case 'allowfullscreen':
-    case 'autoplay':
-    case 'capture':
+    // These properties hold the current state, which the attribute only initializes
     case 'checked':
+    case 'indeterminate':
+    case 'muted':
+    case 'selected':
+      dom[prop] = !!nextValue;
+      break;
+    // A string value is kept, for example hidden="until-found" or capture="user"
+    case 'capture':
+    case 'hidden':
+      if (isString(nextValue)) {
+        dom.setAttribute(prop, nextValue);
+      } else if (nextValue) {
+        dom.setAttribute(prop, '');
+      } else {
+        dom.removeAttribute(prop);
+      }
+      break;
+    // The JSX plugins lowercase some of these names, createVNode and createElement keep them as written
+    case 'allowfullscreen':
+    case 'allowFullScreen':
+    case 'async':
+    case 'autofocus':
+    case 'autoFocus':
+    case 'autoplay':
+    case 'autoPlay':
     case 'controls':
     case 'default':
+    case 'defer':
     case 'disabled':
-    case 'hidden':
-    case 'indeterminate':
+    case 'disablepictureinpicture':
+    case 'disablePictureInPicture':
+    case 'disableremoteplayback':
+    case 'disableRemotePlayback':
+    case 'formnovalidate':
+    case 'formNoValidate':
+    case 'inert':
+    case 'itemscope':
+    case 'itemScope':
     case 'loop':
-    case 'muted':
+    case 'nomodule':
+    case 'noModule':
     case 'novalidate':
+    case 'noValidate':
     case 'open':
+    case 'playsinline':
+    case 'playsInline':
+    case 'readonly':
     case 'readOnly':
     case 'required':
     case 'reversed':
     case 'scoped':
     case 'seamless':
-    case 'selected':
-      dom[prop] = !!nextValue;
+      dom.toggleAttribute(prop.toLowerCase(), !!nextValue);
       break;
     case 'defaultChecked':
     case 'value':
@@ -163,8 +192,7 @@ export function patchProp(
       patchStyle(lastValue, nextValue, dom);
       break;
     case 'dangerouslySetInnerHTML':
-      patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom, animations);
-      break;
+      return patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom);
     default:
       if (syntheticEvents[prop]) {
         handleSyntheticEvent(prop, lastValue, nextValue, dom);
@@ -194,16 +222,10 @@ export function patchProp(
       }
       break;
   }
+  return false;
 }
 
-export function mountProps(
-  vNode,
-  flags,
-  props,
-  dom,
-  isSVG,
-  animations: AnimationQueues,
-): void {
+export function mountProps(vNode, flags, props, dom, isSVG): void {
   let hasControlledValue: boolean = false;
   const isFormElement = (flags & VNodeFlags.FormElement) > 0;
   if (isFormElement) {
@@ -214,16 +236,7 @@ export function mountProps(
   }
   for (const prop in props) {
     // do not add a hasOwnProperty check here, it affects performance
-    patchProp(
-      prop,
-      null,
-      props[prop],
-      dom,
-      isSVG,
-      hasControlledValue,
-      null,
-      animations,
-    );
+    patchProp(prop, null, props[prop], dom, isSVG, hasControlledValue, null);
   }
   if (isFormElement) {
     processElement(flags, vNode, dom, props, true, hasControlledValue);

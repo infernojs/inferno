@@ -715,6 +715,89 @@ describe('vNode reuse', () => {
 
   // Rendering must not change the children a vNode was created with, the vNode can be rendered again later
   describe('reused vNode keeps its children', () => {
+    it('Should restore a hoisted single child after switching to dangerouslySetInnerHTML', () => {
+      const hoisted = <div>original</div>;
+      const view = (child: VNode) => <section>{child}</section>;
+
+      render(view(hoisted), container);
+      expect(container.innerHTML).toBe(
+        '<section><div>original</div></section>',
+      );
+
+      render(
+        view(
+          <div dangerouslySetInnerHTML={{ __html: '<b>replacement</b>' }} />,
+        ),
+        container,
+      );
+      expect(container.innerHTML).toBe(
+        '<section><div><b>replacement</b></div></section>',
+      );
+
+      render(view(hoisted), container);
+      expect(container.innerHTML).toBe(
+        '<section><div>original</div></section>',
+      );
+    });
+
+    for (const multiple of [false, true]) {
+      it(`Should restore a hoisted element with ${multiple ? 'multiple component children' : 'a component child'} after switching to dangerouslySetInnerHTML`, () => {
+        let mounted = 0;
+        let unmounted = 0;
+
+        class Child extends Component {
+          componentDidMount() {
+            mounted++;
+          }
+
+          componentWillUnmount() {
+            unmounted++;
+          }
+
+          render() {
+            return <span>original</span>;
+          }
+        }
+
+        const hoisted = multiple ? (
+          <div>
+            <Child />
+            <Child />
+          </div>
+        ) : (
+          <div>
+            <Child />
+          </div>
+        );
+        const count = multiple ? 2 : 1;
+        const originalHTML = `<section><div>${'<span>original</span>'.repeat(count)}</div></section>`;
+        const view = (child: VNode) => <section>{child}</section>;
+
+        render(view(hoisted), container);
+        expect(container.innerHTML).toBe(originalHTML);
+        expect(mounted).toBe(count);
+
+        render(
+          view(
+            <div dangerouslySetInnerHTML={{ __html: '<b>replacement</b>' }} />,
+          ),
+          container,
+        );
+        expect(container.innerHTML).toBe(
+          '<section><div><b>replacement</b></div></section>',
+        );
+        expect(unmounted).toBe(count);
+
+        render(view(hoisted), container);
+        expect(container.innerHTML).toBe(originalHTML);
+        expect(mounted).toBe(count * 2);
+        expect(unmounted).toBe(count);
+
+        render(null, container);
+        expect(unmounted).toBe(count * 2);
+      });
+    }
+
     it('Should render a hoisted element again after another element was patched in its place', () => {
       const PLACEHOLDER = (
         <p>

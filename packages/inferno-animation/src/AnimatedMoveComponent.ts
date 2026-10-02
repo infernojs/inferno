@@ -1,5 +1,6 @@
 import { Component, type InfernoNode } from 'inferno';
 import { type AnimationClass, componentWillMove } from './animations';
+import { preparedOwnerMayMove } from './moveAnimations';
 
 interface AnimationProp {
   animation?: string | AnimationClass;
@@ -15,6 +16,8 @@ export abstract class AnimatedMoveComponent<P, S> extends Component<
     parent: HTMLElement | SVGElement,
     dom: HTMLElement | SVGElement,
   ): void {
-    componentWillMove(parentVNode, parent, dom, this.props);
+    if (preparedOwnerMayMove()) {
+      componentWillMove(parentVNode, parent, dom, this.props);
+    }
   }
 }

@@ -1,5 +1,6 @@
 import { Component, createTextVNode, InfernoNode, render } from 'inferno';
 import { createContainerWithHTML } from 'inferno-utils';
+import { renderToString } from 'inferno-server';
 import { hydrate } from 'inferno-hydrate';
 
 class Comp extends Component {
@@ -261,5 +262,115 @@ describe('SSR Hydration Extended - (JSX)', () => {
     );
 
     expect(container.textContent).toBe('Okay!');
+  });
+
+  it('Should hydrate SVG elements whose tag names are camelCase', () => {
+    const consoleSpy = spyOn(console, 'error');
+    const tree = () => (
+      <svg>
+        <defs>
+          <linearGradient id="g">
+            <stop offset="0" />
+          </linearGradient>
+        </defs>
+        <foreignObject>
+          <div>x</div>
+        </foreignObject>
+      </svg>
+    );
+    const container = createContainerWithHTML(renderToString(tree()));
+    const gradient = container.querySelector('linearGradient');
+    const foreignObject = container.querySelector('foreignObject');
+
+    expect(gradient).not.toBeNull();
+    expect(foreignObject).not.toBeNull();
+
+    hydrate(tree(), container);
+
+    expect(consoleSpy).not.toHaveBeenCalled();
+    expect(container.querySelector('linearGradient')).toBe(gradient);
+    expect(container.querySelector('foreignObject')).toBe(foreignObject);
+  });
+
+  describe('Appear hooks of components mounted after a mismatch', () => {
+    beforeEach(() => {
+      spyOn(console, 'error'); // mismatch warnings
+    });
+
+    it('Should call appear hooks of components missing from server markup', () => {
+      const appeared: string[] = [];
+
+      class Card extends Component {
+        public componentDidAppear(dom) {
+          appeared.push('class ' + dom.id);
+        }
+
+        public render() {
+          return <div id="card">class</div>;
+        }
+      }
+
+      function Item() {
+        return <div id="item">function</div>;
+      }
+
+      const container = createContainerWithHTML('<div></div>');
+
+      hydrate(
+        <div>
+          <Card />
+          <Item
+            onComponentDidAppear={(dom) => appeared.push('function ' + dom.id)}
+          />
+        </div>,
+        container,
+      );
+
+      expect(container.innerHTML).toBe(
+        '<div><div id="card">class</div><div id="item">function</div></div>',
+      );
+      expect(appeared.sort()).toEqual(['class card', 'function item']);
+    });
+
+    it('Should call appear hooks of components inside an element whose tag does not match', () => {
+      const appeared: string[] = [];
+
+      class Card extends Component {
+        public componentDidAppear(dom) {
+          appeared.push('class ' + dom.id);
+        }
+
+        public render() {
+          return <div id="card">class</div>;
+        }
+      }
+
+      function Item() {
+        return <div id="item">function</div>;
+      }
+
+      const container = createContainerWithHTML(
+        '<div><span><div id="card">class</div><div id="item">function</div></span></div>',
+      );
+
+      hydrate(
+        <div>
+          <section>
+            <Card />
+            <Item
+              onComponentDidAppear={(dom) =>
+                appeared.push('function ' + dom.id)
+              }
+            />
+          </section>
+        </div>,
+        container,
+      );
+
+      expect(container.innerHTML).toBe(
+        '<div><section><div id="card">class</div><div id="item">function</div></section></div>',
+      );
+      expect(appeared.sort()).toEqual(['class card', 'function item']);
+    });
   });
 });

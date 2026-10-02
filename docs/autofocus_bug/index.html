@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="./app.css" rel="stylesheet" />
+    <title>autoFocus bug</title>
+    <script defer src="dist/bundle.js" type="text/javascript"></script>
+</head>
+  <body>
+    <h1>autoFocus is ignored on the root element of a new tree</h1>
+    <p class="intro">
+      Browsers focus an element with the <code>autofocus</code> attribute only when the attribute is already set as the
+      element is inserted into the page. Inferno inserts the root element of each newly mounted tree into the page first
+      and sets its props after that, so <code>autoFocus</code> on that element does nothing. Elements further down the
+      new tree get their props while the tree is still detached, and they are focused.
+    </p>
+    <p class="intro">
+      A page processes autofocus only once, and not at all when something already has focus. Each case therefore runs
+      on its own page load: open it with its link, and don't click in the page until the result appears.
+    </p>
+
+    <section id="result" hidden>
+      <h2 id="result-title"></h2>
+      <div id="container"></div>
+      <div id="status" class="status"></div>
+      <p><a id="again" href="">Run again</a></p>
+    </section>
+
+    <h2>Inferno</h2>
+    <table class="cases">
+      <thead>
+        <tr><th>Case</th><th>Code</th><th>Expected</th></tr>
+      </thead>
+      <tbody>
+        <tr id="case-nested" data-expected="focused">
+          <td><a href="?case=nested">Input inside the rendered form</a></td>
+          <td><code>render(&lt;form&gt;&lt;input autoFocus /&gt;&lt;/form&gt;, container)</code></td>
+          <td>focused</td>
+        </tr>
+        <tr id="case-root" data-expected="focused">
+          <td><a href="?case=root">Input as the root of render</a></td>
+          <td><code>render(&lt;input autoFocus /&gt;, container)</code></td>
+          <td>focused</td>
+        </tr>
+        <tr id="case-update" data-expected="focused">
+          <td><a href="?case=update">Input added by an update</a></td>
+          <td><code>&lt;form&gt;{added ? &lt;input autoFocus /&gt; : null}&lt;/form&gt;</code></td>
+          <td>focused</td>
+        </tr>
+        <tr id="case-component" data-expected="focused">
+          <td><a href="?case=component">Component rendering the input, added by an update</a></td>
+          <td><code>&lt;form&gt;{added ? &lt;SearchBox /&gt; : null}&lt;/form&gt;</code></td>
+          <td>focused</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>The browser rule, without Inferno</h2>
+    <table class="cases">
+      <thead>
+        <tr><th>Case</th><th>Code</th><th>Expected</th></tr>
+      </thead>
+      <tbody>
+        <tr id="case-dom-before" data-expected="focused">
+          <td><a href="?case=dom-before">Attribute set before insertion</a></td>
+          <td><code>input.autofocus = true; form.appendChild(input)</code></td>
+          <td>focused</td>
+        </tr>
+        <tr id="case-dom-after" data-expected="not focused">
+          <td><a href="?case=dom-after">Attribute set after insertion</a></td>
+          <td><code>form.appendChild(input); input.autofocus = true</code></td>
+          <td>not focused</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

@@ -122,7 +122,8 @@ export class Router extends Component<IRouterProps, any> {
     this._loaderFetchControllers = [];
 
     const { history, children } = this.props;
-    const loaderEntries = traverseLoaders(history.location.pathname, children);
+    const { pathname, search = '' } = history.location;
+    const loaderEntries = traverseLoaders(pathname + search, children);
     if (loaderEntries.length === 0) {
       this.setState({ match });
       return;
@@ -145,6 +146,12 @@ export class Router extends Component<IRouterProps, any> {
 
   public componentWillUnmount(): void {
     this.unlisten();
+
+    // Pending loaders of a router that is gone
+    for (const controller of this._loaderFetchControllers) {
+      controller.abort();
+    }
+    this._loaderFetchControllers = [];
   }
 
   public render(props: IRouterProps): InfernoNode {

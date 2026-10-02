@@ -14,13 +14,20 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildContext,
+  getChildSelectValue,
+  getTextareaContent,
   isAttributeNameSafe,
   isEmptyFragment,
+  isSelectedOption,
   renderFunctionalComponent,
+  usesNewAPI,
+  validateTagName,
   voidElements,
 } from './utils';
 
-function renderVNodeToString(vNode, parent, context): string {
+// selectValue is the value of the nearest <select>, see isSelectedOption
+function renderVNodeToString(vNode, context, selectValue?: unknown): string {
   vNode = arrayToFragment(vNode);
   const flags = vNode.flags;
   const type = vNode.type;
@@ -32,19 +39,9 @@ function renderVNodeToString(vNode, parent, context): string {
 
     if (isClass) {
       const instance = new type(props, context);
-      const hasNewAPI = Boolean(type.getDerivedStateFromProps);
+      const hasNewAPI = usesNewAPI(type, instance);
       instance.$BS = false;
       instance.$SSR = true;
-      let childContext;
-      if (isFunction(instance.getChildContext)) {
-        childContext = instance.getChildContext();
-      }
-
-      if (isNullOrUndef(childContext)) {
-        childContext = context;
-      } else {
-        childContext = { ...context, ...childContext };
-      }
       if (instance.props === EMPTY_OBJ) {
         instance.props = props;
       }
@@ -77,6 +74,7 @@ function renderVNodeToString(vNode, parent, context): string {
         instance.state,
         instance.context,
       );
+      const childContext = getChildContext(instance, context);
       // In case render returns invalid stuff
       if (isInvalid(renderOutput)) {
         return '<!--!-->';
@@ -87,7 +85,7 @@ function renderVNodeToString(vNode, parent, context): string {
       if (isNumber(renderOutput)) {
         return renderOutput + '';
       }
-      return renderVNodeToString(renderOutput, vNode, childContext);
+      return renderVNodeToString(renderOutput, childContext, selectValue);
     } else {
       const renderOutput = renderFunctionalComponent(vNode, context);
 
@@ -100,13 +98,16 @@ function renderVNodeToString(vNode, parent, context): string {
       if (isNumber(renderOutput)) {
         return renderOutput + '';
       }
-      return renderVNodeToString(renderOutput, vNode, context);
+      return renderVNodeToString(renderOutput, context, selectValue);
     }
   } else if ((flags & VNodeFlags.Element) !== 0) {
+    validateTagName(type);
+
     let renderedString = `<${type}`;
     let html;
 
     const isVoidElement = voidElements.has(type);
+    const isTextarea = type === 'textarea';
     const className = vNode.className;
 
     if (isString(className)) {
@@ -119,9 +120,12 @@ function renderVNodeToString(vNode, parent, context): string {
       for (const prop in props) {
         const value = props[prop];
 
+        if (isTextarea && (prop === 'value' || prop === 'defaultValue')) {
+          continue; // Rendered as the content
+        }
         switch (prop) {
           case 'dangerouslySetInnerHTML':
-            html = value.__html;
+            html = value?.__html;
             break;
           case 'style':
             if (!isNullOrUndef(props.style)) {
@@ -134,7 +138,7 @@ function renderVNodeToString(vNode, parent, context): string {
             break;
           case 'defaultValue':
             // Use default values if normal values are not present
-            if (!props.value) {
+            if (isNullOrUndef(props.value)) {
               renderedString += ` value="${
                 isString(value) ? escapeText(value) : value
               }"`;
@@ -142,7 +146,7 @@ function renderVNodeToString(vNode, parent, context): string {
             break;
           case 'defaultChecked':
             // Use default values if normal values are not present
-            if (!props.checked && value === true) {
+            if (isNullOrUndef(props.checked) && value === true) {
               renderedString += ` checked="${value}"`;
             }
             break;
@@ -160,13 +164,11 @@ function renderVNodeToString(vNode, parent, context): string {
             break;
         }
       }
-      if (
-        type === 'option' &&
-        typeof props.value !== 'undefined' &&
-        props.value === parent.props.value
-      ) {
-        // Parent value sets children value
+      if (isSelectedOption(type, props, selectValue)) {
         renderedString += ` selected`;
+      }
+      if (isTextarea) {
+        html = getTextareaContent(props) ?? html;
       }
     }
     if (isVoidElement) {
@@ -174,25 +176,31 @@ function renderVNodeToString(vNode, parent, context): string {
     } else {
       renderedString += `>`;
       const childFlags = vNode.childFlags;
+      const childSelectValue = getChildSelectValue(type, props, selectValue);
 
-      if (childFlags === ChildFlags.HasVNodeChildren) {
-        renderedString += renderVNodeToString(children, vNode, context);
+      // The html wins over children, as on the client
+      if (html) {
+        renderedString += html;
+      } else if (childFlags === ChildFlags.HasVNodeChildren) {
+        renderedString += renderVNodeToString(
+          children,
+          context,
+          childSelectValue,
+        );
       } else if (childFlags & ChildFlags.MultipleChildren) {
         for (let i = 0, len = children.length; i < len; ++i) {
-          renderedString += renderVNodeToString(children[i], vNode, context);
+          renderedString += renderVNodeToString(
+            children[i],
+            context,
+            childSelectValue,
+          );
         }
       } else if (childFlags === ChildFlags.HasTextChildren) {
         renderedString += children === '' ? ' ' : escapeText(children);
-      } else if (html) {
-        renderedString += html;
       }
       if (!isVoidElement) {
         renderedString += `</${type}>`;
       }
-    }
-
-    if (String(type).match(/[\s\n/='"\0<>]/)) {
-      throw renderedString;
     }
 
     return renderedString;
@@ -203,12 +211,12 @@ function renderVNodeToString(vNode, parent, context): string {
       return '<!--!-->';
     }
     if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-      return renderVNodeToString(children, vNode, context);
+      return renderVNodeToString(children, context, selectValue);
     }
     let renderedString = '';
 
     for (let i = 0, len = children.length; i < len; ++i) {
-      renderedString += renderVNodeToString(children[i], vNode, context);
+      renderedString += renderVNodeToString(children[i], context, selectValue);
     }
 
     return renderedString;
@@ -233,5 +241,5 @@ function renderVNodeToString(vNode, parent, context): string {
 }
 
 export function renderToString(input: any): string {
-  return renderVNodeToString(input, {}, {});
+  return renderVNodeToString(input, {});
 }

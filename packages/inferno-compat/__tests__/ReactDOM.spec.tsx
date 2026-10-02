@@ -1,0 +1,117 @@
+/**
+ * Copyright (c) 2013-present, Facebook, Inc.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @emails react-core
+ */
+
+import React from 'inferno-compat';
+import { createComponentVNode, type InfernoNode } from 'inferno';
+import { Wrapper } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
+
+const ReactDOM = React;
+const div = React.createFactory('div');
+
+describe('ReactDOM', function () {
+  let container: HTMLDivElement;
+
+  function renderIntoDocument(input: InfernoNode) {
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
+  }
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    React.render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
+  });
+
+  it('allows a DOM element to be used with a string', function () {
+    const element = React.createElement('div', { className: 'foo' });
+    const instance = renderIntoDocument(element);
+    // eslint-disable-next-line inferno/no-find-dom-node
+    expect((ReactDOM.findDOMNode(instance!) as HTMLElement).tagName).toBe(
+      'DIV',
+    );
+  });
+
+  it('should allow children to be passed as an argument', function () {
+    const argDiv = renderIntoDocument(div(null, 'child'));
+    // eslint-disable-next-line inferno/no-find-dom-node
+    const argNode = ReactDOM.findDOMNode(argDiv!) as HTMLDivElement;
+    expect(argNode.innerHTML).toBe('child');
+  });
+
+  it('should overwrite props.children with children argument', function () {
+    const conflictDiv = renderIntoDocument(
+      div({ children: 'fakechild' }, 'child'),
+    );
+    // eslint-disable-next-line inferno/no-find-dom-node
+    const conflictNode = ReactDOM.findDOMNode(conflictDiv!) as HTMLDivElement;
+    expect(conflictNode.innerHTML).toBe('child');
+  });
+
+  /**
+   * We need to make sure that updates occur to the actual node that's in the
+   * DOM, instead of a stale cache.
+   */
+  it('should purge the DOM cache when removing nodes', function () {
+    renderIntoDocument(
+      <div>
+        <div key="theDog" className="dog" />
+        <div key="theBird" className="bird" />
+      </div>,
+    );
+    // Warm the cache with theDog
+    renderIntoDocument(
+      <div>
+        <div key="theDog" className="dogbeforedelete" />
+        <div key="theBird" className="bird" />
+      </div>,
+    );
+    // Remove theDog - this should purge the cache
+    renderIntoDocument(
+      <div>
+        <div key="theBird" className="bird" />
+      </div>,
+    );
+    // Now, put theDog back. It's now a different DOM node.
+    renderIntoDocument(
+      <div>
+        <div key="theDog" className="dog" />
+        <div key="theBird" className="bird" />
+      </div>,
+    );
+    // Change the className of theDog. It will use the same element
+    const myDiv = renderIntoDocument(
+      <div>
+        <div key="theDog" className="bigdog" />
+        <div key="theBird" className="bird" />
+      </div>,
+    );
+
+    // eslint-disable-next-line inferno/no-find-dom-node
+    const root = ReactDOM.findDOMNode(myDiv!)!;
+    const dog = root.childNodes[0] as HTMLDivElement;
+    expect(dog.className).toBe('bigdog');
+  });
+
+  it('allow React.DOM factories to be called without warnings', function () {
+    spyOn(console, 'error');
+    const element = div();
+    expect(element.type).toBe('div');
+    expect((console.error as jasmine.Spy).calls.count()).toBe(0);
+  });
+});

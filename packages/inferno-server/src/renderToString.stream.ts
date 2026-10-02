@@ -1,5 +1,4 @@
 import {
-  isFunction,
   isInvalid,
   isNull,
   isNullOrUndef,
@@ -13,12 +12,18 @@ import {
   arrayToFragment,
   createDerivedState,
   escapeText,
+  getChildContext,
+  getChildSelectValue,
+  getTextareaContent,
   isAttributeNameSafe,
   isEmptyFragment,
+  isSelectedOption,
   renderFunctionalComponent,
+  usesNewAPI,
+  validateTagName,
   voidElements,
 } from './utils';
-import type { VNode } from 'inferno';
+import { EMPTY_OBJ, type VNode } from 'inferno';
 import { mergePendingState } from './stream/streamUtils';
 
 const resolvedPromise = Promise.resolve();
@@ -40,7 +45,7 @@ export class RenderStream extends Readable {
 
     resolvedPromise
       .then(() => {
-        return this.renderNode(this.initNode, null);
+        return this.renderNode(this.initNode, {});
       })
       .then(() => {
         this.push(null);
@@ -50,7 +55,7 @@ export class RenderStream extends Readable {
       });
   }
 
-  public renderNode(vNode, context) {
+  public renderNode(vNode, context, selectValue?: unknown) {
     vNode = arrayToFragment(vNode);
     const flags = vNode.flags;
 
@@ -59,38 +64,39 @@ export class RenderStream extends Readable {
         vNode,
         context,
         flags & VNodeFlags.ComponentClass,
+        selectValue,
       );
     }
     if ((flags & VNodeFlags.Element) > 0) {
-      return this.renderElement(vNode, context);
+      return this.renderElement(vNode, context, selectValue);
     }
     if ((flags & VNodeFlags.Fragment) !== 0) {
-      return this.renderFragment(vNode, context);
+      return this.renderFragment(vNode, context, selectValue);
     }
 
     this.renderText(vNode);
   }
 
-  public renderFragment(vNode, context) {
+  public renderFragment(vNode, context, selectValue: unknown) {
     if (isEmptyFragment(vNode)) {
       return this.push('<!--!-->');
     }
     if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-      return this.renderNode(vNode.children, context);
+      return this.renderNode(vNode.children, context, selectValue);
     }
 
     return (vNode.children as VNode[]).reduce(async (p, child) => {
       return await p.then(async () => {
-        return await Promise.resolve(this.renderNode(child, context)).then(
-          () => !!(child.flags & VNodeFlags.Text),
-        );
+        return await Promise.resolve(
+          this.renderNode(child, context, selectValue),
+        ).then(() => !!(child.flags & VNodeFlags.Text));
       });
     }, Promise.resolve(false));
   }
 
-  public renderComponent(vComponent, context, isClass) {
+  public renderComponent(vComponent, context, isClass, selectValue: unknown) {
     const type = vComponent.type;
-    const props = vComponent.props;
+    const props = vComponent.props || EMPTY_OBJ;
 
     if (!isClass) {
       const renderOutput = renderFunctionalComponent(vComponent, context);
@@ -105,20 +111,15 @@ export class RenderStream extends Readable {
         return this.push(renderOutput + '');
       }
 
-      return this.renderNode(renderOutput, context);
+      return this.renderNode(renderOutput, context, selectValue);
     }
 
     const instance = new type(props, context);
-    const hasNewAPI = Boolean(type.getDerivedStateFromProps);
+    const hasNewAPI = usesNewAPI(type, instance);
     instance.$BS = false;
     instance.$SSR = true;
-    let childContext;
-    if (isFunction(instance.getChildContext)) {
-      childContext = instance.getChildContext();
-    }
-
-    if (!isNullOrUndef(childContext)) {
-      context = { ...context, ...childContext };
+    if (instance.props === EMPTY_OBJ) {
+      instance.props = props;
     }
     instance.context = context;
     instance.$BR = true;
@@ -135,6 +136,7 @@ export class RenderStream extends Readable {
           instance.state,
           instance.context,
         );
+        const childContext = getChildContext(instance, context);
 
         if (isInvalid(renderOutput)) {
           return this.push('<!--!-->');
@@ -146,7 +148,7 @@ export class RenderStream extends Readable {
           return this.push(renderOutput + '');
         }
 
-        return this.renderNode(renderOutput, context);
+        return this.renderNode(renderOutput, childContext, selectValue);
       },
     );
   }
@@ -155,9 +157,10 @@ export class RenderStream extends Readable {
     children: VNode[] | VNode | string,
     context: any,
     childFlags: ChildFlags,
+    selectValue: unknown,
   ) {
     if (childFlags === ChildFlags.HasVNodeChildren) {
-      return this.renderNode(children, context);
+      return this.renderNode(children, context, selectValue);
     }
     if (childFlags === ChildFlags.HasTextChildren) {
       return this.push(
@@ -169,9 +172,9 @@ export class RenderStream extends Readable {
     if (childFlags & ChildFlags.MultipleChildren) {
       return (children as VNode[]).reduce(async (p, child) => {
         return await p.then(async () => {
-          return await Promise.resolve(this.renderNode(child, context)).then(
-            () => !!(child.flags & VNodeFlags.Text),
-          );
+          return await Promise.resolve(
+            this.renderNode(child, context, selectValue),
+          ).then(() => !!(child.flags & VNodeFlags.Text));
         });
       }, Promise.resolve(false));
     }
@@ -181,12 +184,16 @@ export class RenderStream extends Readable {
     this.push(vNode.children === '' ? ' ' : escapeText(vNode.children + ''));
   }
 
-  public renderElement(vNode, context) {
+  public renderElement(vNode, context, selectValue: unknown) {
     const type = vNode.type;
     const props = vNode.props;
+
+    validateTagName(type);
+
     let renderedString = `<${type}`;
     let html;
     const isVoidElement = voidElements.has(type);
+    const isTextarea = type === 'textarea';
     const className = vNode.className;
 
     if (isString(className)) {
@@ -199,9 +206,12 @@ export class RenderStream extends Readable {
       for (const prop in props) {
         const value = props[prop];
 
+        if (isTextarea && (prop === 'value' || prop === 'defaultValue')) {
+          continue; // Rendered as the content
+        }
         switch (prop) {
           case 'dangerouslySetInnerHTML':
-            html = value.__html;
+            html = value?.__html;
             break;
           case 'style':
             if (!isNullOrUndef(props.style)) {
@@ -214,7 +224,7 @@ export class RenderStream extends Readable {
             break;
           case 'defaultValue':
             // Use default values if normal values are not present
-            if (!props.value) {
+            if (isNullOrUndef(props.value)) {
               renderedString += ` value="${
                 isString(value) ? escapeText(value) : value
               }"`;
@@ -222,7 +232,7 @@ export class RenderStream extends Readable {
             break;
           case 'defaultChecked':
             // Use default values if normal values are not present
-            if (!props.checked && value === true) {
+            if (isNullOrUndef(props.checked) && value === true) {
               renderedString += ` checked="${value}"`;
             }
             break;
@@ -239,14 +249,16 @@ export class RenderStream extends Readable {
             }
         }
       }
+      if (isSelectedOption(type, props, selectValue)) {
+        renderedString += ` selected`;
+      }
+      if (isTextarea) {
+        html = getTextareaContent(props) ?? html;
+      }
     }
 
     renderedString += `>`;
     this.push(renderedString);
-
-    if (String(type).match(/[\s\n/='"\0<>]/)) {
-      throw renderedString;
-    }
 
     if (isVoidElement) {
       return;
@@ -265,7 +277,12 @@ export class RenderStream extends Readable {
     }
 
     return Promise.resolve(
-      this.renderChildren(vNode.children, context, childFlags),
+      this.renderChildren(
+        vNode.children,
+        context,
+        childFlags,
+        getChildSelectValue(type, props, selectValue),
+      ),
     ).then(() => {
       this.push(`</${type}>`);
     });

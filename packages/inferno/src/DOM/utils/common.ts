@@ -16,18 +16,76 @@ export const EMPTY_OBJ = {};
 export const Fragment: Inferno.ExoticComponent<{ children?: InfernoNode }> =
   '$F';
 
-export interface MoveQueueItem {
-  parent: Element;
-  dom: Element;
-  next: Element;
-  fn: () => void;
+/**
+ * The move animation integration of inferno-animation. Move hook owners are class components that
+ * have componentWillMove by the end of their mount, and function components whose hooks include
+ * onComponentWillMove; the adapter is active while any owner is mounted.
+ */
+export interface MoveAnimationAdapter {
+  // Owner changes, reported whenever inferno-animation is installed
+  mountClass(instance: any): void;
+  unmountClass(instance: any): void;
+  updateHooks(lastRef: any, nextRef: any): void;
+  // Reported only while the adapter is active
+  prepare(
+    last: VNode,
+    next: VNode,
+    parent: Element,
+    commit: AnimationQueues,
+  ): void;
+  prepareFragment(
+    last: VNode,
+    nextChildren: VNode[] | null,
+    parent: Element,
+    commit: AnimationQueues,
+  ): void;
+  unmountList(vNode: VNode): void;
+  reparent(vNode: VNode, parent: Element): void;
+  remove(parent: Element, callback: () => void): void;
 }
 
-export class AnimationQueues {
-  public componentDidAppear: Array<() => void> = [];
-  public componentWillDisappear: Array<() => void> = [];
-  public componentWillMove: MoveQueueItem[] = [];
+// The adapter while inferno-animation is installed, and while it is active. The reconciler tests
+// these variables: a null check of a variable is the cheapest test in every JIT tier, and a bundler
+// that sees no call to setMoveAnimations removes the tests altogether.
+export let moveAnimations: MoveAnimationAdapter | null = null;
+export let activeMoveAnimations: MoveAnimationAdapter | null = null;
+
+// A patched function component has a move hook, which it may not have had before
+export function updateMoveHooks(lastVNode: VNode, nextVNode: VNode): void {
+  const lastRef = lastVNode.ref;
+  if (
+    isNullOrUndef(lastRef) ||
+    !isFunction((lastRef as any).onComponentWillMove)
+  ) {
+    (moveAnimations as MoveAnimationAdapter).updateHooks(
+      lastRef,
+      nextVNode.ref,
+    );
+  }
 }
+
+// Returns false when another copy of inferno-animation is installed already
+export function setMoveAnimations(
+  adapter: MoveAnimationAdapter,
+  active: boolean,
+): boolean {
+  if (moveAnimations !== null && moveAnimations !== adapter) {
+    return false;
+  }
+  moveAnimations = adapter;
+  activeMoveAnimations = active ? adapter : null;
+  return true;
+}
+
+// One per commit. The arrays are created by the first hook queued in them.
+export class AnimationQueues {
+  public componentDidAppear: Array<() => void> | null = null;
+  public componentWillDisappear: Array<() => void> | null = null;
+}
+
+// Given to the children of a component that animates its own appearance or removal: their appear
+// and leave hooks do not run. Nothing is ever queued in it.
+export const NO_ANIMATIONS = new AnimationQueues();
 
 if (process.env.NODE_ENV !== 'production') {
   Object.freeze(EMPTY_OBJ);
@@ -111,10 +169,44 @@ export function findDOMFromVNode(
   return null;
 }
 
+// The first Element of a vNode's rendered output, or null when that output starts with text, a
+// placeholder or a portal. Appear, leave and move animations need an element to animate.
+export function findElementFromVNode(vNode: VNode | null): Element | null {
+  while (!isNullOrUndef(vNode)) {
+    const flags = vNode.flags;
+
+    if (flags & VNodeFlags.Element) {
+      return vNode.dom;
+    }
+    if (flags & VNodeFlags.DOMRef) {
+      return null;
+    }
+    if (
+      flags & VNodeFlags.Fragment &&
+      vNode.childFlags & ChildFlags.MultipleChildren
+    ) {
+      const children = vNode.children as VNode[];
+      for (let i = 0; i < children.length; i++) {
+        const dom = findElementFromVNode(children[i]);
+        if (dom !== null) {
+          return dom;
+        }
+      }
+      return null;
+    }
+    vNode = findChildVNode(vNode, true, flags) as VNode | null;
+  }
+  return null;
+}
+
 export function callAllAnimationHooks(
-  animationQueue: Array<() => void>,
-  callback?: () => void,
+  animationQueue: Array<() => void> | null,
+  callback?: (synchronous?: boolean) => void,
 ): void {
+  if (animationQueue === null) {
+    return;
+  }
+  let synchronous = true;
   let animationsLeft: number = animationQueue.length;
   // Picking from the top because it is faster, invocation order should be irrelevant
   // since all animations are to be run, and we can't predict the order in which they complete.
@@ -122,27 +214,11 @@ export function callAllAnimationHooks(
   while ((fn = animationQueue.pop()) !== undefined) {
     fn(() => {
       if (--animationsLeft <= 0 && isFunction(callback)) {
-        callback();
+        callback(synchronous);
       }
     });
   }
-}
-
-export function callAllMoveAnimationHooks(
-  animationQueue: MoveQueueItem[],
-): void {
-  // Start the animations.
-  for (let i = 0; i < animationQueue.length; i++) {
-    animationQueue[i].fn();
-  }
-  // Perform the actual DOM moves when all measurements of initial
-  // position have been performed. The rest of the animations are done
-  // async.
-  for (let i = 0; i < animationQueue.length; i++) {
-    const tmp = animationQueue[i];
-    insertOrAppend(tmp.parent, tmp.dom, tmp.next);
-  }
-  animationQueue.splice(0, animationQueue.length);
+  synchronous = false;
 }
 
 export function clearVNodeDOM(
@@ -153,7 +229,7 @@ export function clearVNodeDOM(
   while (!isNullOrUndef(vNode)) {
     const flags = vNode.flags;
 
-    if ((flags & VNodeFlags.DOMRef) !== 0) {
+    if (flags & VNodeFlags.DOMRef) {
       // On deferred removals the node might disappear because of later operations
       if (!deferredRemoval || (vNode.dom as Element).parentNode === parentDOM) {
         removeChild(parentDOM, vNode.dom as Element);
@@ -173,7 +249,7 @@ export function clearVNodeDOM(
         vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
-          clearVNodeDOM(children[i], parentDOM, false);
+          clearVNodeDOM(children[i], parentDOM, deferredRemoval);
         }
         return;
       }
@@ -212,9 +288,23 @@ export function appendVNodeDOM(vNode: VNode | null, parentDOM: Element): void {
 }
 
 function createDeferComponentClassRemovalCallback(vNode, parentDOM) {
-  return function () {
-    // Mark removal as deferred to trigger check that node still exists
-    clearVNodeDOM(vNode, parentDOM, true);
+  return deferRemoval(parentDOM, () => clearVNodeDOM(vNode, parentDOM, true));
+}
+
+// A completion may be invoked more than once, or after a later patch removed its DOM.
+export function deferRemoval(
+  parent: Element,
+  callback: () => void,
+): () => void {
+  let completed = false;
+  return (synchronous?: boolean) => {
+    if (completed) return;
+    completed = true;
+    if (!synchronous && activeMoveAnimations !== null) {
+      activeMoveAnimations.remove(parent, callback);
+    } else {
+      callback();
+    }
   };
 }
 
@@ -223,10 +313,13 @@ export function removeVNodeDOM(
   parentDOM: Element,
   animations: AnimationQueues,
 ): void {
-  if (animations.componentWillDisappear.length > 0) {
+  const hooks = animations.componentWillDisappear;
+  if (hooks !== null) {
+    // The leave hooks queued while unmounting vNode belong to this removal.
     // Wait until animations are finished before removing actual dom nodes
+    animations.componentWillDisappear = null;
     callAllAnimationHooks(
-      animations.componentWillDisappear,
+      hooks,
       createDeferComponentClassRemovalCallback(vNode, parentDOM),
     );
   } else {
@@ -234,103 +327,42 @@ export function removeVNodeDOM(
   }
 }
 
-function addMoveAnimationHook(
-  animations: AnimationQueues,
-  parentVNode,
-  refOrInstance,
-  dom: Element,
-  parentDOM: Element,
-  nextNode: Element,
-  flags,
-  props?,
-): void {
-  animations.componentWillMove.push({
-    dom,
-    fn: () => {
-      if ((flags & VNodeFlags.ComponentClass) !== 0) {
-        refOrInstance.componentWillMove(parentVNode, parentDOM, dom);
-      } else if ((flags & VNodeFlags.ComponentFunction) !== 0) {
-        refOrInstance.onComponentWillMove(parentVNode, parentDOM, dom, props);
-      }
-    },
-    next: nextNode,
-    parent: parentDOM,
-  });
-}
-
-export function moveVNodeDOM(
-  parentVNode,
-  vNode,
-  parentDOM,
-  nextNode,
-  animations: AnimationQueues,
-): void {
-  let refOrInstance;
-  let instanceProps;
-  const instanceFlags = vNode.flags;
-
+// Reconciliation owns DOM placement. Animation hooks measure before patching,
+// so animated and ordinary nodes follow exactly the same insertion order.
+export function moveVNodeDOM(vNode, parentDOM, nextNode): void {
   while (!isNullOrUndef(vNode)) {
     const flags = vNode.flags;
-
-    if ((flags & VNodeFlags.DOMRef) !== 0) {
-      if (
-        !isNullOrUndef(refOrInstance) &&
-        (isFunction(refOrInstance.componentWillMove) ||
-          isFunction(refOrInstance.onComponentWillMove))
-      ) {
-        addMoveAnimationHook(
-          animations,
-          parentVNode,
-          refOrInstance,
-          vNode.dom,
-          parentDOM,
-          nextNode,
-          instanceFlags,
-          instanceProps,
-        );
-      } else {
-        // TODO: Should we delay this too to support mixing animated moves with regular?
-        insertOrAppend(parentDOM, vNode.dom, nextNode);
-      }
+    if (flags & VNodeFlags.DOMRef) {
+      insertOrAppend(parentDOM, vNode.dom, nextNode);
       return;
     }
     const children = vNode.children;
-
-    if ((flags & VNodeFlags.ComponentClass) !== 0) {
-      refOrInstance = vNode.children;
-      // TODO: We should probably deprecate this in V9 since it is inconsitent with other class component hooks
-      instanceProps = vNode.props;
+    if (flags & VNodeFlags.ComponentClass) {
       vNode = children.$LI;
-    } else if ((flags & VNodeFlags.ComponentFunction) !== 0) {
-      refOrInstance = vNode.ref;
-      instanceProps = vNode.props;
+    } else if (flags & VNodeFlags.ComponentFunction) {
       vNode = children;
-    } else if ((flags & VNodeFlags.Fragment) !== 0) {
-      if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
-        vNode = children;
-      } else {
-        for (let i = 0, len = children.length; i < len; ++i) {
-          moveVNodeDOM(
-            parentVNode,
-            children[i],
-            parentDOM,
-            nextNode,
-            animations,
-          );
-        }
-        return;
+    } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+      vNode = children;
+    } else {
+      for (let i = 0; i < children.length; i++) {
+        moveVNodeDOM(children[i], parentDOM, nextNode);
       }
+      return;
     }
   }
 }
 
-export function getComponentName(instance: any): string {
-  // TODO: Fallback for IE
+// Takes the component type (class, function or forwardRef object), not an instance
+export function getComponentName(component: any): string {
+  // Only a forwardRef object has render, it has no name of its own
+  const render = component.render;
+
   return (
-    instance.name ??
-    instance.displayName ??
-    instance.constructor.name ??
-    ((instance as any).toString().match(/^function\s*([^\s(]+)/) || [])[1]
+    component.displayName ||
+    component.name ||
+    render?.displayName ||
+    render?.name ||
+    component.constructor.name
   );
 }
 

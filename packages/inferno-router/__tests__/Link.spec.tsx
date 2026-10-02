@@ -1,5 +1,5 @@
 import {Component, type InfernoNode, linkEvent, render} from 'inferno';
-import { HashRouter, Link, MemoryRouter } from 'inferno-router';
+import { HashRouter, Link, MemoryRouter, Router } from 'inferno-router';
 import { createMemoryHistory, parsePath } from 'history';
 
 describe('Link (jsx)', () => {
@@ -31,6 +31,37 @@ describe('Link (jsx)', () => {
     expect(() => {
       render(<Link to="/">link</Link>, node);
     }).toThrow(new Error('You should not use <Link> outside a <Router>'));
+  });
+
+  it('navigates in the router when its target is _self', () => {
+    const history = createMemoryHistory();
+
+    render(
+      <Router history={history}>
+        <Link to="/self" target="_self">
+          link
+        </Link>
+      </Router>,
+      node,
+    );
+
+    let preventedByLink = false;
+    // Runs after the delegated handler of Link, and keeps the browser from leaving the test page
+    const guard = (event: MouseEvent) => {
+      preventedByLink = event.defaultPrevented;
+      event.preventDefault();
+    };
+    document.addEventListener('click', guard);
+
+    node
+      .querySelector('a')
+      .dispatchEvent(
+        new MouseEvent('click', { bubbles: true, cancelable: true, button: 0 }),
+      );
+    document.removeEventListener('click', guard);
+
+    expect(preventedByLink).toBe(true);
+    expect(history.location.pathname).toBe('/self');
   });
 
   it('exposes its ref via an innerRef prop', (done) => {

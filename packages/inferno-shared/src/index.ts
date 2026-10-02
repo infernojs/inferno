@@ -1,4 +1,3 @@
-import type { VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 export const ERROR_MSG =
@@ -89,13 +88,16 @@ export function hoistStaticProperties(
   }
 }
 
-export function isValidElement(obj: VNode): boolean {
+// Takes any value, the published typings of inferno-shared must not import inferno
+export function isValidElement(obj: unknown): boolean {
   const isValidObject = typeof obj === 'object' && !isNull(obj);
 
   if (!isValidObject) {
     return false;
   }
 
-  return (obj.flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
+  const flags: number = (obj as { flags: number }).flags;
+
+  return (flags & (VNodeFlags.Component | VNodeFlags.Element)) > 0;
 }
 

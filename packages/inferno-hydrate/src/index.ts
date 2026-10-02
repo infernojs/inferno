@@ -9,6 +9,7 @@ import {
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import {
   _CI,
+  _CRH as callRenderHooks,
   _HI,
   _M,
   _MCCC,
@@ -96,7 +97,7 @@ function hydrateComponent(
       lifecycle,
       animations,
     );
-    _MCCC(ref, instance, lifecycle, animations);
+    _MCCC(ref, instance, lifecycle);
   } else {
     const input = _HI(renderFunctionalComponent(vNode, context));
     currentNode = hydrateVNode(
@@ -109,7 +110,7 @@ function hydrateComponent(
       animations,
     );
     vNode.children = input;
-    _MFCC(vNode, lifecycle, animations);
+    _MFCC(vNode, lifecycle);
   }
 
   return currentNode;
@@ -248,7 +249,11 @@ function hydrateElement(
   const ref = vNode.ref;
 
   isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0;
-  if (dom.nodeType !== 1 || dom.tagName.toLowerCase() !== vNode.type) {
+  // Tag names are compared without case: SVG keeps camelCase names such as linearGradient
+  if (
+    dom.nodeType !== 1 ||
+    dom.tagName.toLowerCase() !== (vNode.type as string).toLowerCase()
+  ) {
     if (process.env.NODE_ENV !== 'production') {
       warning(
         "Inferno hydration: Server-side markup doesn't match client-side markup",
@@ -270,7 +275,7 @@ function hydrateElement(
     );
 
     if (!isNull(props)) {
-      _MP(vNode, flags, props, dom, isSVG, animations);
+      _MP(vNode, flags, props, dom, isSVG);
     }
     if (isNullOrUndef(className)) {
       if (dom.className !== '') {
@@ -447,12 +452,7 @@ export function hydrate(
       parentDOM.removeChild(dom);
     }
 
-    if (lifecycle.length > 0) {
-      let listener;
-      while ((listener = lifecycle.shift()) !== undefined) {
-        listener();
-      }
-    }
+    callRenderHooks(lifecycle, animations);
   }
 
   (parentDOM as any).$V = input;

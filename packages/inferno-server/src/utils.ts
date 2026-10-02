@@ -4,7 +4,7 @@ import {
   type InfernoNode,
   type VNode,
 } from 'inferno';
-import { isArray } from 'inferno-shared';
+import { isArray, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 const rxUnescaped = /["'&<>]/;
@@ -73,6 +73,44 @@ export const VALID_ATTRIBUTE_NAME_REGEX = new RegExp(
   '^[' + ATTRIBUTE_NAME_START_CHAR + '][' + ATTRIBUTE_NAME_CHAR + ']*$',
 );
 
+const rxUnsafeTagName = /[\s\n/='"\0<>]/;
+
+// Called before anything of the element is rendered, so an unsafe tag never reaches the output
+export function validateTagName(type: string): void {
+  if (rxUnsafeTagName.test(type)) {
+    throwError(`Invalid tag name <${type}>`);
+  }
+}
+
+// A textarea has no value attribute, its value (or defaultValue) is rendered as its content
+export function getTextareaContent(props): string | undefined {
+  const value = isNullOrUndef(props.value) ? props.defaultValue : props.value;
+
+  return isNullOrUndef(value) ? undefined : escapeText(String(value));
+}
+
+// selectValue is the value of the nearest <select>, which selects the options that have the same value.
+// An array value of a multiple select selects every option in it, as on the client.
+export function isSelectedOption(type, props, selectValue): boolean {
+  if (type !== 'option' || typeof props.value === 'undefined') {
+    return false;
+  }
+
+  return (
+    props.value === selectValue ||
+    (isArray(selectValue) && selectValue.includes(props.value))
+  );
+}
+
+// Like the client on mount, the select falls back to its defaultValue
+export function getChildSelectValue(type, props, selectValue): unknown {
+  if (type !== 'select') {
+    return selectValue;
+  }
+
+  return isNullOrUndef(props?.value) ? props?.defaultValue : props.value;
+}
+
 const illegalAttributeNameCache = {};
 const validatedAttributeNameCache = {};
 
@@ -112,6 +150,24 @@ export const voidElements = new Set([
   'track',
   'wbr',
 ]);
+
+// Same check as the client: these components skip the legacy lifecycles
+export function usesNewAPI(type, instance): boolean {
+  return Boolean(
+    type.getDerivedStateFromProps || instance.getSnapshotBeforeUpdate,
+  );
+}
+
+// Called after render, the same as on the client, so it sees the state set before render
+export function getChildContext(instance, context): Record<string, unknown> {
+  const childContext = isFunction(instance.getChildContext)
+    ? instance.getChildContext()
+    : null;
+
+  return isNullOrUndef(childContext)
+    ? context
+    : { ...context, ...childContext };
+}
 
 export function createDerivedState(
   instance,

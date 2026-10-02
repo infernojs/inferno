@@ -1,0 +1,193 @@
+/**
+ * Copyright 2013-present, Facebook, Inc.
+ * All rights reserved.
+ *
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree. An additional grant
+ * of patent rights can be found in the PATENTS file in the same directory.
+ *
+ * @emails react-core
+ */
+
+import React from 'inferno-compat';
+import { createComponentVNode, type InfernoNode } from 'inferno';
+import { Wrapper } from 'inferno-test-utils';
+import { VNodeFlags } from 'inferno-vnode-flags';
+
+const ReactDOM = React;
+
+interface StatelessComponentProps {
+  name: string;
+}
+
+function StatelessComponent(props: StatelessComponentProps) {
+  return <div>{props.name}</div>;
+}
+
+describe('ReactStatelessComponent', function () {
+  let container: HTMLDivElement;
+
+  function renderIntoDocument(input: InfernoNode) {
+    return React.render(
+      createComponentVNode(VNodeFlags.ComponentClass, Wrapper, {
+        children: input,
+      }),
+      container,
+    );
+  }
+
+  beforeEach(() => {
+    container = document.createElement('div');
+    document.body.appendChild(container);
+  });
+
+  afterEach(() => {
+    React.render(null, container);
+    container.innerHTML = '';
+    document.body.removeChild(container);
+  });
+
+  it('should render stateless component', function () {
+    const el = document.createElement('div');
+    ReactDOM.render(<StatelessComponent name="A" />, el);
+
+    expect(el.textContent).toBe('A');
+  });
+
+  it('should update stateless component', function () {
+    class Parent extends React.Component<StatelessComponentProps> {
+      render() {
+        return <StatelessComponent {...this.props} />;
+      }
+    }
+
+    const el = document.createElement('div');
+    ReactDOM.render(<Parent name="A" />, el);
+    expect(el.textContent).toBe('A');
+
+    ReactDOM.render(<Parent name="B" />, el);
+    expect(el.textContent).toBe('B');
+  });
+
+  it('should unmount stateless component', function () {
+    const container = document.createElement('div');
+
+    ReactDOM.render(<StatelessComponent name="A" />, container);
+    expect(container.textContent).toBe('A');
+
+    ReactDOM.unmountComponentAtNode(container);
+    expect(container.textContent).toBe('');
+  });
+
+  it('should pass context thru stateless component', function () {
+    class Child extends React.Component {
+      static contextTypes = {
+        test: React.PropTypes.string.isRequired,
+      };
+
+      render() {
+        return <div>{this.context.test}</div>;
+      }
+    }
+
+    function Parent() {
+      return <Child />;
+    }
+
+    interface GrandParentProps {
+      test: string;
+    }
+
+    class GrandParent extends React.Component<GrandParentProps> {
+      static childContextTypes = {
+        test: React.PropTypes.string.isRequired,
+      };
+
+      getChildContext() {
+        return { test: this.props.test };
+      }
+
+      render() {
+        return <Parent />;
+      }
+    }
+
+    const el = document.createElement('div');
+    ReactDOM.render(<GrandParent test="test" />, el);
+
+    expect(el.textContent).toBe('test');
+
+    ReactDOM.render(<GrandParent test="mest" />, el);
+
+    expect(el.textContent).toBe('mest');
+  });
+
+  it('should warn when stateless component returns array', function () {
+    spyOn(console, 'error');
+    function NotAComponent() {
+      return [<div />, <div />];
+    }
+    expect(function () {
+      // @ts-expect-error render() without a container throws
+      React.render(
+        <div>
+          <NotAComponent />
+        </div>,
+      );
+    }).toThrow();
+  });
+
+  it('should receive context', function () {
+    class Parent extends React.Component {
+      static childContextTypes = {
+        lang: React.PropTypes.string,
+      };
+
+      getChildContext() {
+        return { lang: 'en' };
+      }
+
+      render() {
+        return <Child />;
+      }
+    }
+
+    interface ChildContext {
+      lang: string;
+    }
+
+    function Child(_props: object, context: ChildContext) {
+      return <div>{context.lang}</div>;
+    }
+    Child.contextTypes = { lang: React.PropTypes.string };
+
+    const el = document.createElement('div');
+    ReactDOM.render(<Parent />, el);
+    expect(el.textContent).toBe('en');
+  });
+
+  it('should work with arrow functions', function () {
+    let Child = function () {
+      return <div />;
+    };
+    // Will create a new bound function without a prototype, much like a native
+    // arrow function.
+    Child = Child.bind(this);
+
+    expect(() => renderIntoDocument(<Child />)).not.toThrow();
+  });
+
+  it('should allow simple functions to return null', function () {
+    const Child = function () {
+      return null;
+    };
+    expect(() => renderIntoDocument(<Child />)).not.toThrow();
+  });
+
+  it('should allow simple functions to return false', function () {
+    function Child() {
+      return false;
+    }
+    expect(() => renderIntoDocument(<Child />)).not.toThrow();
+  });
+});

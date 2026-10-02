@@ -681,4 +681,43 @@ describe('Select / select multiple (JSX)', () => {
     expect(selectElement.children[1].selected).toBe(true);
     expect(selectElement.children[2].selected).toBe(false);
   });
+
+  it('should not give an option without a value prop the value "undefined"', () => {
+    render(
+      <select name="letter">
+        <option>A</option>
+        <option>B</option>
+      </select>,
+      container,
+    );
+    const select = container.firstChild;
+
+    expect(select.children[0].hasAttribute('value')).toBe(false);
+    expect(select.children[1].hasAttribute('value')).toBe(false);
+    expect(select.value).toBe('A');
+  });
+
+  it('should select an option without a value prop by its text', () => {
+    render(
+      <select value="B">
+        <option>A</option>
+        <option>B</option>
+      </select>,
+      container,
+    );
+    const select = container.firstChild;
+
+    expect(select.value).toBe('B');
+    expect(select.children[1].selected).toBe(true);
+
+    render(
+      <select value="A">
+        <option>A</option>
+        <option>B</option>
+      </select>,
+      container,
+    );
+    expect(select.value).toBe('A');
+    expect(select.children[0].selected).toBe(true);
+  });
 });

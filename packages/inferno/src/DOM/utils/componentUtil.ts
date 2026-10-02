@@ -33,7 +33,7 @@ function warnAboutOldLifecycles(component: any): void {
   if (oldLifecycles.length > 0) {
     warning(`
       Warning: Unsafe legacy lifecycles will not be called for components using new component APIs.
-      ${getComponentName(component)} contains the following legacy lifecycles:
+      ${getComponentName(component.constructor)} contains the following legacy lifecycles:
       ${oldLifecycles.join('\n')}
       The above lifecycles should be removed.
     `);
@@ -80,7 +80,7 @@ export function createClassComponentInstance(
     if (instance.getDerivedStateFromProps) {
       warning(
         `${getComponentName(
-          instance,
+          ComponentCtr,
         )} getDerivedStateFromProps() is defined as an instance method and will be ignored. Instead, declare it as a static method.`,
       );
     }

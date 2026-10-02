@@ -9,16 +9,17 @@
   "browserslist": "> 0.5%, last 2 versions, not dead",
   "scripts": {
     "dev:frontend": "cross-env FORCE_COLOR=1 parcel",
-    "dev:backend": "cross-env FORCE_COLOR=1 tsx watch src/server.ts"
+    "dev:backend": "cross-env FORCE_COLOR=1 tsx watch src/server.ts",
+    "test:backend": "node --test test/backend.test.mjs"
   },
   "dependencies": {
+    "@koa/router": "^15.7.0",
     "inferno": "workspace:*",
     "inferno-animation": "workspace:*",
     "inferno-create-element": "workspace:*",
     "inferno-hydrate": "workspace:*",
     "inferno-router": "workspace:*",
     "inferno-server": "workspace:*",
-    "@koa/router": "^15.7.0",
     "koa": "^3.2.1",
     "koa-json-body": "^5.3.0",
     "koa-logger": "^4.0.0",
@@ -26,13 +27,16 @@
     "koa-static": "^5.0.0"
   },
   "devDependencies": {
-    "@babel/plugin-transform-modules-commonjs": "^8.0.1",
+    "@babel/core": "^8.0.6",
     "@parcel/config-default": "^2.16.4",
+    "@parcel/core": "^2.16.4",
     "@parcel/packager-ts": "^2.16.4",
-    "@parcel/transformer-babel": "^2.16.4",
+    "@parcel/plugin": "^2.16.4",
+    "@parcel/source-map": "^2.1.1",
+    "@parcel/transformer-js": "^2.16.4",
     "@parcel/transformer-sass": "^2.16.4",
     "@parcel/transformer-typescript-types": "^2.16.4",
-    "@types/node": "^26.6.2",
+    "@types/node": "^26.6.3",
     "babel-plugin-inferno": "7.1.0",
     "cross-env": "^10.1.0",
     "parcel": "^2.16.4",

@@ -5,8 +5,10 @@ import {
   createVNode,
   getFlagsForElementVnode,
   type Inferno,
+  type InfernoNode,
   type Key,
-  type Props,
+  type Ref,
+  type RefObject,
   type Refs,
   type VNode,
 } from 'inferno';
@@ -18,13 +20,44 @@ import {
 } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
+// The props that createElement handles itself, the ref receives T
+export interface CreateElementProps<T> {
+  children?: InfernoNode;
+  key?: Key;
+  ref?: Ref<T> | RefObject<T> | null;
+}
+
+// Function components can also take their lifecycle hooks as props, see Refs
+export interface CreateFunctionElementProps<P>
+  extends Omit<CreateElementProps<unknown>, 'ref'>, Refs<P> {
+  ref?: Ref<unknown> | RefObject<unknown> | Refs<P> | null;
+}
+
+// DOM elements, the ref receives the element
+export function createElement<P, T extends Element = Element>(
+  type: string,
+  props?: (P & CreateElementProps<T>) | null,
+  ...children: any[]
+): VNode;
+// Function components and forwardRef components
+export function createElement<P>(
+  type: Inferno.StatelessComponent<P & Refs<P>>,
+  props?: (P & CreateFunctionElementProps<P>) | null,
+  ...children: any[]
+): VNode;
+// Class components, the ref receives the component instance
+export function createElement<P>(
+  type: Inferno.ComponentClass<P> | typeof Component<P, any>,
+  props?: (P & CreateElementProps<unknown>) | null,
+  ...children: any[]
+): VNode;
 export function createElement<P>(
   type:
     | string
     | Inferno.ComponentClass<P>
     | Inferno.StatelessComponent<P & Refs<P>>
     | typeof Component<P, any>,
-  props?: (P & Props<P>) | null,
+  props?: (P & CreateElementProps<unknown> & Refs<P>) | null,
   ...children: any[]
 ): VNode {
   if (process.env.NODE_ENV !== 'production') {
@@ -76,14 +109,8 @@ export function createElement<P>(
     }
   } else {
     flags = VNodeFlags.ComponentUnknown;
-    if (!isUndefined(definedChildren)) {
-      if (!props) {
-        props = {} as P & Props<P>;
-      }
-      props.children = definedChildren;
-    }
 
-    if (!isNullOrUndef(props)) {
+    if (!isNullOrUndef(props) || !isUndefined(definedChildren)) {
       newProps = {};
 
       for (const prop in props) {
@@ -99,6 +126,7 @@ export function createElement<P>(
             case 'onComponentShouldUpdate':
             case 'onComponentWillDisappear':
             case 'onComponentWillMount':
+            case 'onComponentWillMove':
             case 'onComponentWillUnmount':
             case 'onComponentWillUpdate':
               if (!ref) {
@@ -111,6 +139,9 @@ export function createElement<P>(
               break;
           }
         }
+      }
+      if (!isUndefined(definedChildren)) {
+        (newProps as Record<string, unknown>).children = definedChildren;
       }
     }
 
