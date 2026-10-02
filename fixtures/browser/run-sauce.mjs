@@ -42,7 +42,8 @@ const browsers = {
   slFirefox119: {
     browserName: 'firefox',
     browserVersion: '119',
-    platformName: 'Linux',
+    // Firefox fails to start on the Sauce Linux VMs ("Failed to decode response from marionette")
+    platformName: 'Windows 10',
     'sauce:options': {
       geckodriverVersion: '0.33.0',
     },
