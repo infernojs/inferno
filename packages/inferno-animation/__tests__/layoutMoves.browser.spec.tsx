@@ -65,10 +65,14 @@ browserDescribe('layout moves in a browser', () => {
   });
 
   afterEach(async () => {
-    render(null, container);
-    await settle();
-    container.remove();
-    styles.remove();
+    try {
+      render(null, container);
+      await settle();
+    } finally {
+      // Also when the animations can't settle, so the next specs start clean
+      container.remove();
+      styles.remove();
+    }
   });
 
   it('starts at the original positions, progresses and settles after reorder plus insertion', async () => {

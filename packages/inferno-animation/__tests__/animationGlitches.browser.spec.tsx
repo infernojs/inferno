@@ -71,10 +71,14 @@ browserDescribe('animation glitches in a browser', () => {
   });
 
   afterEach(async () => {
-    render(null, root as Element);
-    await settle();
-    container.remove();
-    styles.remove();
+    try {
+      render(null, root as Element);
+      await settle();
+    } finally {
+      // Also when the animations can't settle, so the next specs start clean
+      container.remove();
+      styles.remove();
+    }
   });
 
   describe('moves in a transformed coordinate space', () => {

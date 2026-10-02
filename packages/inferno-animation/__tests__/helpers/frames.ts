@@ -44,9 +44,19 @@ export function fakeFrames(): Frames {
   };
 }
 
-// Resolves when the animations of the tests before have finished
+// Resolves when the animations of the tests before have finished. Their animations can only finish
+// with animation frames, which a browser window that is not on screen doesn't get. Then the spec is
+// skipped as pending after a while: it can't start clean, and the spec that left the animations has
+// already failed.
 export async function idle(): Promise<void> {
+  const start = Date.now();
+
   while (hasPendingAnimations()) {
+    if (Date.now() - start > 2000) {
+      pending(
+        'The animations of an earlier spec are still pending after 2 s: the browser window gets no animation frames',
+      );
+    }
     await new Promise((resolve) => setTimeout(resolve, 5));
   }
 }

@@ -78,10 +78,14 @@ browserDescribe('layout move shapes in a browser', () => {
   });
 
   afterEach(async () => {
-    render(null, container);
-    await settle();
-    container.remove();
-    styles.remove();
+    try {
+      render(null, container);
+      await settle();
+    } finally {
+      // Also when the animations can't settle, so the next specs start clean
+      container.remove();
+      styles.remove();
+    }
   });
 
   it('slides items horizontally in a row', async () => {

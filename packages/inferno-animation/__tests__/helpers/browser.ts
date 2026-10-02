@@ -5,12 +5,41 @@ export interface Position {
   y: number;
 }
 
+// A window that is not on screen (minimized, covered or on another workspace) gets few or no animation
+// frames, so a spec fails after this long without one, instead of running into the Jasmine timeout.
+const FRAME_TIMEOUT = 1000;
+
+// Counts the specs that have ended. A spec that timed out keeps running; when its frames resume, it
+// stops instead of running its expectations in a later spec.
+let specsDone = 0;
+
+(globalThis as any).jasmine?.getEnv?.().addReporter({
+  specDone() {
+    specsDone++;
+  },
+});
+
 export const frame = async (): Promise<void> => {
-  await new Promise<void>((resolve) => {
-    requestAnimationFrame(() => {
+  const spec = specsDone;
+
+  await new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      cancelAnimationFrame(handle);
+      reject(
+        new Error(
+          `No animation frame in ${FRAME_TIMEOUT} ms, document.visibilityState is ${document.visibilityState}. ` +
+            'A browser window that is not on screen gets few or no frames: run the browser tests headless.',
+        ),
+      );
+    }, FRAME_TIMEOUT);
+    const handle = requestAnimationFrame(() => {
+      clearTimeout(timer);
       resolve();
     });
   });
+  if (spec !== specsDone) {
+    throw new Error('The spec that waited for this animation frame has ended');
+  }
 };
 
 export async function until(
