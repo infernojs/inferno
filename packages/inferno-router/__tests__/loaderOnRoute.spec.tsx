@@ -198,6 +198,28 @@ describe('A <Route> with loader in a MemoryRouter', () => {
     expect(consoleSpy.calls.argsFor(0)[0]).toContain('needs a path');
   });
 
+  it('aborts pending loaders when the router is unmounted', () => {
+    let signal;
+
+    const loaderFunc = async ({ request }) => {
+      signal = request.signal;
+      return await new Promise(() => {});
+    };
+
+    render(
+      <MemoryRouter initialEntries={['/']}>
+        <Route path="/" render={() => <h1>root</h1>} loader={loaderFunc} />
+      </MemoryRouter>,
+      container,
+    );
+
+    expect(signal.aborted).toBe(false);
+
+    render(null, container);
+
+    expect(signal.aborted).toBe(true);
+  });
+
   it('passes null from a loader as its data, not as an error', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 

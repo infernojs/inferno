@@ -146,6 +146,12 @@ export class Router extends Component<IRouterProps, any> {
 
   public componentWillUnmount(): void {
     this.unlisten();
+
+    // Pending loaders of a router that is gone
+    for (const controller of this._loaderFetchControllers) {
+      controller.abort();
+    }
+    this._loaderFetchControllers = [];
   }
 
   public render(props: IRouterProps): InfernoNode {
