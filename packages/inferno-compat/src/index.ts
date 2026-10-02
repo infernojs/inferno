@@ -90,8 +90,7 @@ export type IterateChildrenFn = (
 ) => any;
 
 function flatten(arr, result): unknown[] {
-  for (let i = 0, len = arr.length; i < len; ++i) {
-    const value = arr[i];
+  for (const value of arr) {
     if (isArray(value)) {
       flatten(value, result);
     } else {
@@ -251,12 +250,10 @@ if (typeof Event !== 'undefined') {
 }
 
 function iterableToArray(iterable): unknown[] {
-  let iterStep;
   const tmpArr: any[] = [];
-  do {
-    iterStep = iterable.next();
-    tmpArr.push(iterStep.value);
-  } while (!iterStep.done);
+  for (const value of iterable) {
+    tmpArr.push(value);
+  }
 
   return tmpArr;
 }
@@ -282,7 +279,7 @@ options.createVNode = (vNode: VNode) => {
     !isArray(children) &&
     isFunction(children[symbolIterator])
   ) {
-    vNode.children = iterableToArray(children[symbolIterator]());
+    vNode.children = iterableToArray(children);
   }
 
   if (!isNullOrUndef(children) && isNullOrUndef(props.children)) {

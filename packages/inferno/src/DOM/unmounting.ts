@@ -144,8 +144,8 @@ export function unmountAllChildren(
   children: VNode[],
   animations: AnimationQueues,
 ): void {
-  for (let i = 0, len = children.length; i < len; ++i) {
-    unmount(children[i], animations);
+  for (const child of children) {
+    unmount(child, animations);
   }
 }
 
@@ -153,8 +153,7 @@ function createClearAllCallback(children, parentDOM) {
   return deferRemoval(parentDOM, () => {
     // We need to remove children one by one because elements can be added during animation
     if (parentDOM) {
-      for (let i = 0; i < children.length; i++) {
-        const vNode = children[i];
+      for (const vNode of children) {
         clearVNodeDOM(vNode, parentDOM, true);
       }
     }

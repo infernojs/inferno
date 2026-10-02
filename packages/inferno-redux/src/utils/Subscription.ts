@@ -31,8 +31,8 @@ const createListenerCollection = (): IListenerCollection => {
 
     notify: () => {
       const listeners = (current = next!);
-      for (let i = 0; i < listeners.length; ++i) {
-        listeners[i]();
+      for (const listener of listeners) {
+        listener();
       }
     },
 
