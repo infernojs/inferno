@@ -49,7 +49,7 @@ export const createConnect =
       areStatePropsEqual = shallowEqual,
       areMergedPropsEqual = shallowEqual,
       ...extraOptions
-    } = {},
+    }: Partial<IConnectOptions> = {},
   ) => {
     const initMapStateToProps = match(
       mapStateToProps,

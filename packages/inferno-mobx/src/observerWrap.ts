@@ -11,10 +11,8 @@ import { throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isStaticRendering } from './observer';
 
-type Render = (
-  properties?: any,
-  context?: Record<string, unknown>,
-) => InfernoNode;
+// The context is typed like in Inferno.StatelessComponent, so a component can declare its own
+type Render = (properties?: any, context?: any) => InfernoNode;
 
 function callDispose({ dispose }: { readonly dispose: () => void }): void {
   dispose();

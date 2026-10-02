@@ -1,0 +1,1887 @@
+import { type InfernoNode, render, type VNode } from 'inferno';
+import { createElement } from 'inferno-create-element';
+
+describe('Update (non-jsx)', () => {
+  let container: HTMLDivElement;
+
+  beforeEach(function () {
+    container = document.createElement('div');
+  });
+
+  afterEach(function () {
+    render(null, container);
+  });
+
+  it('should patch a child div with two text nodes into an empty child div', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    let span: () => VNode;
+
+    span = () => createElement('div', null, 'hello ', 'to');
+
+    render(template(span()), container);
+
+    expect(container.firstChild!.nodeName).toBe('DIV');
+    expect(container.firstChild!.childNodes.length).toBe(1);
+    expect(container.firstChild!.textContent).toBe('hello to');
+
+    render(template(span()), container);
+
+    expect(container.firstChild!.nodeName).toBe('DIV');
+    expect(container.firstChild!.childNodes.length).toBe(1);
+    expect(container.firstChild!.textContent).toBe('hello to');
+
+    span = () => createElement('div', null);
+
+    render(template(span()), container);
+
+    expect(container.firstChild!.nodeName).toBe('DIV');
+    expect(container.firstChild!.childNodes.length).toBe(1);
+    expect(container.firstChild!.textContent).toBe('');
+  });
+
+  it('should remove a span child with null and insert it again', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    const span = () => createElement('span', null);
+
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<span></span>',
+    );
+    render(template(null), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe('');
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<span></span>',
+    );
+  });
+
+  it('should insert an additional tag node', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    const div = () => createElement('div', null);
+
+    render(template(null), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe('');
+    render(template(div()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div></div>',
+    );
+  });
+
+  it('should keep a null child empty on re-render', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    // const span = () => createElement('div');
+
+    render(template(null), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe('');
+    render(template(null), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe('');
+  });
+
+  it('should render an empty div child inside a div', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    const span = () => createElement('div', null);
+
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div></div>',
+    );
+  });
+
+  it('should render a node with dynamic values', () => {
+    const template = (val1?: string | null, val2?: string | null) =>
+      createElement('div', null, 'Hello world - ', val1, ' ', val2);
+
+    render(template('Inferno', 'Owns'), container);
+    expect(container.innerHTML).toBe('<div>Hello world - Inferno Owns</div>');
+    render(template('Inferno', 'Owns'), container);
+    expect(container.innerHTML).toBe('<div>Hello world - Inferno Owns</div>');
+
+    render(template('Inferno', null), container);
+    expect(container.innerHTML).toBe('<div>Hello world - Inferno </div>');
+
+    render(template(null, 'Owns'), container);
+    expect(container.innerHTML).toBe('<div>Hello world -  Owns</div>');
+
+    render(template(null), container);
+    expect(container.innerHTML).toBe('<div>Hello world -  </div>');
+
+    render(template(undefined), container);
+    expect(container.innerHTML).toBe('<div>Hello world -  </div>');
+
+    render(template(null, 'Owns'), container);
+    expect(container.innerHTML).toBe('<div>Hello world -  Owns</div>');
+
+    render(template('Test', 'Works!'), container);
+    expect(container.innerHTML).toBe('<div>Hello world - Test Works!</div>');
+  });
+
+  it('should update a wrapped text node', () => {
+    const template = (val1?: string | null, val2?: string | null) =>
+      createElement('div', null, val1, ' foo', val2);
+
+    render(template(null), container);
+    expect(container.innerHTML).toBe('<div> foo</div>');
+
+    render(template('Hello', 'Bar'), container);
+    expect(container.innerHTML).toBe('<div>Hello fooBar</div>');
+
+    render(template(undefined), container);
+    expect(container.innerHTML).toBe('<div> foo</div>');
+
+    render(template('The', ' is dead!'), container);
+    expect(container.innerHTML).toBe('<div>The foo is dead!</div>');
+  });
+
+  it('should update a wrapped text node when only one surrounding value is set', () => {
+    const template = (val1?: string | null, val2?: string | null) =>
+      createElement('div', null, val1, ' foo', val2);
+
+    render(template(null), container);
+    expect(container.innerHTML).toBe('<div> foo</div>');
+
+    render(template(undefined), container);
+    expect(container.innerHTML).toBe('<div> foo</div>');
+
+    render(template('Hello', 'Bar'), container);
+    expect(container.innerHTML).toBe('<div>Hello fooBar</div>');
+
+    render(template('Hello', null), container);
+    expect(container.innerHTML).toBe('<div>Hello foo</div>');
+
+    render(template(null, 'Bar'), container);
+    expect(container.innerHTML).toBe('<div> fooBar</div>');
+
+    render(template(undefined), container);
+    expect(container.innerHTML).toBe('<div> foo</div>');
+
+    render(template('The', ' is dead!'), container);
+    expect(container.innerHTML).toBe('<div>The foo is dead!</div>');
+  });
+
+  it('should update a wrapped text node with 4 arguments', () => {
+    const template = (
+      val1?: string | null,
+      val2?: string | null,
+      val3?: string | null,
+      val4?: string | null,
+    ) => createElement('div', null, val1, val2, val3, val4);
+
+    render(template('Hello', ' world!', ' and ', 'Bar'), container);
+    expect(container.innerHTML).toBe('<div>Hello world! and Bar</div>');
+
+    render(template(null, null, null, null), container);
+    expect(container.innerHTML).toBe('<div></div>');
+
+    render(template(), container);
+    expect(container.innerHTML).toBe('<div></div>');
+
+    render(template('Hello', ' world!', ' and ', 'Zoo'), container);
+    expect(container.innerHTML).toBe('<div>Hello world! and Zoo</div>');
+
+    render(template('Hello', null, ' and ', 'Zoo'), container);
+    expect(container.innerHTML).toBe('<div>Hello and Zoo</div>');
+
+    expect(() => {
+      // @ts-expect-error an object is not a valid child
+      render(template('Hello', {}, ' and ', 'Zoo'), container);
+    }).toThrow();
+
+    render(template('Hello', ' poz', ' and ', 'Zoo'), container);
+    expect(container.innerHTML).toBe('<div>Hello poz and Zoo</div>');
+
+    render(template('The ', 'bar', ' is', ' is dead!'), container);
+    expect(container.innerHTML).toBe('<div>The bar is is dead!</div>');
+
+    render(template('Hello', ' world!', null), container);
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
+  });
+
+  it('should update a node with static text', () => {
+    const template = (val?: string | null) =>
+      createElement(
+        'div',
+        {
+          id: val,
+        },
+        'Hello, World',
+      );
+
+    render(template('Hello'), container);
+    expect(container.innerHTML).toBe('<div id="Hello">Hello, World</div>');
+
+    render(template('Bar'), container);
+    expect(container.innerHTML).toBe('<div id="Bar">Hello, World</div>');
+
+    render(template(), container);
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
+
+    render(template(), container);
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
+
+    render(template(null), container);
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
+
+    render(template(null), container);
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
+
+    render(template('foo'), container);
+    expect(container.innerHTML).toBe('<div id="foo">Hello, World</div>');
+  });
+
+  it('should keep static text while dynamic id is repeated, unset with null and set again', () => {
+    const template = (val1: string | null) =>
+      createElement(
+        'div',
+        {
+          id: val1,
+        },
+        'Hello, World',
+      );
+
+    render(template('Hello'), container);
+    expect(container.innerHTML).toBe('<div id="Hello">Hello, World</div>');
+
+    render(template('Hello'), container);
+    expect(container.innerHTML).toBe('<div id="Hello">Hello, World</div>');
+
+    render(template(null), container); // should unset
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
+
+    render(template('foo'), container);
+    expect(container.innerHTML).toBe('<div id="foo">Hello, World</div>');
+  });
+
+  it('should keep static text while dynamic id is unset with null, undefined and no value', () => {
+    const template = (val1?: string | null) =>
+      createElement(
+        'div',
+        {
+          id: val1,
+        },
+        'Hello, World',
+      );
+
+    render(template(null), container); // should unset
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
+
+    render(template('Hello'), container);
+    expect(container.innerHTML).toBe('<div id="Hello">Hello, World</div>');
+
+    render(template(undefined), container); // should unset
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
+
+    render(template('foo'), container);
+    expect(container.innerHTML).toBe('<div id="foo">Hello, World</div>');
+
+    render(template(), container); // should unset
+    expect(container.innerHTML).toBe('<div>Hello, World</div>');
+  });
+
+  it('should update a div with class attribute, and dynamic children with static text', () => {
+    const template = (child: InfernoNode) =>
+      createElement(
+        'div',
+        {
+          class: 'hello, world',
+        },
+        child,
+      );
+
+    const spanList = () => createElement('span', null, '1', '2', '3');
+
+    const span = (_b: InfernoNode) => createElement('span', null, _b);
+
+    render(template(null), container);
+
+    expect(container.firstChild!.nodeType).toBe(1);
+    expect(container.firstChild!.childNodes.length).toBe(0);
+    expect((container.firstChild as HTMLDivElement).tagName).toBe('DIV');
+
+    render(template(span(spanList())), container);
+    expect(container.firstChild!.nodeType).toBe(1);
+    expect(container.firstChild!.firstChild!.childNodes.length).toBe(1);
+    expect(
+      container.firstChild!.firstChild!.firstChild!.childNodes.length,
+    ).toBe(3);
+    expect((container.firstChild as HTMLDivElement).tagName).toBe('DIV');
+
+    render(template(span(null)), container);
+
+    expect(container.firstChild!.nodeType).toBe(1);
+    expect(container.firstChild!.childNodes.length).toBe(1);
+    expect((container.firstChild as HTMLDivElement).tagName).toBe('DIV');
+  });
+
+  it('should handle lots of dynamic variables', () => {
+    type DynamicValue = string | number | unknown[] | null;
+
+    const template = function (
+      val1?: DynamicValue,
+      val2?: DynamicValue,
+      val3?: DynamicValue,
+      val4?: DynamicValue,
+      val5?: DynamicValue,
+      val6?: DynamicValue,
+    ) {
+      return createElement(
+        'div',
+        {
+          className: val2,
+          id: val1,
+        },
+        createElement(
+          'div',
+          {
+            id: val5,
+          },
+          createElement('span', null, val6),
+        ),
+        createElement(
+          'div',
+          {
+            className: val4,
+          },
+          val3,
+        ),
+      );
+    };
+
+    render(template(), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      null,
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe('');
+
+    render(template('foo1', 'bar1', 'foo2', 'bar2', 'foo3', 'bar3'), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      'bar1',
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('bar3');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe(
+      'bar3',
+    );
+
+    render(template('foo1', 'foo2', 'bar2', 'foo3', 'bar3'), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      'foo2',
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe('');
+
+    render(template(null), container);
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      null,
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe('');
+
+    render(template(undefined), container);
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      null,
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe('');
+
+    render(template('yar1', 'noo1', [], 'noo2', 'yar3', 'noo3'), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      'noo1',
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('noo3');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe(
+      'noo3',
+    );
+
+    render(template('yar1', 'noo1', [], 'noo2', 'yar3', 123), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      'noo1',
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('123');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe(
+      '123',
+    );
+
+    render(template('yar1', 'noo1', 'yar2', 'noo2', 'yar3', 'noo3'), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      'noo1',
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('noo3');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe(
+      'noo3',
+    );
+
+    render(template('yar1', null, 'yar2', 'noo2', 'yar3', null), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      null,
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe('');
+
+    render(template('yar1', null, null, 'noo2', null, null), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      null,
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe('');
+
+    render(template([], null, null, [], null, null), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      null,
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe('');
+
+    render(template([], [], 123, [], null, null), container);
+
+    expect((container.firstChild!.firstChild as HTMLDivElement).tagName).toBe(
+      'DIV',
+    );
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      '',
+    );
+    expect(
+      (container.firstChild!.firstChild!.firstChild as HTMLSpanElement).tagName,
+    ).toBe('SPAN');
+    expect(container.firstChild!.firstChild!.textContent).toBe('');
+    expect(container.firstChild!.firstChild!.firstChild!.textContent).toBe('');
+  });
+
+  it('should patch a text child into a span element', () => {
+    const div = (child: InfernoNode) => createElement('div', null, child);
+    const span1 = () => 'Hello world!';
+
+    render(div(span1()), container);
+    expect(container.innerHTML).toBe('<div>Hello world!</div>');
+    const span2 = (_child?: InfernoNode) =>
+      createElement('span', null, 'Im updated!');
+
+    render(div(span2()), container);
+  });
+
+  it('should patch a wrapped text node with its container', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+
+    render(template(null), container);
+    expect(container.innerHTML).toBe('<div></div>');
+
+    render(template(null), container);
+    expect(container.innerHTML).toBe('<div></div>');
+    const span = () => createElement('div', null, 'Hello');
+
+    render(template(span()), container);
+    expect(container.innerHTML).toBe('<div><div>Hello</div></div>');
+  });
+
+  it('should render a text child inside a div', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    const span = function () {
+      return 'Hello';
+    };
+
+    render(template(span()), container);
+    expect(container.innerHTML).toBe('<div>Hello</div>');
+  });
+
+  it('should remove a span child when patched to no children', () => {
+    const template = (child?: InfernoNode) => createElement('div', null, child);
+
+    const span = () => createElement('span', null, 'Good bye!');
+    render(template(span()), container);
+    expect(container.innerHTML).toBe('<div><span>Good bye!</span></div>');
+
+    render(template(), container);
+    expect(container.innerHTML).toBe('<div></div>');
+  });
+
+  it('should render text then update it', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    const span = function () {
+      return 'Hello';
+    };
+
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe('Hello');
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe('Hello');
+  });
+
+  it('should render a span with three text children and re-render it', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    const span = function () {
+      return createElement('span', null, 'Hello ', 'World', '!');
+    };
+
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<span>Hello World!</span>',
+    );
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<span>Hello World!</span>',
+    );
+  });
+
+  it('should render a span with three text children', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    const span = function () {
+      return createElement('span', null, 'Hello ', 'World', '!');
+    };
+
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<span>Hello World!</span>',
+    );
+  });
+
+  it('should render a span with two text children', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+    const span = function () {
+      return createElement('span', null, 'Hello ', 'World');
+    };
+
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<span>Hello World</span>',
+    );
+  });
+
+  it('should update an node with static child', () => {
+    const template = (child: string) =>
+      createElement(
+        'div',
+        null,
+        createElement(
+          'div',
+          null,
+          createElement('span', {
+            id: child,
+          }),
+        ),
+      );
+
+    render(template('id#1'), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span id="id#1"></span></div>',
+    );
+
+    render(template('id#2'), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span id="id#2"></span></div>',
+    );
+    render(template('id#3'), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span id="id#3"></span></div>',
+    );
+  });
+
+  it('should update an node with static child and dynamic custom attribute', () => {
+    const template = (child: InfernoNode) =>
+      createElement('div', null, createElement('div', null, child));
+    const span = function (val: string) {
+      return createElement('span', {
+        custom_attr: val,
+      });
+    };
+
+    render(template(span('id#1')), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span custom_attr="id#1"></span></div>',
+    );
+    render(template(span('id#1')), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span custom_attr="id#1"></span></div>',
+    );
+  });
+
+  it('should update an node with static child and dynamic custom attribute and static text', () => {
+    const template = (child: InfernoNode) =>
+      createElement('div', null, createElement('div', null, child));
+    const span = function (val: string) {
+      return createElement(
+        'span',
+        {
+          custom_attr: val,
+        },
+        'Hello!!',
+      );
+    };
+
+    render(template(span('id#1')), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span custom_attr="id#1">Hello!!</span></div>',
+    );
+    render(template(span('id#2')), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span custom_attr="id#2">Hello!!</span></div>',
+    );
+  });
+
+  it('should render a node with static child, dynamic custom attribute and static text', () => {
+    const template = (child: InfernoNode) =>
+      createElement('div', null, createElement('div', null, child));
+    const span = function (val: string) {
+      return createElement(
+        'span',
+        {
+          custom_attr: val,
+        },
+        'Hello!!',
+      );
+    };
+
+    render(template(span('id#1')), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span custom_attr="id#1">Hello!!</span></div>',
+    );
+  });
+
+  it('should not ignore a empty text node', () => {
+    const template = () => createElement('span', null, '');
+
+    render(template(), container);
+    expect(container.childNodes.length).toBe(1);
+    render(template(), container);
+    expect(container.childNodes.length).toBe(1);
+  });
+
+  it('should render an array of two text children', () => {
+    const template = (child: InfernoNode) => createElement('div', null, child);
+
+    render(template(['hello', 'world']), container);
+    expect(container.firstChild!.childNodes.length).toBe(2);
+  });
+
+  it('should update multiple changes', () => {
+    const template = (val1: string, val2: string[]) =>
+      createElement(
+        'div',
+        {
+          className: val1,
+        },
+        val2,
+      );
+
+    render(template('hello', ['hello', 'world']), container);
+    expect(container.firstChild!.childNodes.length).toBe(2);
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      'hello',
+    );
+
+    render(template('good bye', ['hello']), container);
+    expect(container.firstChild!.childNodes.length).toBe(1);
+    expect((container.firstChild as HTMLDivElement).getAttribute('class')).toBe(
+      'good bye',
+    );
+  });
+
+  it('should update an node with static child and text', () => {
+    const template = () =>
+      createElement('div', null, createElement('div', null, 'Hello, World'));
+
+    render(template(), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div>Hello, World</div>',
+    );
+    render(template(), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div>Hello, World</div>',
+    );
+
+    render(template(), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div>Hello, World</div>',
+    );
+  });
+
+  it('should update an node with dynamic child', () => {
+    const template = (child: InfernoNode) =>
+      createElement('div', null, createElement('div', null, child));
+    const span = function () {
+      return createElement('span', null, 'Hello ', 'World');
+    };
+    render(template(span()), container);
+    expect((container.firstChild as HTMLDivElement).innerHTML).toBe(
+      '<div><span>Hello World</span></div>',
+    );
+  });
+
+  it('should inject dynamic text various places', () => {
+    const div = (text?: string | null) =>
+      createElement('div', null, 'There is ', text, ' spoon!');
+
+    render(div('no'), container);
+    expect(container.innerHTML).toBe('<div>There is no spoon!</div>');
+
+    render(div('one'), container);
+    expect(container.innerHTML).toBe('<div>There is one spoon!</div>');
+
+    render(div(), container);
+    expect(container.innerHTML).toBe('<div>There is  spoon!</div>');
+
+    render(div(null), container);
+    expect(container.innerHTML).toBe('<div>There is  spoon!</div>');
+
+    render(div(undefined), container);
+    expect(container.innerHTML).toBe('<div>There is  spoon!</div>');
+  });
+
+  it('should render a div tag and remove styling', () => {
+    const template = (styleRule: Record<string, string> | null) =>
+      createElement('div', {
+        style: styleRule,
+      });
+
+    render(
+      template({
+        color: 'red',
+        'padding-left': '10px',
+      }),
+      container,
+    );
+
+    expect(container.innerHTML).toBe(
+      '<div style="color: red; padding-left: 10px;"></div>',
+    );
+
+    render(template(null), container);
+
+    expect([null, '']).toContain(
+      (container.firstChild as HTMLDivElement).getAttribute('style'),
+    );
+  });
+
+  if (
+    typeof global !== 'undefined' &&
+    !(global as { usingJSDOM?: boolean }).usingJSDOM
+  ) {
+    describe('should render styling on root node, and set and remove styling on multiple children', () => {
+      const template = (styleRule: Record<string, string> | null) =>
+        createElement(
+          'div',
+          {
+            style: {
+              width: '200px',
+            },
+          },
+          createElement(
+            'div',
+            {
+              class: 'Hello, world!',
+            },
+            createElement('div', {
+              style: styleRule,
+            }),
+          ),
+        );
+
+      it('should render nested style and update it to a different style object', () => {
+        render(
+          template({
+            color: 'red',
+            'padding-top': '10px',
+          }),
+          container,
+        );
+
+        expect(container.innerHTML).toBe(
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-top: 10px;"></div></div></div>',
+        );
+        render(
+          template({
+            color: 'red',
+            'padding-left': '10px',
+          }),
+          container,
+        );
+
+        expect(container.innerHTML).toBe(
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: red; padding-left: 10px;"></div></div></div>',
+        );
+      });
+
+      it('should render no style attribute when the nested style is null', () => {
+        render(template(null), container); // change style to null
+
+        expect([null, '']).toContain(
+          (container.firstChild!.firstChild as HTMLDivElement).getAttribute(
+            'style',
+          ),
+        );
+      });
+
+      it('should render nested style with color and margin-bottom', () => {
+        render(
+          template({
+            color: 'blue',
+            'margin-bottom': '20px',
+          }),
+          container,
+        );
+
+        expect(container.innerHTML).toBe(
+          '<div style="width: 200px;"><div class="Hello, world!"><div style="color: blue; margin-bottom: 20px;"></div></div></div>',
+        );
+      });
+    });
+  }
+
+  describe('Github #142 - patching text and br children inside table cells', () => {
+    describe('nonKeyed updates', () => {
+      it('should update the text of a single table cell', () => {
+        function A() {
+          return createElement(
+            'div',
+            null,
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement('tr', null, createElement('td', null, 'Text')),
+              ),
+            ),
+          );
+        }
+
+        function B() {
+          return createElement(
+            'div',
+            null,
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement('tr', null, createElement('td', null, 'bar')),
+              ),
+            ),
+          );
+        }
+
+        function C() {
+          return createElement(
+            'div',
+            null,
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement('tr', null, createElement('td', null, 'text1')),
+              ),
+            ),
+          );
+        }
+
+        render(A(), container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>Text</td></tr></table></div></div>',
+        );
+
+        render(B(), container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>bar</td></tr></table></div></div>',
+        );
+
+        render(C(), container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text1</td></tr></table></div></div>',
+        );
+      });
+
+      it('should patch a table cell between text with br, a text array and a text array with br', () => {
+        const A = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'text', createElement('br', null)),
+              ),
+            ),
+          ),
+        );
+        const B = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement('tr', null, createElement('td', null, ['text'])),
+            ),
+          ),
+        );
+        const C = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, ['value'], createElement('br', null)),
+              ),
+            ),
+          ),
+        );
+
+        render(A, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text<br></td></tr></table></div></div>',
+        );
+        render(B, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text</td></tr></table></div></div>',
+        );
+        render(C, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>value<br></td></tr></table></div></div>',
+        );
+      });
+
+      it('should patch an empty table to three rows and then remove a row and a cell', () => {
+        const A = createElement(
+          'div',
+          null,
+          createElement('div', null, createElement('table', null)),
+        );
+        const B = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement('tr', null),
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'A', createElement('br', null)),
+                createElement('td', null, 'B', createElement('br', null)),
+              ),
+              createElement('tr', null),
+            ),
+          ),
+        );
+        const C = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement('tr', null),
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, createElement('br', null)),
+              ),
+            ),
+          ),
+        );
+
+        render(A, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table></table></div></div>',
+        );
+        render(B, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>',
+        );
+        render(C, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>',
+        );
+      });
+
+      it('should remove the text before a br in a table cell and add new text', () => {
+        const A = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'text 1', createElement('br', null)),
+              ),
+            ),
+          ),
+        );
+
+        const B = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, createElement('br', null)),
+              ),
+            ),
+          ),
+        );
+
+        const C = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                null,
+                createElement('td', null, 'text 2', createElement('br', null)),
+              ),
+            ),
+          ),
+        );
+
+        render(A, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 1<br></td></tr></table></div></div>',
+        );
+        render(B, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td><br></td></tr></table></div></div>',
+        );
+        render(C, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 2<br></td></tr></table></div></div>',
+        );
+      });
+
+      it('should patch a root-level table cell from br to two texts with br and then to a [br, text] array with br', () => {
+        const A: VNode[] = [];
+
+        A[0] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, createElement('br', null)),
+          ),
+        );
+        A[1] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement(
+              'td',
+              null,
+              'text 1',
+              'text a',
+              createElement('br', null),
+            ),
+          ),
+        );
+        A[2] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, 'text 2', createElement('br', null)),
+          ),
+        );
+        A[3] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement(
+              'td',
+              null,
+              [createElement('br', null), 'text 3'],
+              createElement('br', null),
+            ),
+          ),
+        );
+        render(A[0], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br></td></tr></table>',
+        );
+        render(A[1], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 1text a<br></td></tr></table>',
+        );
+        render(A[2], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 2<br></td></tr></table>',
+        );
+        render(A[3], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br>text 3<br></td></tr></table>',
+        );
+      });
+
+      it('should patch a root-level table cell from br to text with br and then to a [br] array, text and br', () => {
+        const A: VNode[] = [];
+        A[0] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, createElement('br', null)),
+          ),
+        );
+        A[1] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, 'text 1', createElement('br', null)),
+          ),
+        );
+        A[2] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement('td', null, 'text 2', createElement('br', null)),
+          ),
+        );
+        A[3] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            null,
+            createElement(
+              'td',
+              null,
+              [createElement('br', null)],
+              'text 3',
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        render(A[0], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br></td></tr></table>',
+        );
+        render(A[1], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 1<br></td></tr></table>',
+        );
+        render(A[2], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 2<br></td></tr></table>',
+        );
+        render(A[3], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br>text 3<br></td></tr></table>',
+        );
+      });
+    });
+
+    describe('KEYED updates', () => {
+      it('should update the text of a single keyed table cell', () => {
+        function A() {
+          return createElement(
+            'div',
+            null,
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement(
+                  'tr',
+                  { key: 'row1' },
+                  createElement('td', { key: 'td1' }, 'Text'),
+                ),
+              ),
+            ),
+          );
+        }
+
+        function B() {
+          return createElement(
+            'div',
+            null,
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement(
+                  'tr',
+                  { key: 'row1' },
+                  createElement('td', { key: 'td1' }, 'bar'),
+                ),
+              ),
+            ),
+          );
+        }
+
+        function C() {
+          return createElement(
+            'div',
+            null,
+            createElement(
+              'div',
+              null,
+              createElement(
+                'table',
+                null,
+                createElement(
+                  'tr',
+                  { key: 'row1' },
+                  createElement('td', { key: 'td1' }, 'text1'),
+                ),
+              ),
+            ),
+          );
+        }
+
+        render(A(), container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>Text</td></tr></table></div></div>',
+        );
+
+        render(B(), container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>bar</td></tr></table></div></div>',
+        );
+
+        render(C(), container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text1</td></tr></table></div></div>',
+        );
+      });
+
+      it('should patch a keyed table cell between [text, br], [text] and [value, br] arrays', () => {
+        const A = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1' }, [
+                  'text',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
+        );
+
+        const B = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1' }, ['text']),
+              ),
+            ),
+          ),
+        );
+
+        const C = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1' }, [
+                  'value',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
+        );
+
+        render(A, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text<br></td></tr></table></div></div>',
+        );
+        render(B, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text</td></tr></table></div></div>',
+        );
+        render(C, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>value<br></td></tr></table></div></div>',
+        );
+      });
+
+      it('should patch an empty table to three keyed rows and then remove a row and a cell', () => {
+        const A = createElement(
+          'div',
+          null,
+          createElement('div', null, createElement('table', null)),
+        );
+        const B = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement('tr', { key: 'row1' }),
+              createElement(
+                'tr',
+                { key: 'row2' },
+                createElement(
+                  'td',
+                  { key: 'td2-1' },
+                  'A',
+                  createElement('br', null),
+                ),
+                createElement(
+                  'td',
+                  { key: 'td2-2' },
+                  'B',
+                  createElement('br', null),
+                ),
+              ),
+              createElement('tr', { key: 'row3' }),
+            ),
+          ),
+        );
+        const C = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement('tr', { key: 'row1' }),
+              createElement(
+                'tr',
+                { key: 'row2' },
+                createElement(
+                  'td',
+                  { key: 'td2-2' },
+                  '',
+                  createElement('br', null),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        render(A, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table></table></div></div>',
+        );
+        render(B, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr></tr><tr><td>A<br></td><td>B<br></td></tr><tr></tr></table></div></div>',
+        );
+        render(C, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr></tr><tr><td><br></td></tr></table></div></div>',
+        );
+      });
+
+      it('should patch a keyed table cell from text with br to empty text with br and new text', () => {
+        const A = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement(
+                  'td',
+                  { key: 'td1-1' },
+                  'text 1',
+                  createElement('br', null),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        const B = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement(
+                  'td',
+                  { key: 'td1-1' },
+                  '',
+                  createElement('br', null),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        const C = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement(
+                  'td',
+                  { key: 'td1-1' },
+                  'text 2',
+                  createElement('br', null),
+                ),
+              ),
+            ),
+          ),
+        );
+
+        render(A, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 1<br></td></tr></table></div></div>',
+        );
+        render(B, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td><br></td></tr></table></div></div>',
+        );
+        render(C, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 2<br></td></tr></table></div></div>',
+        );
+      });
+
+      it('should patch a keyed root-level table cell from empty text with br to text arrays with br', () => {
+        const A: VNode[] = [];
+
+        A[0] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              '',
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        A[1] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              ['text 1', 'text a'],
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        A[2] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              ['text 2'],
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        A[3] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              [createElement('br', null), 'text 3'],
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        render(A[0], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br></td></tr></table>',
+        );
+        render(A[1], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 1text a<br></td></tr></table>',
+        );
+        render(A[2], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 2<br></td></tr></table>',
+        );
+        render(A[3], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br>text 3<br></td></tr></table>',
+        );
+      });
+
+      it('should patch a keyed table cell from a [text, br] array to [empty text, br] and new text', () => {
+        const A = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1-1' }, [
+                  'text 1',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
+        );
+
+        const B = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1-1' }, [
+                  '',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
+        );
+
+        const C = createElement(
+          'div',
+          null,
+          createElement(
+            'div',
+            null,
+            createElement(
+              'table',
+              null,
+              createElement(
+                'tr',
+                { key: 'row1' },
+                createElement('td', { key: 'td1-1' }, [
+                  'text 2',
+                  createElement('br', null),
+                ]),
+              ),
+            ),
+          ),
+        );
+
+        render(A, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 1<br></td></tr></table></div></div>',
+        );
+        render(B, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td><br></td></tr></table></div></div>',
+        );
+        render(C, container);
+        expect(container.innerHTML).toBe(
+          '<div><div><table><tr><td>text 2<br></td></tr></table></div></div>',
+        );
+      });
+
+      it('should patch a keyed root-level table cell from empty text with br to text with br and a [br, text] array', () => {
+        const A: VNode[] = [];
+
+        A[0] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              '',
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        A[1] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              'text 1',
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        A[2] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              'text 2',
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        A[3] = createElement(
+          'table',
+          null,
+          createElement(
+            'tr',
+            { key: 'row1' },
+            createElement(
+              'td',
+              { key: 'td1-1' },
+              [createElement('br', null), 'text 3'],
+              createElement('br', null),
+            ),
+          ),
+        );
+
+        render(A[0], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br></td></tr></table>',
+        );
+        render(A[1], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 1<br></td></tr></table>',
+        );
+        render(A[2], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td>text 2<br></td></tr></table>',
+        );
+        render(A[3], container);
+        expect(container.innerHTML).toBe(
+          '<table><tr><td><br>text 3<br></td></tr></table>',
+        );
+      });
+    });
+  });
+
+  describe('Github #162 - br inserted between text children', () => {
+    it('should patch a text child to text, br, text and then to a different single text', () => {
+      const A: VNode[] = [];
+
+      A[0] = createElement('div', null, 'text 1');
+      A[1] = createElement(
+        'div',
+        null,
+        'text 2',
+        createElement('br', null),
+        'text 3',
+      );
+      A[2] = createElement('div', null, 'text 4');
+
+      render(A[0], container);
+      expect(container.innerHTML).toBe('<div>text 1</div>');
+      render(A[1], container);
+      expect(container.innerHTML).toBe('<div>text 2<br>text 3</div>');
+      render(A[2], container);
+      expect(container.innerHTML).toBe('<div>text 4</div>');
+    });
+  });
+
+  describe('Github #162 - br moved from after to before text', () => {
+    it('should patch text followed by br to text only and then to br followed by text', () => {
+      const A: VNode[] = [];
+
+      A[0] = createElement('div', null, 'text 1', createElement('br', null));
+
+      A[1] = createElement('div', null, 'text 2');
+
+      A[2] = createElement('div', null, createElement('br', null), 'text 4');
+
+      render(A[0], container);
+      expect(container.innerHTML).toBe('<div>text 1<br></div>');
+      render(A[1], container);
+      expect(container.innerHTML).toBe('<div>text 2</div>');
+      render(A[2], container);
+      expect(container.innerHTML).toBe('<div><br>text 4</div>');
+    });
+  });
+});

@@ -39,7 +39,7 @@ describe('inferno-mobx injected observer as a <Route> component, Github #1236', 
       }
     }
 
-    let SearchPage = observer(
+    const ObservedSearchPage = observer(
       class TestSearchPage extends Component {
         constructor(props) {
           super(props);
@@ -75,7 +75,7 @@ describe('inferno-mobx injected observer as a <Route> component, Github #1236', 
       },
     );
 
-    SearchPage = inject('searchStore')(SearchPage);
+    const SearchPage = inject('searchStore')(ObservedSearchPage);
 
     class SearchResult extends Component {
       public render() {

@@ -135,7 +135,7 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
       key: 'key1',
       onComponentDidMount(domNode) {
         expect(app.key).toBe('key1');
-        expect(domNode.tagName).toBe('DIV');
+        expect(domNode!.tagName).toBe('DIV');
         done();
       },
     });
@@ -207,9 +207,8 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
   });
 
   it('Should be possible to forward createRef', () => {
-    // TODO: Investigate how these refs should be typed
     const FancyButton = forwardRef<HTMLButtonElement, { children?: any }>(
-      (props, ref: any) =>
+      (props, ref) =>
         createElement(
           'button',
           { ref, className: 'FancyButton' },
@@ -234,11 +233,7 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
       }
 
       render() {
-        return createElement(
-          FancyButton,
-          { ref: this.btn as any },
-          'Click me!',
-        );
+        return createElement(FancyButton, { ref: this.btn }, 'Click me!');
       }
     }
 

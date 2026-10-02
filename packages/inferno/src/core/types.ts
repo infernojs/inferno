@@ -6,7 +6,7 @@ import type {
   NativeFocusEvent,
 } from './nativetypes';
 import type { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import type { PropertiesHyphen } from 'csstype';
+import type { Properties, PropertiesHyphen } from 'csstype';
 
 export interface LinkedEvent<T, E extends Event> {
   data: T;
@@ -219,55 +219,75 @@ export interface ForwardRef<P, T> extends Inferno.StatelessComponent<P> {
   ref: Ref<T>;
 }
 
+// Inferno calls a hook only when it is a function, so null disables it. Like methods, the hooks
+// take their parameters bivariantly (see Ref).
+type LifecycleHook<Args extends unknown[], R = void> =
+  | { bivarianceHack(...args: Args): R }['bivarianceHack']
+  | null;
+
+// The lifecycle hooks of function components
 export interface Refs<P> {
-  onComponentDidMount?: (
-    domNode: Element | null,
-    nextProps: Readonly<{ children?: InfernoNode } & P>,
-  ) => void;
+  onComponentDidMount?:
+    | ((
+        domNode: Element | null,
+        nextProps: Readonly<{ children?: InfernoNode } & P>,
+      ) => void)
+    | null;
 
-  onComponentWillMount?(props: Readonly<{ children?: InfernoNode } & P>): void;
+  onComponentWillMount?: LifecycleHook<
+    [props: Readonly<{ children?: InfernoNode } & P>]
+  >;
 
-  onComponentShouldUpdate?(
-    lastProps: Readonly<{ children?: InfernoNode } & P>,
-    nextProps: Readonly<{ children?: InfernoNode } & P>,
-  ): boolean;
+  onComponentShouldUpdate?: LifecycleHook<
+    [
+      lastProps: Readonly<{ children?: InfernoNode } & P>,
+      nextProps: Readonly<{ children?: InfernoNode } & P>,
+    ],
+    boolean
+  >;
 
-  onComponentWillUpdate?(
-    lastProps: Readonly<{ children?: InfernoNode } & P>,
-    nextProps: Readonly<{ children?: InfernoNode } & P>,
-  ): void;
+  onComponentWillUpdate?: LifecycleHook<
+    [
+      lastProps: Readonly<{ children?: InfernoNode } & P>,
+      nextProps: Readonly<{ children?: InfernoNode } & P>,
+    ]
+  >;
 
-  onComponentDidUpdate?(
-    lastProps: Readonly<{ children?: InfernoNode } & P>,
-    nextProps: Readonly<{ children?: InfernoNode } & P>,
-  ): void;
+  onComponentDidUpdate?: LifecycleHook<
+    [
+      lastProps: Readonly<{ children?: InfernoNode } & P>,
+      nextProps: Readonly<{ children?: InfernoNode } & P>,
+    ]
+  >;
 
-  onComponentWillUnmount?(
-    domNode: Element,
-    nextProps: Readonly<{ children?: InfernoNode } & P>,
-  ): void;
+  onComponentWillUnmount?: LifecycleHook<
+    [domNode: Element, nextProps: Readonly<{ children?: InfernoNode } & P>]
+  >;
 
-  onComponentDidAppear?(
-    domNode: Element,
-    props: Readonly<{ children?: InfernoNode } & P>,
-  ): void;
+  onComponentDidAppear?: LifecycleHook<
+    [domNode: Element, props: Readonly<{ children?: InfernoNode } & P>]
+  >;
 
-  onComponentWillDisappear?(
-    domNode: Element,
-    props: Readonly<{ children?: InfernoNode } & P>,
-    callback: Function,
-  ): void;
+  onComponentWillDisappear?: LifecycleHook<
+    [
+      domNode: Element,
+      props: Readonly<{ children?: InfernoNode } & P>,
+      callback: Function,
+    ]
+  >;
 
   /**
    * Requires inferno-animation. Snapshots a retained keyed child's current subtree
    * before layout changes; a wrapper may subsequently replace that subtree.
    */
-  onComponentWillMove?(
-    parentVNode: VNode,
-    parentDOM: Element,
-    dom: Element,
-    props: Readonly<{ children?: InfernoNode } & P>,
-  ): void;
+  onComponentWillMove?: LifecycleHook<
+    [
+      parentVNode: VNode,
+      parentDOM: Element,
+      dom: Element,
+      props: Readonly<{ children?: InfernoNode } & P>,
+    ]
+  >;
 }
 
 export interface Props<T> {
@@ -1025,6 +1045,22 @@ export declare namespace Inferno {
     [key: `--${string}`]: string;
   }
 
+  // Hyphenated CSS properties, as Inferno sets them with style.setProperty()
+  type HyphenStyleObject = PropertiesHyphen | CssVariables;
+
+  // camelCase CSS properties with unitless numbers, as React takes them (inferno-compat)
+  type CamelCaseStyleObject = Properties<string | number> | CssVariables;
+
+  /**
+   * The style object types that the `style` attribute accepts. Other packages add theirs
+   * with declaration merging, e.g. inferno-compat adds CamelCaseStyleObject.
+   */
+  interface StyleObjectTypes {
+    hyphen: HyphenStyleObject;
+  }
+
+  type StyleObject = StyleObjectTypes[keyof StyleObjectTypes];
+
   interface HTMLAttributes<T> extends AriaAttributes, DOMAttributes<T> {
     // Inferno-specific Attributes
     class?: string | null | undefined;
@@ -1070,7 +1106,7 @@ export declare namespace Inferno {
     nonce?: string | null | undefined;
     slot?: string | null | undefined;
     spellCheck?: Booleanish | null | undefined;
-    style?: PropertiesHyphen | string | null | undefined | CssVariables;
+    style?: StyleObject | string | null | undefined;
     tabIndex?: number | null | undefined;
     title?: string | null | undefined;
     translate?: 'yes' | 'no' | null | undefined;
@@ -1676,7 +1712,8 @@ export declare namespace Inferno {
     name?: string | null | undefined;
     required?: boolean | null | undefined;
     size?: number | null | undefined;
-    value?: string | readonly string[] | number | null | undefined;
+    // A multiple select takes an array of the selected option values
+    value?: string | number | readonly (string | number)[] | null | undefined;
     selectedIndex?: number | null | undefined;
   }
 

@@ -9,6 +9,7 @@ import {
   _MP,
   _MR,
   Component,
+  type ComponentType,
   createComponentVNode,
   createFragment,
   createPortal,
@@ -24,6 +25,7 @@ import {
   getFlagsForElementVnode,
   type InfernoNode,
   linkEvent,
+  type MouseEventHandler,
   normalizeProps,
   options,
   rerender,
@@ -31,7 +33,7 @@ import {
 } from 'inferno';
 import { hydrate } from 'inferno-hydrate';
 import { cloneVNode } from 'inferno-clone-vnode';
-import { createElement } from 'inferno-create-element';
+import { createElement, type CreateElementProps } from 'inferno-create-element';
 import {
   isArray,
   isFunction,
@@ -54,6 +56,21 @@ export type { ComponentType, Inferno, Refs, VNode } from 'inferno';
 declare global {
   interface Event {
     persist: Function;
+  }
+}
+
+// React props that inferno-compat maps to Inferno ones (see normalizeGenericProps)
+declare module 'inferno' {
+  // Augmenting the Inferno namespace needs namespace syntax
+  // eslint-disable-next-line @typescript-eslint/no-namespace
+  namespace Inferno {
+    interface StyleObjectTypes {
+      camelCase: CamelCaseStyleObject;
+    }
+
+    interface DOMAttributes<T> {
+      onDoubleClick?: MouseEventHandler<T> | undefined;
+    }
   }
 }
 
@@ -84,45 +101,49 @@ function flatten(arr, result): unknown[] {
   return result;
 }
 
-const ARR = [];
+const ARR: InfernoNode[] = [];
 
+// Like React, the functions take a single child, an array of children, null or undefined
 const Children = {
-  map(children: any[], fn: IterateChildrenFn, ctx: any): any[] {
+  map(
+    children: InfernoNode,
+    fn: IterateChildrenFn,
+    ctx?: unknown,
+  ): any[] | null | undefined {
     if (isNullOrUndef(children)) {
       return children;
     }
-    children = Children.toArray(children);
+    const array = Children.toArray(children);
     if (ctx) {
       fn = fn.bind(ctx);
     }
-    return children.map(fn);
+    return array.map(fn);
   },
-  forEach(children: any[], fn: IterateChildrenFn, ctx?: any): void {
+  forEach(children: InfernoNode, fn: IterateChildrenFn, ctx?: unknown): void {
     if (isNullOrUndef(children)) {
       return;
     }
-    children = Children.toArray(children);
+    const array = Children.toArray(children);
     if (ctx) {
       fn = fn.bind(ctx);
     }
-    for (let i = 0, len = children.length; i < len; ++i) {
-      const child = isInvalid(children[i]) ? null : children[i];
+    for (let i = 0, len = array.length; i < len; ++i) {
+      const child = isInvalid(array[i]) ? null : array[i];
 
-      fn(child, i, children);
+      fn(child, i, array);
     }
   },
-  count(children: any[]): number {
-    children = Children.toArray(children);
-    return children.length;
+  count(children: InfernoNode): number {
+    return Children.toArray(children).length;
   },
-  only(children: any[]): InfernoNode | any {
-    children = Children.toArray(children);
-    if (children.length !== 1) {
+  only(children: InfernoNode): InfernoNode | any {
+    const array = Children.toArray(children);
+    if (array.length !== 1) {
       throw new Error('Children.only() expects only one child.');
     }
-    return children[0];
+    return array[0];
   },
-  toArray(children: any[]): any[] {
+  toArray(children: InfernoNode): any[] {
     if (isNullOrUndef(children)) {
       return [];
     }
@@ -318,7 +339,10 @@ function shallowDiffers(a, b): boolean {
   return false;
 }
 
-abstract class PureComponent<P, S> extends Component<P, S> {
+abstract class PureComponent<
+  P = Record<string, unknown>,
+  S = Record<string, unknown>,
+> extends Component<P, S> {
   public shouldComponentUpdate(props, state): boolean {
     return (
       shallowDiffers(this.props, props) || shallowDiffers(this.state, state)
@@ -341,12 +365,10 @@ class WrapperComponent<P, S> extends Component<P & ContextProps, S> {
   }
 }
 
-function unstable_renderSubtreeIntoContainer(
-  parentComponent,
-  vNode,
-  container,
-  callback,
-): Component {
+// T is the class component that vNode renders
+function unstable_renderSubtreeIntoContainer<
+  T extends JSX.ElementClass = Component,
+>(parentComponent, vNode, container, callback?: (this: T) => void): T {
   const wrapperVNode: VNode = createComponentVNode(
     VNodeFlags.ComponentClass,
     WrapperComponent,
@@ -365,16 +387,27 @@ function unstable_renderSubtreeIntoContainer(
   return component;
 }
 
-function createFactory(type): (type) => VNode {
+// A createElement() with the type bound, the ref receives T
+type ElementFactory<P, T> = (
+  props?: (P & CreateElementProps<T>) | null,
+  ...children: InfernoNode[]
+) => VNode;
+
+function createFactory<T extends Element = Element>(
+  type: string,
+): ElementFactory<Record<string, unknown>, T>;
+function createFactory<P>(type: ComponentType<P>): ElementFactory<P, unknown>;
+function createFactory(type) {
   return createElement.bind(null, type);
 }
 
-function render(
+// Returns the root component instance, T is its class
+function render<T extends JSX.ElementClass = Component>(
   rootInput,
   container,
   cb: (() => void) | null = null,
   context = EMPTY_OBJ,
-): Component | undefined {
+): T | undefined {
   renderInternal(rootInput, container, cb, context);
 
   const input = container.$V;
