@@ -285,6 +285,56 @@ describe('A <Route> with loader in a MemoryRouter, with or without a <Switch>', 
     expect(container.innerHTML).toContain(TEST);
   });
 
+  it('Should only run the loader of the first matching route after navigating', async () => {
+    const [setDone, waitForRerender] = createEventGuard();
+    const calls: string[] = [];
+    let history;
+
+    const aboutLoader = async () => {
+      calls.push('about');
+      setDone();
+      return { message: 'about' };
+    };
+    const slugLoader = async () => {
+      calls.push('slug');
+      return { message: 'slug' };
+    };
+
+    function HistoryCatcher(_props, context) {
+      history = context.router.history;
+      return null;
+    }
+
+    render(
+      <MemoryRouter initialEntries={['/other']}>
+        <div>
+          <HistoryCatcher />
+          <Switch>
+            <Route
+              path="/about"
+              render={(props: any) => <h1>{useLoaderData(props)?.message}</h1>}
+              loader={aboutLoader}
+            />
+            <Route
+              path="/:slug"
+              render={(props: any) => <h1>{useLoaderData(props)?.message}</h1>}
+              loader={slugLoader}
+            />
+          </Switch>
+        </div>
+      </MemoryRouter>,
+      container,
+    );
+
+    expect(calls).toEqual(['slug']);
+
+    history.push('/about');
+    await waitForRerender();
+
+    expect(calls).toEqual(['slug', 'about']);
+    expect(container.innerHTML).toContain('<h1>about</h1>');
+  });
+
   it('Should only render one (1) component after click with subclass of Switch', async () => {
     const [setDone, waitForRerender] = createEventGuard();
 

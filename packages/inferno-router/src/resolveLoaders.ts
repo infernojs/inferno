@@ -109,11 +109,15 @@ function _traverseLoaders(
     }
   }
 
-  // Traverse children
-  const children = tree.children ?? tree.props?.children;
+  // Traverse children. A mounted Switch has its instance as children, so its routes are read from
+  // props, or the routes wouldn't be treated as being in a Switch.
+  const isSwitch = _isSwitch(tree);
+  const children = isSwitch
+    ? tree.props?.children
+    : (tree.children ?? tree.props?.children);
   if (isNullOrUndef(children)) return outp;
 
-  const entries = _traverseLoaders(location, children, base, _isSwitch(tree));
+  const entries = _traverseLoaders(location, children, base, isSwitch);
   return [...outp, ...entries];
 }
 
