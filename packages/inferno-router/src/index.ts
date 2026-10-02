@@ -22,6 +22,7 @@ export type { IPromptProps } from './Prompt';
 export type { RedirectProps } from './Redirect';
 export type { Match, RouteComponentProps, IRouteProps } from './Route';
 export type {
+  GetUserConfirmation,
   TLoaderProps,
   TLoader,
   TLoaderData,
