@@ -8,5 +8,7 @@ export default {
   env: {
     random: false, // Keep tests in declaration order, same as the karma setup
   },
-  browser: 'firefox',
+  // Headless: a visible window gets few or no animation frames while it is minimized, covered or on
+  // another workspace, which fails the animation specs. Pass --browser=firefox for a visible window.
+  browser: 'headlessFirefox',
 };

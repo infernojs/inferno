@@ -1,18 +1,24 @@
 // Runs the browser tests locally for every JSX plugin, with and without inferno-compat, minified and not,
 // in Firefox and Chromium. The tests import the packages from dist, so build Inferno first.
-// usage: node run-transformers.mjs [babel] [ts] [swc], without arguments all plugins are tested
+// usage: node run-transformers.mjs [babel] [ts] [swc] [--headed], without plugins all plugins are tested
+// The browsers run headless: a visible window gets few or no animation frames while it is minimized,
+// covered or on another workspace, which fails the animation specs. --headed shows the windows.
 import fs from 'node:fs';
 import path from 'node:path';
 import jasmineBrowser from 'jasmine-browser-runner';
 import { Builder } from 'selenium-webdriver';
 import chrome from 'selenium-webdriver/chrome.js';
+import firefox from 'selenium-webdriver/firefox.js';
 import build from './build-tests.js';
 import config from './jasmine-browser.mjs';
 
 const allVariants = ['babel', 'ts', 'swc'];
 const browsers = ['firefox', 'chromium'];
 
-const requestedVariants = process.argv.slice(2);
+const headed = process.argv.includes('--headed');
+const requestedVariants = process.argv
+  .slice(2)
+  .filter((arg) => arg !== '--headed');
 const unknownVariants = requestedVariants.filter(
   (variant) => !allVariants.includes(variant),
 );
@@ -56,15 +62,29 @@ function buildWebdriver(browser) {
   const builder = new Builder();
 
   if (browser === 'chromium') {
+    const options = new chrome.Options();
+
     builder.forBrowser('chrome');
 
     if (chromiumBinary) {
-      builder.setChromeOptions(
-        new chrome.Options().setChromeBinaryPath(chromiumBinary),
-      );
+      options.setChromeBinaryPath(chromiumBinary);
     }
+    if (!headed) {
+      options.addArguments('--headless=new', '--window-size=1024,768');
+    }
+    builder.setChromeOptions(options);
   } else {
     builder.forBrowser(browser);
+
+    if (!headed) {
+      builder.setFirefoxOptions(
+        new firefox.Options().addArguments(
+          '--headless',
+          '--width=1024',
+          '--height=768',
+        ),
+      );
+    }
   }
 
   const driver = builder.build();
