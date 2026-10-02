@@ -25,8 +25,8 @@ export function addClassName(
   }
   const classNameList = getClassNameList(className);
 
-  for (let i = 0; i < classNameList.length; i++) {
-    node.classList.add(classNameList[i]);
+  for (const name of classNameList) {
+    node.classList.add(name);
   }
 }
 
@@ -40,8 +40,8 @@ export function removeClassName(
   }
   const classNameList = getClassNameList(className);
 
-  for (let i = 0; i < classNameList.length; i++) {
-    node.classList.remove(classNameList[i]);
+  for (const name of classNameList) {
+    node.classList.remove(name);
   }
 }
 
@@ -330,8 +330,7 @@ function _getMaxTransitionDuration(nodes): {
 } {
   let nrofTransitions = 0;
   let maxDuration = 0;
-  for (let i = 0; i < nodes.length; i++) {
-    const node = nodes[i];
+  for (const node of nodes) {
     if (!node) continue;
 
     const cs = window.getComputedStyle(node);
@@ -430,9 +429,9 @@ export function registerTransitionListener(
     if (!event.timeout) {
       // Make sure it isn't a child that is triggering the event
       let goAhead = false;
-      for (let i = 0; i < nodes.length; i++) {
+      for (const node of nodes) {
         // Note: Check for undefined nodes (happens when an animated el doesn't have children)
-        if (nodes[i] !== undefined && event.target === nodes[i]) {
+        if (node !== undefined && event.target === node) {
           goAhead = true;
           break;
         }
@@ -535,8 +534,8 @@ function runnableTransitions(style: CSSStyleDeclaration): void {
   runnableCount = entries === null ? 1 : entries.length;
   runnableLongest = 0;
   if (entries !== null) {
-    for (let i = 0; i < entries.length; i++) {
-      if (entries[i][1] > runnableLongest) runnableLongest = entries[i][1];
+    for (const [, combined] of entries) {
+      if (combined > runnableLongest) runnableLongest = combined;
     }
   }
 }

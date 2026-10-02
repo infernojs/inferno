@@ -124,8 +124,8 @@ export function removeChild(parentDOM: Element, childNode: Element): void {
 }
 
 export function callAll(arrayFn: Array<() => void>): void {
-  for (let i = 0; i < arrayFn.length; i++) {
-    arrayFn[i]();
+  for (const fn of arrayFn) {
+    fn();
   }
 }
 
@@ -185,9 +185,8 @@ export function findElementFromVNode(vNode: VNode | null): Element | null {
       flags & VNodeFlags.Fragment &&
       vNode.childFlags & ChildFlags.MultipleChildren
     ) {
-      const children = vNode.children as VNode[];
-      for (let i = 0; i < children.length; i++) {
-        const dom = findElementFromVNode(children[i]);
+      for (const child of vNode.children as VNode[]) {
+        const dom = findElementFromVNode(child);
         if (dom !== null) {
           return dom;
         }
@@ -248,8 +247,8 @@ export function clearVNodeDOM(
       if ((vNode as VNode).childFlags === ChildFlags.HasVNodeChildren) {
         vNode = children;
       } else {
-        for (let i = 0, len = children.length; i < len; ++i) {
-          clearVNodeDOM(children[i], parentDOM, deferredRemoval);
+        for (const child of children) {
+          clearVNodeDOM(child, parentDOM, deferredRemoval);
         }
         return;
       }
@@ -278,8 +277,8 @@ export function appendVNodeDOM(vNode: VNode | null, parentDOM: Element): void {
       if ((vNode as VNode).childFlags === ChildFlags.HasVNodeChildren) {
         vNode = children;
       } else {
-        for (let i = 0, len = children.length; i < len; ++i) {
-          appendVNodeDOM(children[i], parentDOM);
+        for (const child of children) {
+          appendVNodeDOM(child, parentDOM);
         }
         return;
       }
@@ -344,8 +343,8 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode): void {
     } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
       vNode = children;
     } else {
-      for (let i = 0; i < children.length; i++) {
-        moveVNodeDOM(children[i], parentDOM, nextNode);
+      for (const child of children) {
+        moveVNodeDOM(child, parentDOM, nextNode);
       }
       return;
     }

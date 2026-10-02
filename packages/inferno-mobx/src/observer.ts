@@ -97,9 +97,7 @@ function isObjectShallowModified(prev, next): boolean {
   if (keys.length !== Object.keys(next).length) {
     return true;
   }
-  let key;
-  for (let i = keys.length - 1; i >= 0; i--) {
-    key = keys[i];
+  for (const key of keys) {
     if (next[key] !== prev[key]) {
       return true;
     }
@@ -441,9 +439,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
 
 function grabStoresByName(storeNames: string[]) {
   return function (baseStores, nextProps) {
-    for (let i = 0, len = storeNames.length; i < len; ++i) {
-      const storeName = storeNames[i];
-
+    for (const storeName of storeNames) {
       if (!(storeName in nextProps)) {
         // Development warning
         if (process.env.NODE_ENV !== 'production') {
@@ -516,8 +512,8 @@ export function inject(
     };
   } else {
     const storeNames: any = [];
-    for (let i = 0; i < args.length; ++i) {
-      storeNames.push(args[i]);
+    for (const storeName of args) {
+      storeNames.push(storeName);
     }
 
     grabStoresFn = grabStoresByName(storeNames);

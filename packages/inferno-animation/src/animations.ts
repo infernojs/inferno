@@ -620,8 +620,7 @@ function mayRunOther(
   own: string | null,
 ): boolean {
   if (runnable === null) return true;
-  for (let i = 0; i < runnable.length; i++) {
-    const name = runnable[i][0];
+  for (const [name] of runnable) {
     if (name !== own && name !== '-webkit-' + own) return true;
   }
   return false;
@@ -632,8 +631,7 @@ function mayTransition(
   property: string,
 ): boolean {
   if (runnable === null) return true;
-  for (let i = 0; i < runnable.length; i++) {
-    const name = runnable[i][0];
+  for (const [name] of runnable) {
     if (name === property || name === 'all' || name === '-webkit-' + property)
       return true;
   }

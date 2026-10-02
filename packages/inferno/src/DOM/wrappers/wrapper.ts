@@ -45,8 +45,8 @@ export function createWrappedFunction(
     if (isString(methodName)) {
       triggerEventListener(props, methodName, e);
     } else {
-      for (let i = 0; i < methodName.length; ++i) {
-        triggerEventListener(props, methodName[i], e);
+      for (const name of methodName) {
+        triggerEventListener(props, name, e);
       }
     }
 

@@ -80,8 +80,8 @@ export function createElement<P>(
   } else if (childLen > 1) {
     definedChildren = [];
 
-    for (let i = 0; i < childLen; i++) {
-      definedChildren.push(children[i]);
+    for (const child of children) {
+      definedChildren.push(child);
     }
   }
   if (isString(type)) {

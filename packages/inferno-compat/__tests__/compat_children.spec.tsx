@@ -389,5 +389,17 @@ describe('Compat Children', () => {
         expect(container.innerHTML).toBe('<div>Hello 0 Inferno</div>');
       });
     }
+
+    it('Should not render the return value of a generator', () => {
+      function* items() {
+        yield 'a';
+        yield <span>b</span>;
+        return 'returned';
+      }
+
+      render(<div>{items()}</div>, container);
+
+      expect(container.innerHTML).toBe('<div>a<span>b</span></div>');
+    });
   });
 });

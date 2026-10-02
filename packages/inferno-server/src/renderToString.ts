@@ -188,9 +188,9 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
           childSelectValue,
         );
       } else if (childFlags & ChildFlags.MultipleChildren) {
-        for (let i = 0, len = children.length; i < len; ++i) {
+        for (const child of children) {
           renderedString += renderVNodeToString(
-            children[i],
+            child,
             context,
             childSelectValue,
           );
@@ -215,8 +215,8 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
     }
     let renderedString = '';
 
-    for (let i = 0, len = children.length; i < len; ++i) {
-      renderedString += renderVNodeToString(children[i], context, selectValue);
+    for (const child of children) {
+      renderedString += renderVNodeToString(child, context, selectValue);
     }
 
     return renderedString;

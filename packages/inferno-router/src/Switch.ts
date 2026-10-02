@@ -36,10 +36,10 @@ function extractFirstMatchFromChildren(
   router,
 ): SwitchState {
   if (isArray(children)) {
-    for (let i = 0; i < children.length; ++i) {
+    for (const child of children) {
       const nestedMatch = extractFirstMatchFromChildren(
         pathname,
-        children[i],
+        child,
         router,
       );
       if (nestedMatch.match) {

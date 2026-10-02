@@ -32,8 +32,8 @@ function createSnapshotObject(object: InfernoSnapshot): InfernoSnapshot {
 
 function removeChildren(item): void {
   if (Array.isArray(item)) {
-    for (let i = 0; i < item.length; ++i) {
-      removeChildren(item[i]);
+    for (const child of item) {
+      removeChildren(child);
     }
   } else if (item?.props) {
     if (Object.prototype.hasOwnProperty.call(item.props, 'children')) {
@@ -60,8 +60,8 @@ function buildVNodeSnapshot(vNode: VNode): InfernoSnapshot {
   } else if (vNode.childFlags & ChildFlags.MultipleChildren) {
     childVNode = [];
 
-    for (let i = 0, len = children.length; i < len; ++i) {
-      childVNode.push(buildVNodeSnapshot(children[i]));
+    for (const child of children) {
+      childVNode.push(buildVNodeSnapshot(child));
     }
   } else if (vNode.childFlags & ChildFlags.HasTextChildren) {
     childVNode = (vNode.children as string | number) + '';
@@ -74,8 +74,7 @@ function buildVNodeSnapshot(vNode: VNode): InfernoSnapshot {
     if (props) {
       const keys = Object.keys(props);
 
-      for (let i = 0; i < keys.length; ++i) {
-        const key = keys[i];
+      for (const key of keys) {
         const value = props[key];
 
         if (value !== undefined) {

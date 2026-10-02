@@ -1,5 +1,6 @@
 import type { History, Location } from 'history';
 import type {
+  GetUserConfirmation,
   IBrowserRouterProps,
   IHashRouterProps,
   ILinkProps,
@@ -33,10 +34,23 @@ describe('inferno-router root type exports', () => {
       location: {} as Location,
       match,
     };
-    const browserRouterProps: IBrowserRouterProps = { children: [] };
-    const hashRouterProps: IHashRouterProps = { children: null };
+    const getUserConfirmation: GetUserConfirmation = (_message, callback) => {
+      callback(true);
+      return () => {};
+    };
+    const browserRouterProps: IBrowserRouterProps = {
+      children: [],
+      getUserConfirmation,
+    };
+    const hashRouterProps: IHashRouterProps = {
+      children: null,
+      getUserConfirmation,
+    };
     const linkProps: ILinkProps = { to: '/' };
-    const memoryRouterProps: IMemoryRouterProps = { children: [] };
+    const memoryRouterProps: IMemoryRouterProps = {
+      children: [],
+      getUserConfirmation,
+    };
     const navLinkProps: NavLinkProps = { to: '/' };
     const promptProps: IPromptProps = { message: 'leave?' };
     const redirectProps: RedirectProps = { to: '/' };
@@ -45,13 +59,15 @@ describe('inferno-router root type exports', () => {
       request: {} as Request,
     };
     const loader: TLoader<Record<string, string>, Response> = async () =>
-      ({} as Response);
+      ({}) as Response;
     const loaderData: TLoaderData<string, Error> = { res: 'ok' };
     const routerProps: IRouterProps = {
+      getUserConfirmation,
       children: null,
       history: {} as History,
     };
     const contextRouter: TContextRouter = {
+      getUserConfirmation,
       history: {} as History,
       route: {
         location: { pathname: '/' },
@@ -66,24 +82,26 @@ describe('inferno-router root type exports', () => {
     };
     const withRouterProps: IWithRouterProps = {};
 
-    expect([
-      routeComponentProps,
-      browserRouterProps,
-      hashRouterProps,
-      linkProps,
-      memoryRouterProps,
-      navLinkProps,
-      promptProps,
-      redirectProps,
-      routeProps,
-      loaderProps,
-      loader,
-      loaderData,
-      routerProps,
-      contextRouter,
-      routerContext,
-      staticRouterProps,
-      withRouterProps,
-    ].length).toBe(17);
+    expect(
+      [
+        routeComponentProps,
+        browserRouterProps,
+        hashRouterProps,
+        linkProps,
+        memoryRouterProps,
+        navLinkProps,
+        promptProps,
+        redirectProps,
+        routeProps,
+        loaderProps,
+        loader,
+        loaderData,
+        routerProps,
+        contextRouter,
+        routerContext,
+        staticRouterProps,
+        withRouterProps,
+      ].length,
+    ).toBe(17);
   });
 });
