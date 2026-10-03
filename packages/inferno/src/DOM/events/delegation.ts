@@ -69,6 +69,13 @@ for (let i = 0, len = delegatedEventNames.length; i < len; ++i) {
   };
 }
 
+/*
+ * An element's $EV. V8 watches the first objects a constructor creates and then shrinks the object
+ * to the property slots they used: one for an element with one handler, the usual case, where an
+ * empty {} literal reserves four. Handlers past the slots go to an out-of-object property store.
+ */
+function EventHandlers(): void {}
+
 function updateOrAddSyntheticEvent(
   event: DelegatedEvent,
   name: string,
@@ -79,7 +86,7 @@ function updateOrAddSyntheticEvent(
   if (!eventsObject) {
     // Only the handlers the element has: an object with a slot for every delegated event cost
     // 13 fields per element, which usually has one handler
-    eventsObject = dom.$EV = {};
+    eventsObject = dom.$EV = new EventHandlers();
   }
   if (!eventsObject[name]) {
     if (++event.count === 1) {

@@ -1188,11 +1188,11 @@ function patchKeyedChildrenComplex(
         }
       }
     } else {
-      const keyIndex: Record<string, number> = {};
+      const keyIndex = new Map<string | number, number>();
 
       // Map keys by their index
       for (i = bStart; i <= bEnd; ++i) {
-        keyIndex[b[i].key as string | number] = i;
+        keyIndex.set(b[i].key as string | number, i);
       }
 
       // Try to patch same keys
@@ -1200,7 +1200,7 @@ function patchKeyedChildrenComplex(
         aNode = a[i];
 
         if (patched < bLeft) {
-          j = keyIndex[aNode.key as string | number];
+          j = keyIndex.get(aNode.key as string | number) as number;
 
           if (j !== void 0) {
             if (canRemoveWholeContent) {

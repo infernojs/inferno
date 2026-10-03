@@ -151,6 +151,36 @@ describe('Delegated events', () => {
       expect(calls(removeSpy, 'touchmove').length).toBe(1);
     });
 
+    it('should dispatch and release each handler of an element with several', () => {
+      const start = jasmine.createSpy('start');
+      const move = jasmine.createSpy('move');
+      const end = jasmine.createSpy('end');
+
+      render(
+        <span onTouchStart={start} onTouchMove={move} onTouchEnd={end} />,
+        container,
+      );
+      const span = container.firstChild;
+
+      span.dispatchEvent(new Event('touchstart', { bubbles: true }));
+      touchMove(span);
+      span.dispatchEvent(new Event('touchend', { bubbles: true }));
+      expect(start.calls.count()).toBe(1);
+      expect(move.calls.count()).toBe(1);
+      expect(end.calls.count()).toBe(1);
+
+      // Removing two handlers keeps the third
+      render(<span onTouchEnd={end} />, container);
+      expect(calls(removeSpy, 'touchstart').length).toBe(1);
+      expect(calls(removeSpy, 'touchmove').length).toBe(1);
+      expect(calls(removeSpy, 'touchend').length).toBe(0);
+      span.dispatchEvent(new Event('touchend', { bubbles: true }));
+      expect(end.calls.count()).toBe(2);
+
+      render(null, container);
+      expect(calls(removeSpy, 'touchend').length).toBe(1);
+    });
+
     it('should count an element once when its handler changes', () => {
       render(<span onTouchMove={() => {}} />, container);
       render(<span onTouchMove={() => {}} />, container);

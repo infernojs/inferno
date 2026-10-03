@@ -515,6 +515,28 @@ describe('keyed-nodes', () => {
     }
   });
 
+  // 32 or more children are matched by a key index, these keys are not in it
+  it('should remove keys named like Object.prototype members from a large list', () => {
+    const keys: Array<string | number> = [
+      'toString',
+      'constructor',
+      '__proto__',
+      'valueOf',
+    ];
+    const reversed: number[] = [];
+
+    for (let i = 0; i < 40; i++) {
+      keys.push(i);
+      reversed.unshift(i);
+    }
+
+    render(template(generateKeyNodes(keys)), container);
+    render(template(generateKeyNodes(reversed)), container);
+
+    expect(container.textContent).toBe(reversed.join(''));
+    expect(container.firstChild!.childNodes.length).toBe(40);
+  });
+
   describe('Calendar like layout', () => {
     function o(text: number) {
       return createElement(

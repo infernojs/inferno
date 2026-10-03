@@ -58,7 +58,8 @@ function DEV_VALIDATE_KEYS(vNodeTree, childKeys): string | null {
     return null;
   }
 
-  const foundKeys: Record<string, boolean> = {};
+  // No prototype: keys like "toString" are not found before they are added
+  const foundKeys: Record<string, boolean> = Object.create(null);
   const forceKeyed = (childKeys & ChildFlags.HasKeyedChildren) !== 0;
 
   let foundKeyCount = 0;
