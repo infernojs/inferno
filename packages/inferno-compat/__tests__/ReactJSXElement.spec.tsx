@@ -237,4 +237,18 @@ describe('ReactJSXElement', function () {
     const element = container.querySelector('label')!;
     expect(element.getAttribute('for')).toBe('foobarID');
   });
+
+  // The names of Object.prototype members are not React prop names to map
+  it('Should render props named like Object.prototype members as attributes', () => {
+    const container = document.createElement('div');
+
+    ReactDOM.render(
+      React.createElement('div', { toString: 'a', constructor: 'b' }),
+      container,
+    );
+
+    const element = container.querySelector('div')!;
+    expect(element.getAttribute('toString')).toBe('a');
+    expect(element.getAttribute('constructor')).toBe('b');
+  });
 });

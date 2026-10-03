@@ -97,10 +97,12 @@ const ATTRS = [
   'xml:space',
 ];
 
-export const InfernoCompatPropertyMap = {
-  htmlFor: 'for',
-  onDoubleClick: 'onDblClick',
-};
+// No prototype: props named like Object.prototype members ("toString") have no React name to map
+export const InfernoCompatPropertyMap: Record<string, string | undefined> =
+  Object.assign(Object.create(null), {
+    htmlFor: 'for',
+    onDoubleClick: 'onDblClick',
+  });
 
 const CAMELIZE = /[-:]([a-z])/g;
 function capitalize(token: string): string {
