@@ -194,10 +194,15 @@ export function patchProp(
     case 'dangerouslySetInnerHTML':
       return patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom);
     default:
-      if (syntheticEvents[prop]) {
-        handleSyntheticEvent(prop, lastValue, nextValue, dom);
-      } else if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
-        patchEvent(prop, lastValue, nextValue, dom);
+      // Only "on" props can be events, attributes skip the lookup by name
+      if (prop.charCodeAt(0) === 111 && prop.charCodeAt(1) === 110) {
+        const delegatedEvent = syntheticEvents[prop];
+
+        if (delegatedEvent !== undefined) {
+          handleSyntheticEvent(delegatedEvent, prop, lastValue, nextValue, dom);
+        } else {
+          patchEvent(prop, lastValue, nextValue, dom);
+        }
       } else if (isNullOrUndef(nextValue)) {
         dom.removeAttribute(prop);
       } else if (isSVG && namespaces[prop]) {

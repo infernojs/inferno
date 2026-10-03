@@ -40,14 +40,14 @@ export function unmount(vNode, animations: AnimationQueues): void {
 
     if (!isNull(props)) {
       // for-in reads the enum cache without allocating, Object.keys copied it for every element.
-      // Only "on" props can be delegated events, others skip the lookup that is megamorphic by name.
+      // Only "on" props can be delegated events, others skip the lookup by name.
       for (const key in props) {
-        if (
-          key.charCodeAt(0) === 111 &&
-          key.charCodeAt(1) === 110 &&
-          syntheticEvents[key]
-        ) {
-          unmountSyntheticEvent(key, vNode.dom);
+        if (key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110) {
+          const delegatedEvent = syntheticEvents[key];
+
+          if (delegatedEvent !== undefined) {
+            unmountSyntheticEvent(delegatedEvent, key, vNode.dom);
+          }
         }
       }
     }

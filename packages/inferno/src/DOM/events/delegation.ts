@@ -26,73 +26,104 @@ export interface DelegateEventTypes {
   onTouchStart: unknown;
 }
 
-function getDelegatedEventObject(v: unknown): DelegateEventTypes {
-  return {
-    onClick: v,
-    onDblClick: v,
-    onFocusIn: v,
-    onFocusOut: v,
-    onKeyDown: v,
-    onKeyPress: v,
-    onKeyUp: v,
-    onMouseDown: v,
-    onMouseMove: v,
-    onMouseUp: v,
-    onTouchEnd: v,
-    onTouchMove: v,
-    onTouchStart: v,
+export interface DelegatedEvent {
+  // Mounted elements that have a handler for this event
+  count: number;
+  // The listener on document, while count > 0
+  listener: ((event: SemiSyntheticEvent<any>) => void) | null;
+  // DOM event type, for example "click"
+  readonly type: keyof DocumentEventMap;
+}
+
+const delegatedEventNames: Array<keyof DelegateEventTypes> = [
+  'onClick',
+  'onDblClick',
+  'onFocusIn',
+  'onFocusOut',
+  'onKeyDown',
+  'onKeyPress',
+  'onKeyUp',
+  'onMouseDown',
+  'onMouseMove',
+  'onMouseUp',
+  'onTouchEnd',
+  'onTouchMove',
+  'onTouchStart',
+];
+
+/*
+ * A prop is looked up here once, and its record carries the bookkeeping, so mounting and unmounting
+ * a handler does not look the name up again. The table has no prototype: props named like
+ * Object.prototype members ("toString", "constructor") are not events, and a name that is not here
+ * is a miss without a prototype chain lookup.
+ */
+export const syntheticEvents: Record<string, DelegatedEvent | undefined> =
+  Object.create(null);
+
+for (const name of delegatedEventNames) {
+  syntheticEvents[name] = {
+    count: 0,
+    listener: null,
+    type: normalizeEventName(name),
   };
 }
-const attachedEventCounts = getDelegatedEventObject(0);
-const attachedEvents = getDelegatedEventObject(null);
 
-export const syntheticEvents = getDelegatedEventObject(true);
-
-function updateOrAddSyntheticEvent(name: string, dom): DelegateEventTypes {
+function updateOrAddSyntheticEvent(
+  event: DelegatedEvent,
+  name: string,
+  dom,
+): Partial<DelegateEventTypes> {
   let eventsObject = dom.$EV;
 
   if (!eventsObject) {
-    eventsObject = dom.$EV = getDelegatedEventObject(null);
+    // Only the handlers the element has: an object with a slot for every delegated event cost
+    // 13 fields per element, which usually has one handler
+    eventsObject = dom.$EV = {};
   }
   if (!eventsObject[name]) {
-    if (++attachedEventCounts[name] === 1) {
-      attachedEvents[name] = attachEventToDocument(name);
+    if (++event.count === 1) {
+      event.listener = attachEventToDocument(event.type, name);
     }
   }
 
   return eventsObject;
 }
 
-export function unmountSyntheticEvent(name: string, dom): void {
+export function unmountSyntheticEvent(
+  event: DelegatedEvent,
+  name: string,
+  dom,
+): void {
   const eventsObject = dom.$EV;
 
   if (eventsObject?.[name]) {
-    if (--attachedEventCounts[name] === 0) {
+    if (--event.count === 0) {
       document.removeEventListener(
-        normalizeEventName(name),
-        attachedEvents[name],
+        event.type,
+        event.listener as (event: Event) => void,
       );
-      attachedEvents[name] = null;
+      event.listener = null;
     }
     eventsObject[name] = null;
   }
 }
 
 export function handleSyntheticEvent(
+  event: DelegatedEvent,
   name: string,
   lastEvent: (() => void) | LinkedEvent<any, any> | null | false | true,
   nextEvent: (() => void) | LinkedEvent<any, any> | null | false | true,
   dom,
 ): void {
   if (isFunction(nextEvent)) {
-    updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
+    updateOrAddSyntheticEvent(event, name, dom)[name] = nextEvent;
   } else if (isLinkEventObject(nextEvent)) {
     if (isLastValueSameLinkEvent(lastEvent, nextEvent)) {
       return;
     }
-    updateOrAddSyntheticEvent(name, dom)[name] = nextEvent;
+    updateOrAddSyntheticEvent(event, name, dom)[name] = nextEvent;
   } else {
-    unmountSyntheticEvent(name, dom);
+    unmountSyntheticEvent(event, name, dom);
   }
 }
 
@@ -184,9 +215,10 @@ function rootEvent(name: string): (event: SemiSyntheticEvent<any>) => void {
 }
 
 function attachEventToDocument(
+  type: keyof DocumentEventMap,
   name: string,
 ): (event: SemiSyntheticEvent<any>) => void {
   const attachedEvent = rootEvent(name);
-  document.addEventListener(normalizeEventName(name), attachedEvent);
+  document.addEventListener(type, attachedEvent);
   return attachedEvent;
 }

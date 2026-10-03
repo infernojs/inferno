@@ -44,7 +44,7 @@ if (hasDocumentAvailable) {
    */
 
   if (window.Node) {
-    (Node.prototype as any).$EV = null as DelegateEventTypes | null;
+    (Node.prototype as any).$EV = null as Partial<DelegateEventTypes> | null;
     (Node.prototype as any).$V = null as DelegateEventTypes | null;
   }
 }
