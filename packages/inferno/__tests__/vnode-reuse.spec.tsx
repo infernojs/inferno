@@ -740,7 +740,9 @@ describe('vNode reuse', () => {
       );
     });
 
-    for (const multiple of [false, true]) {
+    const multipleModes = [false, true];
+    for (let i = 0, len = multipleModes.length; i < len; ++i) {
+      const multiple = multipleModes[i];
       it(`Should restore a hoisted element with ${multiple ? 'multiple component children' : 'a component child'} after switching to dangerouslySetInnerHTML`, () => {
         let mounted = 0;
         let unmounted = 0;

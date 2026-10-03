@@ -20,7 +20,8 @@ if (!pkgJSON.private) {
     }
   });
 
-  for (const file of allTsFiles) {
+  for (let i = 0, len = allTsFiles.length; i < len; ++i) {
+    const file = allTsFiles[i];
     cpSync(file.absolutePath, destFolder + file.relativePath, { recursive: true, force: true });
   }
 }

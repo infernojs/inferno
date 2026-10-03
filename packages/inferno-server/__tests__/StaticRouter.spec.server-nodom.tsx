@@ -175,7 +175,9 @@ describe('A <StaticRouter>', () => {
         return null;
       };
 
-      for (const location of ['/app', '/app/path', '/application']) {
+      const locations = ['/app', '/app/path', '/application'];
+      for (let i = 0, len = locations.length; i < len; ++i) {
+        const location = locations[i];
         renderToStaticMarkup(
           <StaticRouter context={{}} basename="/app" location={location}>
             <Route component={LocationChecker} />

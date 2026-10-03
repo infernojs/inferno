@@ -198,7 +198,9 @@ describe('move animation registry regressions', () => {
     expect(container.textContent).toBe('replacement');
   });
 
-  for (const size of [3, 40]) {
+  const sizes = [3, 40];
+  for (let j = 0, len = sizes.length; j < len; ++j) {
+    const size = sizes[j];
     it(
       'recovers nested registrations after a later complex-keyed sibling throws (' +
         size +
@@ -261,12 +263,20 @@ describe('move animation registry regressions', () => {
         render(list(original, 2, ['b']), container);
         expect(calls).toEqual(['b1', 'a1']);
         calls.length = 0;
-        for (const finish of finishes.splice(0)) finish();
+        const queued = finishes.splice(0);
+        for (let i = 0, len = queued.length; i < len; ++i) {
+          const finish = queued[i];
+          finish();
+        }
         await frame();
         expect(calls).toEqual(['b2']);
         expect(first!.isConnected).toBe(false);
         render(null, container);
-        for (const finish of finishes.splice(0)) finish();
+        const queued2 = finishes.splice(0);
+        for (let i = 0, len = queued2.length; i < len; ++i) {
+          const finish = queued2[i];
+          finish();
+        }
         await frame();
         expect(container.textContent).toBe('');
       },

@@ -27,7 +27,10 @@ export function fakeFrames(): Frames {
   function frame(): void {
     const requested = Array.from(callbacks.values());
     callbacks.clear();
-    for (const callback of requested) callback(0);
+    for (let i = 0, len = requested.length; i < len; ++i) {
+      const callback = requested[i];
+      callback(0);
+    }
   }
   return {
     get size() {
@@ -91,7 +94,9 @@ export function fakeBoxes(
 
 // Ends the transitions of the elements, as far as the animations can tell
 export function endTransitions(elements: Iterable<Element>): void {
-  for (const element of Array.from(elements)) {
+  const list = Array.from(elements);
+  for (let i = 0, len = list.length; i < len; ++i) {
+    const element = list[i];
     element.dispatchEvent(new Event('transitionend'));
   }
 }

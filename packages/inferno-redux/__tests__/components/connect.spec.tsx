@@ -121,7 +121,8 @@ describe('inferno-redux connect', () => {
 
       dispatch(action: A) {
         this.state = this.reducer(this.state, action);
-        for (const l of this.listeners) {
+        for (let i = 0, len = this.listeners.length; i < len; ++i) {
+          const l = this.listeners[i];
           l();
         }
         return action;
@@ -1778,7 +1779,8 @@ describe('inferno-redux connect', () => {
           (key) => isFunction(SourceClass.prototype[key]),
         );
 
-        for (const key of fns) {
+        for (let i = 0, len = fns.length; i < len; ++i) {
+          const key = fns[i];
           if (key !== 'render' && key !== 'constructor') {
             TargetClass.prototype[key] = SourceClass.prototype[key];
           }

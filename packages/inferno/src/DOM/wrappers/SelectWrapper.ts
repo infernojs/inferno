@@ -20,7 +20,8 @@ function updateChildOptions(vNode: VNode, value): void {
     } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
       updateChildOptions(children as VNode, value);
     } else if ((vNode.childFlags & ChildFlags.MultipleChildren) !== 0) {
-      for (const child of children as VNode[]) {
+      for (let i = 0, len = (children as VNode[]).length; i < len; ++i) {
+        const child = (children as VNode[])[i];
         updateChildOptions(child, value);
       }
     }

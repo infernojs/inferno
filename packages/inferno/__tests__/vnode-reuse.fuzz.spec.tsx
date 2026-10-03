@@ -805,7 +805,8 @@ const CASES: FuzzCase[] = [
 ];
 
 describe('vNode reuse cases found by fuzzing', () => {
-  for (const test of CASES) {
+  for (let i = 0, len = CASES.length; i < len; ++i) {
+    const test = CASES[i];
     it(`Should ${test.name} (seed ${test.seed})`, () => {
       compareRuns(test.pool, test.steps, `seed ${test.seed}`);
     });

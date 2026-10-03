@@ -308,7 +308,9 @@ function cards(order, Item, props) {
 // The viewport box of every [data-id] element in root
 function boxes(root) {
   const result = {};
-  for (const el of root.querySelectorAll('[data-id]')) {
+  const elements = root.querySelectorAll('[data-id]');
+  for (let i = 0, len = elements.length; i < len; ++i) {
+    const el = elements[i];
     const rect = el.getBoundingClientRect();
     result[el.getAttribute('data-id')] = { x: rect.left, y: rect.top };
   }
@@ -318,7 +320,9 @@ function boxes(root) {
 // The element of ids that is farthest from its box in before, and the distance
 function largestJump(root, before, ids) {
   let worst = { id: '-', distance: 0 };
-  for (const id of ids || Object.keys(before)) {
+  const candidates = ids || Object.keys(before);
+  for (let i = 0, len = candidates.length; i < len; ++i) {
+    const id = candidates[i];
     const el = root.querySelector('[data-id="' + id + '"]');
     if (!el || !before[id]) continue;
     const rect = el.getBoundingClientRect();
@@ -425,7 +429,8 @@ const spaceLists = [
 ];
 
 function spaceReset() {
-  for (const [name, view, root] of spaceLists) {
+  for (let i = 0, len = spaceLists.length; i < len; ++i) {
+    const [name, view, root] = spaceLists[i];
     render(null, root());
     render(view(START), root());
     setStatus(name + '-status', '', true);
@@ -435,7 +440,10 @@ function spaceReset() {
 async function spaceRun() {
   const before = spaceLists.map(([, , root]) => boxes(root()));
   const order = shuffle(START);
-  for (const [, view, root] of spaceLists) render(view(order), root());
+  for (let i = 0, len = spaceLists.length; i < len; ++i) {
+    const [, view, root] = spaceLists[i];
+    render(view(order), root());
+  }
   await afterFlush();
   spaceLists.forEach(([name, , root], i) => {
     const jump = largestJump(root(), before[i]);

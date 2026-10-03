@@ -51,7 +51,8 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
     expect(triggered).toBe(false);
 
     const buttons = container.querySelectorAll('button');
-    for (const button of buttons) {
+    for (let i = 0, len = buttons.length; i < len; ++i) {
+      const button = buttons[i];
       button.click();
     }
 
@@ -85,7 +86,8 @@ describe('CreateElement (non-JSX) children, events, hooks and refs', () => {
     expect(triggered).toBe(false);
 
     const buttons = container.querySelectorAll('button');
-    for (const button of buttons) {
+    for (let i = 0, len = buttons.length; i < len; ++i) {
+      const button = buttons[i];
       button.click();
     }
 

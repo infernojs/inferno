@@ -60,7 +60,8 @@ const delegatedEventNames: Array<keyof DelegateEventTypes> = [
 export const syntheticEvents: Record<string, DelegatedEvent | undefined> =
   Object.create(null);
 
-for (const name of delegatedEventNames) {
+for (let i = 0, len = delegatedEventNames.length; i < len; ++i) {
+  const name = delegatedEventNames[i];
   syntheticEvents[name] = {
     count: 0,
     listener: null,

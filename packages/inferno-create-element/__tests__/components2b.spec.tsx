@@ -197,7 +197,8 @@ describe('Components 2 (TSX)', () => {
     expect(containerFlag).toBe(false);
 
     const spans = container.querySelectorAll('span');
-    for (const span of spans) {
+    for (let i = 0, len = spans.length; i < len; ++i) {
+      const span = spans[i];
       span.click();
     }
 
@@ -261,7 +262,8 @@ describe('Components 2 (TSX)', () => {
     expect(containerFlag).toBe(false);
 
     const spans = container.querySelectorAll('span');
-    for (const span of spans) {
+    for (let i = 0, len = spans.length; i < len; ++i) {
+      const span = spans[i];
       span.click();
     }
 

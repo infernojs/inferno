@@ -95,7 +95,8 @@ describe('Blueprints (JSX)', () => {
     it('Second render (update)', () => {
       render(<Wrapper />, container);
       const buttons = container.querySelectorAll('button');
-      for (const button of buttons) {
+      for (let i = 0, len = buttons.length; i < len; ++i) {
+        const button = buttons[i];
         button.click();
       }
 

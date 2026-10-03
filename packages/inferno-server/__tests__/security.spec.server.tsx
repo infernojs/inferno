@@ -93,8 +93,10 @@ describe('Security - SSR', () => {
       ],
     ] as const;
 
-    for (const [name, renderResult] of renderers) {
-      for (const tagName of invalidTagNames) {
+    for (let i = 0, len = renderers.length; i < len; ++i) {
+      const [name, renderResult] = renderers[i];
+      for (let j = 0, len2 = invalidTagNames.length; j < len2; ++j) {
+        const tagName = invalidTagNames[j];
         it(`Should throw an Error naming the tag and render nothing of <${JSON.stringify(tagName)}> with ${name}`, async () => {
           const { html, error } = await renderResult(
             createElement('div', null, createElement(tagName, null, 'child')),
@@ -110,7 +112,9 @@ describe('Security - SSR', () => {
   });
 
   describe('streams', () => {
-    for (const method of [streamAsString, streamQueueAsString]) {
+    const methods = [streamAsString, streamQueueAsString];
+    for (let i = 0, len = methods.length; i < len; ++i) {
+      const method = methods[i];
       it(`Should not render invalid attribute names with ${method.name}`, () => {
         const props = {};
         const userProvidedData = '></div><script>alert("hi")</script>';

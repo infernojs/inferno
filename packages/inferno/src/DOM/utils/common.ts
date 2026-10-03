@@ -124,7 +124,8 @@ export function removeChild(parentDOM: Element, childNode: Element): void {
 }
 
 export function callAll(arrayFn: Array<() => void>): void {
-  for (const fn of arrayFn) {
+  for (let i = 0, len = arrayFn.length; i < len; ++i) {
+    const fn = arrayFn[i];
     fn();
   }
 }
@@ -185,8 +186,9 @@ export function findElementFromVNode(vNode: VNode | null): Element | null {
       flags & VNodeFlags.Fragment &&
       vNode.childFlags & ChildFlags.MultipleChildren
     ) {
-      for (const child of vNode.children as VNode[]) {
-        const dom = findElementFromVNode(child);
+      const children = vNode.children as VNode[];
+      for (let i = 0, len = children.length; i < len; ++i) {
+        const dom = findElementFromVNode(children[i]);
         if (dom !== null) {
           return dom;
         }
@@ -247,7 +249,8 @@ export function clearVNodeDOM(
       if ((vNode as VNode).childFlags === ChildFlags.HasVNodeChildren) {
         vNode = children;
       } else {
-        for (const child of children) {
+        for (let i = 0, len = children.length; i < len; ++i) {
+          const child = children[i];
           clearVNodeDOM(child, parentDOM, deferredRemoval);
         }
         return;
@@ -277,7 +280,8 @@ export function appendVNodeDOM(vNode: VNode | null, parentDOM: Element): void {
       if ((vNode as VNode).childFlags === ChildFlags.HasVNodeChildren) {
         vNode = children;
       } else {
-        for (const child of children) {
+        for (let i = 0, len = children.length; i < len; ++i) {
+          const child = children[i];
           appendVNodeDOM(child, parentDOM);
         }
         return;
@@ -343,7 +347,8 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode): void {
     } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
       vNode = children;
     } else {
-      for (const child of children) {
+      for (let i = 0, len = children.length; i < len; ++i) {
+        const child = children[i];
         moveVNodeDOM(child, parentDOM, nextNode);
       }
       return;

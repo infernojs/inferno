@@ -253,7 +253,8 @@ describe('Columns like tests - (JSX)', () => {
         updateItemSpy.calls.reset();
       });
 
-      for (const testCase of keyedTests) {
+      for (let j = 0, len = keyedTests.length; j < len; ++j) {
+        const testCase = keyedTests[j];
         it('Should ' + testCase.name, () => {
           const columnsToBeAdded = getDifferentObjects(
             testCase.update,
@@ -438,7 +439,8 @@ describe('Columns like tests - (JSX)', () => {
         updateItemSpy.calls.reset();
       });
 
-      for (const testCase of nonKeyedTestCases) {
+      for (let j = 0, len = nonKeyedTestCases.length; j < len; ++j) {
+        const testCase = nonKeyedTestCases[j];
         it('Should ' + testCase.name, () => {
           const columnsToBeAdded = getDifferentObjects(
             testCase.update,

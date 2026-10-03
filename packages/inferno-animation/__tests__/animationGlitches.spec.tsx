@@ -188,16 +188,22 @@ describe('animation glitches', () => {
       expect(box.style.marginTop).toBe('');
     });
 
-    for (const [count, exact] of [
+    const cases = [
       [16, true],
       [17, false],
-    ] as const) {
+    ] as const;
+    for (let i = 0, len = cases.length; i < len; ++i) {
+      const [count, exact] = cases[i];
       it(`${exact ? 'asks' : 'does not ask'} ${count} elements that transition all for their animations`, async () => {
         render(boxes(ids(count)), container);
         frame();
         frame();
         const asked = jasmine.createSpy('getAnimations').and.returnValue([]);
-        for (const id of ids(count)) element(id).getAnimations = asked;
+        const boxIds = ids(count);
+        for (let i = 0, len = boxIds.length; i < len; ++i) {
+          const id = boxIds[i];
+          element(id).getAnimations = asked;
+        }
         stubComputed(
           (node) =>
             ids(count).includes((node as HTMLElement).dataset?.id ?? ''),
@@ -212,8 +218,10 @@ describe('animation glitches', () => {
         render(boxes([]), container);
         frame();
         expect(asked.calls.count()).toBe(exact ? count : 0);
-        for (const box of removed)
+        for (let i = 0, len = removed.length; i < len; ++i) {
+          const box = removed[i];
           expect(box.style.opacity).toBe(exact ? '' : '0.5');
+        }
       });
     }
   });

@@ -34,13 +34,17 @@ browserDescribe('layout moves in a browser', () => {
   }
   function positions(): Record<string, number> {
     const result: Record<string, number> = {};
-    for (const node of Array.from(container.querySelectorAll('li'))) {
+    const nodes = Array.from(container.querySelectorAll('li'));
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       result[node.dataset.id!] = node.getBoundingClientRect().top;
     }
     return result;
   }
   function expectPositions(before: Record<string, number>) {
-    for (const id of Object.keys(before)) {
+    const ids = Object.keys(before);
+    for (let i = 0, len = ids.length; i < len; ++i) {
+      const id = ids[i];
       expect(card(id).getBoundingClientRect().top).toBeCloseTo(before[id], 0);
     }
   }
@@ -135,7 +139,11 @@ browserDescribe('layout moves in a browser', () => {
     render(list(['A', 'C'], AllCard, 'FadeTest'), container);
     const removed = card('B');
     await until(() => removed.getAnimations().length > 0);
-    for (const animation of removed.getAnimations()) animation.finish();
+    const animations = removed.getAnimations();
+    for (let i = 0, len = animations.length; i < len; ++i) {
+      const animation = animations[i];
+      animation.finish();
+    }
     await until(() => !removed.isConnected);
     // The removal batch installs its inverse before another frame can paint.
     expect(card('C').getBoundingClientRect().top).toBeCloseTo(before.C, 0);

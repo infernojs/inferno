@@ -64,7 +64,9 @@ test(
     const ping = await get('/api/ping');
     assert.equal(await ping.text(), 'ok');
 
-    for (const path of ['/', '/about', '/page/example']) {
+    const paths = ['/', '/about', '/page/example'];
+    for (let i = 0, len = paths.length; i < len; ++i) {
+      const path = paths[i];
       const response = await get(path);
       const html = await response.text();
       assert.match(html, /<title>Inferno Router Demo<\/title>/);

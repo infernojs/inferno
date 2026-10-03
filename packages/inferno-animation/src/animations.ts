@@ -282,7 +282,8 @@ function reachedValues(
   const entries = transitionEntries(style);
   if (entries === null) return [];
   const properties: string[] = [];
-  for (const [name] of entries) {
+  for (let i = 0, len = entries.length; i < len; ++i) {
+    const [name] = entries[i];
     if (name === 'all') {
       if (exact) return animatedValues(dom, style);
       properties.push(...TRANSITIONED_BY_ALL);
@@ -291,7 +292,8 @@ function reachedValues(
     }
   }
   const reached: Array<[string, string]> = [];
-  for (const property of properties) {
+  for (let i = 0, len = properties.length; i < len; ++i) {
+    const property = properties[i];
     if (property === 'width' || property === 'height') continue;
     const value = style.getPropertyValue(property);
     if (value) reached.push([property, value]);
@@ -305,7 +307,9 @@ function animatedValues(
   style: CSSStyleDeclaration,
 ): Array<[string, string]> {
   const reached: Array<[string, string]> = [];
-  for (const animation of dom.getAnimations?.() || []) {
+  const animations = dom.getAnimations?.() || [];
+  for (let i = 0, len = animations.length; i < len; ++i) {
+    const animation = animations[i];
     if (
       'transitionProperty' in animation &&
       (animation.playState === 'running' || animation.playState === 'paused')
@@ -335,7 +339,8 @@ function _interruptEnter(dom: AnimatedElement, leave: Leave): void {
     style,
     leave.reached.map(([property]) => property),
   );
-  for (const [property, value] of leave.reached) {
+  for (let i = 0, len = leave.reached.length; i < len; ++i) {
+    const [property, value] = leave.reached[i];
     style.setProperty(property, value);
   }
   markApplied(style, leave.held);
@@ -416,7 +421,10 @@ function _willDisappear(
           const leaves = interrupting;
           interrupting = [];
           const exact = leaves.length <= EXACT_INTERRUPTS;
-          for (const other of leaves) other.exact = exact;
+          for (let i = 0, len = leaves.length; i < len; ++i) {
+            const other = leaves[i];
+            other.exact = exact;
+          }
         }
         leave.reached = reachedValues(dom, leave.exact ?? true);
       }
@@ -557,7 +565,9 @@ function scriptAnimatesTransform(
     if (batch.scripted === null) readChildAnimations(batch, false);
     return batch.scripted!.has(node);
   }
-  for (const animation of node.getAnimations?.() || []) {
+  const animations = node.getAnimations?.() || [];
+  for (let i = 0, len = animations.length; i < len; ++i) {
+    const animation = animations[i];
     if (!('transitionProperty' in animation) && setsTransform(animation))
       return true;
   }
@@ -573,7 +583,9 @@ function setsTransform(animation: Animation): boolean {
 // A computed animation-name list with an animation in it
 function hasAnimationName(names: string | undefined): boolean {
   if (!names || names === 'none') return false;
-  for (const name of names.split(',')) {
+  const parts = names.split(',');
+  for (let i = 0, len = parts.length; i < len; ++i) {
+    const name = parts[i];
     const trimmed = name.trim();
     if (trimmed !== '' && trimmed !== 'none') return true;
   }
@@ -588,7 +600,9 @@ function readChildAnimations(batch: MoveBatch, authors: boolean): void {
   const parent = batch.parent;
   const found = new Set<AnimatedElement>();
   const scripted = new Set<AnimatedElement>();
-  for (const animation of parentTransitions(parent)) {
+  const animations = parentTransitions(parent);
+  for (let i = 0, len = animations.length; i < len; ++i) {
+    const animation = animations[i];
     const node = transitionTarget(animation, parent);
     if (node === null) continue;
     if (!('transitionProperty' in animation)) {
@@ -620,7 +634,8 @@ function mayRunOther(
   own: string | null,
 ): boolean {
   if (runnable === null) return true;
-  for (const [name] of runnable) {
+  for (let i = 0, len = runnable.length; i < len; ++i) {
+    const [name] = runnable[i];
     if (name !== own && name !== '-webkit-' + own) return true;
   }
   return false;
@@ -631,7 +646,8 @@ function mayTransition(
   property: string,
 ): boolean {
   if (runnable === null) return true;
-  for (const [name] of runnable) {
+  for (let i = 0, len = runnable.length; i < len; ++i) {
+    const [name] = runnable[i];
     if (name === property || name === 'all' || name === '-webkit-' + property)
       return true;
   }
@@ -741,7 +757,10 @@ export function componentWillMove(
     }
   }
   // Finish skipped old moves only after all new source positions were read.
-  for (const item of skipped) finishMove(item);
+  for (let i = 0, len = skipped.length; i < len; ++i) {
+    const item = skipped[i];
+    finishMove(item);
+  }
   if (batch.items.length === 0 && batch.nodes.length === 0) return;
   const drift = sourceDrift(parent);
   if (drift !== null) {
@@ -749,7 +768,8 @@ export function componentWillMove(
       batch.xs[i] -= drift.x;
       batch.ys[i] -= drift.y;
     }
-    for (const item of batch.items) {
+    for (let i = 0, len = batch.items.length; i < len; ++i) {
+      const item = batch.items[i];
       item.x -= drift.x;
       item.y -= drift.y;
     }
@@ -1055,7 +1075,8 @@ function transitionTranslate(item: MoveItem): void {
 // Whether a retargeted item can run a transition besides its running move
 function retargetsMayHaveAuthors(batch: MoveBatch): boolean {
   let may = false;
-  for (const item of batch.items) {
+  for (let i = 0, len = batch.items.length; i < len; ++i) {
+    const item = batch.items[i];
     const previous = item.previous;
     if (item.done || previous === undefined || moving.get(item.node) !== item)
       continue;
@@ -1104,12 +1125,14 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
       : null;
   if (verify) {
     let leavers: MoveItem[] | null = null;
-    for (const item of batch.items) {
+    for (let i = 0, len = batch.items.length; i < len; ++i) {
+      const item = batch.items[i];
       if (isLeaving(item)) (leavers ??= []).push(item);
     }
     if (leavers !== null) finishHeld(leavers);
   }
-  for (const item of batch.items) {
+  for (let i = 0, len = batch.items.length; i < len; ++i) {
+    const item = batch.items[i];
     if (item.done || item.superseded) continue;
     const { node } = item;
     if (verify) {
@@ -1169,8 +1192,9 @@ function runMove(phase: AnimationPhase, batch: MoveBatch): void {
         item.starting = false;
         restoreTransitions(item);
         let added = '';
-        for (const name of batch.ownerClasses?.get(node) ??
-          batch.activeClasses) {
+        const classes = batch.ownerClasses?.get(node) ?? batch.activeClasses;
+        for (let j = 0, len2 = classes.length; j < len2; ++j) {
+          const name = classes[j];
           if (!node.classList.contains(name)) {
             node.classList.add(name);
             added = added === '' ? name : added + ' ' + name;

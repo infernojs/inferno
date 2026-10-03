@@ -17,7 +17,8 @@ function buildChartData(stats, name) {
     const statsRow = stats[r];
     const tr = [`Round ${r}`]
 
-    for (const testStat of statsRow) {
+    for (let i = 0, len = statsRow.length; i < len; ++i) {
+      const testStat = statsRow[i];
       tr.push(testStat.cpu)
     }
 

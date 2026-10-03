@@ -143,7 +143,8 @@ app.listen(PORT, async () => {
   // Trigger first transpile
   // https://parceljs.org/features/parcel-api/
   try {
-    for (const bundler of bundlers) {
+    for (let i = 0, len = bundlers.length; i < len; ++i) {
+      const bundler = bundlers[i];
       const { bundleGraph, buildTime } = await bundler.run();
       const builtBundles = bundleGraph.getBundles();
       bundles.push(...builtBundles);

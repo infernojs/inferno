@@ -117,7 +117,8 @@ describe('SSR Fragments and arrays', () => {
     },
   ];
 
-  for (const test of testEntries) {
+  for (let i = 0, len = testEntries.length; i < len; ++i) {
+    const test = testEntries[i];
     it(`Should render ${test.description} to string`, () => {
       expect(renderToString(test.template())).toBe(test.result);
     });

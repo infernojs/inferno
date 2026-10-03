@@ -48,7 +48,9 @@ describe('<Prompt> custom confirmation', () => {
     render(null, node);
   });
 
-  for (const action of ['push', 'replace'] as const) {
+  const methods = ['push', 'replace'] as const;
+  for (let i = 0, len = methods.length; i < len; ++i) {
+    const action = methods[i];
     it(`waits for custom confirmation of ${action} without using window.confirm`, () => {
       const nativeConfirm = spyOn(window, 'confirm').and.returnValue(false);
       mount();
@@ -117,7 +119,9 @@ describe('<Prompt> custom confirmation', () => {
     expect(cleanup).toHaveBeenCalledTimes(2);
   });
 
-  for (const change of ['disable', 'unmount', 'message', 'handler']) {
+  const changes = ['disable', 'unmount', 'message', 'handler'];
+  for (let i = 0, len = changes.length; i < len; ++i) {
+    const change = changes[i];
     it(`cleans up and ignores pending replies after ${change}`, () => {
       mount();
       history.push('/b');
@@ -239,7 +243,9 @@ describe('<Prompt> custom confirmation', () => {
 
 // Exercise real asynchronous history.go()/popstate in both jsdom (CI) and
 // the Jasmine browser suite. Memory history alone cannot catch early reblocking.
-for (const TestRouter of [BrowserRouter, HashRouter]) {
+const routers = [BrowserRouter, HashRouter];
+for (let i = 0, len = routers.length; i < len; ++i) {
+  const TestRouter = routers[i];
   describe(`<Prompt> with ${TestRouter.name} POP navigation`, () => {
     let node: HTMLDivElement;
     let history: History;
@@ -322,7 +328,8 @@ for (const TestRouter of [BrowserRouter, HashRouter]) {
 
     afterEach(() => {
       render(null, node);
-      for (const [type, listener, options] of subscriptions) {
+      for (let i = 0, len = subscriptions.length; i < len; ++i) {
+        const [type, listener, options] = subscriptions[i];
         window.removeEventListener(type, listener, options);
       }
       window.history.replaceState(initialState, '', initialURL);

@@ -90,7 +90,8 @@ export type IterateChildrenFn = (
 ) => any;
 
 function flatten(arr, result): unknown[] {
-  for (const value of arr) {
+  for (let i = 0, len = arr.length; i < len; ++i) {
+    const value = arr[i];
     if (isArray(value)) {
       flatten(value, result);
     } else {

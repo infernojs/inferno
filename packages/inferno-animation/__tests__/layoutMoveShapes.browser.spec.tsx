@@ -38,10 +38,16 @@ browserDescribe('layout move shapes in a browser', () => {
     expect(now.y).toBeCloseTo(where.y, 0);
   }
   function expectPositions(before: Record<string, Position>) {
-    for (const id of Object.keys(before)) expectAt(id, before[id]);
+    const ids = Object.keys(before);
+    for (let i = 0, len = ids.length; i < len; ++i) {
+      const id = ids[i];
+      expectAt(id, before[id]);
+    }
   }
   function expectClean() {
-    for (const node of elements()) {
+    const nodes = elements();
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       expect((node.getAttribute('style') || '') + '|' + node.className).toBe(
         '|',
       );
@@ -145,13 +151,15 @@ browserDescribe('layout move shapes in a browser', () => {
 
   it('keeps items continuous through repeated retargets and cleans up', async () => {
     render(list(['A', 'B', 'C', 'D']), container);
-    for (const order of [
+    const orders = [
       ['D', 'A', 'B', 'C'],
       ['C', 'D', 'A', 'B'],
       ['B', 'C', 'D', 'A'],
       ['A', 'B', 'C', 'D'],
       ['D', 'C', 'B', 'A'],
-    ]) {
+    ];
+    for (let i = 0, len = orders.length; i < len; ++i) {
+      const order = orders[i];
       const visible = positions();
       render(list(order), container);
       await Promise.resolve();
@@ -212,7 +220,9 @@ browserDescribe('layout move shapes in a browser', () => {
 
   // Random insertions, removals and moves at random intervals, several in one task at times.
   // Right after every update, each item that is neither entering nor leaving is where it was.
-  for (const seed of [1, 2, 3]) {
+  const seeds = [1, 2, 3];
+  for (let j = 0, len = seeds.length; j < len; ++j) {
+    const seed = seeds[j];
     it(
       'keeps retained items in place and ends clean through random updates, seed ' +
         seed,
@@ -248,7 +258,9 @@ browserDescribe('layout move shapes in a browser', () => {
           }
           if (before === null) {
             before = {};
-            for (const node of elements()) {
+            const nodes = elements();
+            for (let i = 0, len = nodes.length; i < len; ++i) {
+              const node = nodes[i];
               if (!busy(node)) before[node.dataset.id!] = position(node);
             }
           }
@@ -257,7 +269,9 @@ browserDescribe('layout move shapes in a browser', () => {
           // Some updates share a task with the next one
           if (wait > 10) continue;
           await Promise.resolve();
-          for (const node of elements()) {
+          const nodes = elements();
+          for (let i = 0, len = nodes.length; i < len; ++i) {
+            const node = nodes[i];
             const id = node.dataset.id!;
             if (busy(node) || !(id in before) || !order.includes(id)) continue;
             const now = position(node);

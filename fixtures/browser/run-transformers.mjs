@@ -39,8 +39,12 @@ function findChromium() {
     return process.env.CHROME_BIN;
   }
 
-  for (const dir of (process.env.PATH || '').split(path.delimiter)) {
-    for (const name of ['chromium', 'chromium-browser']) {
+  const dirs = (process.env.PATH || '').split(path.delimiter);
+  const names = ['chromium', 'chromium-browser'];
+  for (let i = 0, len = dirs.length; i < len; ++i) {
+    const dir = dirs[i];
+    for (let j = 0, len2 = names.length; j < len2; ++j) {
+      const name = names[j];
       const binary = path.join(dir, name);
 
       if (fs.existsSync(binary)) {
@@ -126,9 +130,15 @@ async function runBrowser(label, browser) {
 
 const results = {};
 
-for (const variant of variants) {
-  for (const compat of [false, true]) {
-    for (const minimize of [false, true]) {
+const compatModes = [false, true];
+const minimizeModes = [false, true];
+
+for (let i = 0, len = variants.length; i < len; ++i) {
+  const variant = variants[i];
+  for (let j = 0, len2 = compatModes.length; j < len2; ++j) {
+    const compat = compatModes[j];
+    for (let k = 0, len3 = minimizeModes.length; k < len3; ++k) {
+      const minimize = minimizeModes[k];
       const label = [variant, compat && 'compat', minimize && 'minified']
         .filter(Boolean)
         .join(' ');
@@ -140,14 +150,16 @@ for (const variant of variants) {
       } catch (err) {
         console.error(`${label}: build failed: ${err.message}`);
 
-        for (const browser of browsers) {
+        for (let m = 0, len4 = browsers.length; m < len4; ++m) {
+          const browser = browsers[m];
           results[label][browser] = 'build failed';
         }
 
         continue;
       }
 
-      for (const browser of browsers) {
+      for (let m = 0, len4 = browsers.length; m < len4; ++m) {
+        const browser = browsers[m];
         results[label][browser] = await runBrowser(label, browser);
       }
     }

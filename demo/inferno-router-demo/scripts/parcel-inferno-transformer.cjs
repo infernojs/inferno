@@ -8,7 +8,9 @@ const { transformAsync } = createRequire(__filename)('@babel/core');
 // Parcel's built-in Babel transformer requires Babel 7. Use Babel 8 for Inferno JSX.
 module.exports = new Transformer({
   async loadConfig({ config }) {
-    for (const specifier of ['@babel/core', 'babel-plugin-inferno']) {
+    const specifiers = ['@babel/core', 'babel-plugin-inferno'];
+    for (let i = 0, len = specifiers.length; i < len; ++i) {
+      const specifier = specifiers[i];
       config.addDevDependency({ specifier, resolveFrom: __filename });
     }
     const babelConfig = await config.getConfig(['.babelrc']);

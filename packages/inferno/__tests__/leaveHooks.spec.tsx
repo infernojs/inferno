@@ -37,7 +37,10 @@ describe('leave hooks of synchronously replaced children', () => {
 
   afterEach(() => {
     render(null, container);
-    for (const done of pending) done();
+    for (let i = 0, len = pending.length; i < len; ++i) {
+      const done = pending[i];
+      done();
+    }
     container.remove();
   });
 

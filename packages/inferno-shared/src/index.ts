@@ -79,7 +79,8 @@ export function hoistStaticProperties(
   // don't hoist over string (html) components
   const keys = Object.getOwnPropertyNames(sourceComponent);
 
-  for (const key of keys) {
+  for (let i = 0, len = keys.length; i < len; ++i) {
+    const key = keys[i];
     if (!KNOWN_STATICS[key]) {
       targetComponent[key] = sourceComponent[key];
     }

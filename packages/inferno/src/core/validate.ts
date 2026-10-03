@@ -63,7 +63,8 @@ function DEV_VALIDATE_KEYS(vNodeTree, childKeys): string | null {
 
   let foundKeyCount = 0;
 
-  for (const childNode of vNodeTree) {
+  for (let i = 0, len = vNodeTree.length; i < len; ++i) {
+    const childNode = vNodeTree[i];
     if (isArray(childNode)) {
       return (
         'Encountered ARRAY in mount, array must be flattened, or normalize used. Location: \n' +

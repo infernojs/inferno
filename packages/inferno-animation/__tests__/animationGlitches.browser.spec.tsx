@@ -339,7 +339,9 @@ browserDescribe('animation glitches in a browser', () => {
                 animation.transitionProperty === 'transform',
             ),
       );
-      for (const animation of a.getAnimations()) {
+      const animations = a.getAnimations();
+      for (let i = 0, len = animations.length; i < len; ++i) {
+        const animation = animations[i];
         animation.pause();
         animation.currentTime = 500;
       }

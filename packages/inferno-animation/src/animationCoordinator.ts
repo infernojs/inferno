@@ -79,11 +79,16 @@ function activate(): void {
   activationFrame = 0;
   const queue = activationQueue;
   activationQueue = [];
-  for (const phase of [
+  const phases = [
     AnimationPhase.ACTIVATE_ANIMATION,
     AnimationPhase.REGISTER_LISTENERS,
-  ]) {
-    for (const item of queue) if (!item.cancelled) item.callback(phase);
+  ];
+  for (let i = 0, len = phases.length; i < len; ++i) {
+    const phase = phases[i];
+    for (let j = 0, len2 = queue.length; j < len2; ++j) {
+      const item = queue[j];
+      if (!item.cancelled) item.callback(phase);
+    }
   }
 }
 
@@ -99,7 +104,10 @@ function prepare(queue: QueuedAnimation[]): void {
       queue.some((item) => !item.cancelled)
     )
       forceReflow();
-    for (const item of queue) if (!item.cancelled) item.callback(phase);
+    for (let i = 0, len = queue.length; i < len; ++i) {
+      const item = queue[i];
+      if (!item.cancelled) item.callback(phase);
+    }
   }
   activationQueue.push(...queue.filter((item) => !item.cancelled));
   if (activationQueue.length && !activationFrame)

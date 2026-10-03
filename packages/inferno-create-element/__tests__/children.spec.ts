@@ -218,7 +218,8 @@ describe('Children - (non-JSX)', () => {
     },
   ];
 
-  for (const arg of preDefined) {
+  for (let i = 0, len = preDefined.length; i < len; ++i) {
+    const arg = preDefined[i];
     it('should set static children as ' + arg.name, () => {
       render(createElement('div', null, arg.value), container);
       expect(container.firstChild.nodeType).toBe(1);
@@ -229,7 +230,8 @@ describe('Children - (non-JSX)', () => {
     });
   }
 
-  for (const arg of preDefined) {
+  for (let i = 0, len = preDefined.length; i < len; ++i) {
+    const arg = preDefined[i];
     it('should set static deep children as ' + arg.name, () => {
       const tmpl = () =>
         createElement('div', null, createElement('span', null, arg.value));
@@ -247,7 +249,8 @@ describe('Children - (non-JSX)', () => {
     });
   }
 
-  for (const arg of preDefined) {
+  for (let i = 0, len = preDefined.length; i < len; ++i) {
+    const arg = preDefined[i];
     it('should set very deep static children as ' + arg.name, () => {
       const tmpl = () =>
         createElement(
@@ -273,7 +276,8 @@ describe('Children - (non-JSX)', () => {
     });
   }
 
-  for (const arg of preDefined) {
+  for (let i = 0, len = preDefined.length; i < len; ++i) {
+    const arg = preDefined[i];
     const template = (child?) => createElement('div', null, child);
 
     it(`should set dynamic children as ${arg.name}, clear and set them again`, () => {
@@ -341,7 +345,8 @@ describe('Children - (non-JSX)', () => {
     expect(container.firstChild.textContent).toBe('');
   });
 
-  for (const arg of preDefined) {
+  for (let i = 0, len = preDefined.length; i < len; ++i) {
+    const arg = preDefined[i];
     const template = (child?) =>
       createElement('div', null, createElement('b', null, child));
 

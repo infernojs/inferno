@@ -365,7 +365,8 @@ describe('lifecycle hooks', () => {
 
       expect(container.textContent).toBe('BA');
       expect(calls.sort()).toEqual(['A', 'B']);
-      for (const props of receivedProps) {
+      for (let i = 0, len = receivedProps.length; i < len; ++i) {
+        const props = receivedProps[i];
         expect(props.onComponentWillMove).toBeUndefined();
       }
     });

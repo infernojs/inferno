@@ -314,7 +314,8 @@ describe('Components 3 (TSX)', () => {
       render(<BuggyRender />, container);
       const buttons = container.querySelectorAll('button');
 
-      for (const button of buttons) {
+      for (let i = 0, len = buttons.length; i < len; ++i) {
+        const button = buttons[i];
         button.click();
       }
 
@@ -373,7 +374,8 @@ describe('Components 3 (TSX)', () => {
       render(<ChangeChildrenCount />, container);
       const buttons = container.querySelectorAll('button');
 
-      for (const button of buttons) {
+      for (let i = 0, len = buttons.length; i < len; ++i) {
+        const button = buttons[i];
         button.click();
       }
 
@@ -445,7 +447,8 @@ describe('Components 3 (TSX)', () => {
       render(<First />, container);
       const buttons = container.querySelectorAll('button');
 
-      for (const button of buttons) {
+      for (let i = 0, len = buttons.length; i < len; ++i) {
+        const button = buttons[i];
         button.click();
       }
 
@@ -511,7 +514,8 @@ describe('Components 3 (TSX)', () => {
       render(<First />, container);
       const buttons = container.querySelectorAll('button');
 
-      for (const button of buttons) {
+      for (let i = 0, len = buttons.length; i < len; ++i) {
+        const button = buttons[i];
         button.click();
       }
 
@@ -595,7 +599,8 @@ describe('Components 3 (TSX)', () => {
       render(<First name="guy2" />, secondDiv);
 
       const buttons = firstDiv.querySelectorAll('button');
-      for (const button of buttons) {
+      for (let i = 0, len = buttons.length; i < len; ++i) {
+        const button = buttons[i];
         button.click();
       }
 
@@ -612,7 +617,8 @@ describe('Components 3 (TSX)', () => {
       render(<First name="guy2" />, secondDiv);
 
       const buttons = secondDiv.querySelectorAll('button');
-      for (const button of buttons) {
+      for (let i = 0, len = buttons.length; i < len; ++i) {
+        const button = buttons[i];
         button.click();
       }
 

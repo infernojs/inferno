@@ -98,8 +98,13 @@ function coverRoots(vNode: VNode, covered: Set<Element>): void {
   else if (flags & VNodeFlags.Fragment) {
     if (vNode.childFlags === ChildFlags.HasVNodeChildren)
       coverRoots(input(vNode), covered);
-    else
-      for (const child of vNode.children as VNode[]) coverRoots(child, covered);
+    else {
+      const children = vNode.children as VNode[];
+      for (let i = 0, len = children.length; i < len; ++i) {
+        const child = children[i];
+        coverRoots(child, covered);
+      }
+    }
   }
 }
 
@@ -143,7 +148,9 @@ function visit(vNode: VNode, list: MoveList, covered?: Set<Element>): boolean {
     if (vNode.childFlags === ChildFlags.HasVNodeChildren)
       return visit(input(vNode), list, covered);
     let found = false;
-    for (const child of vNode.children as VNode[]) {
+    const children = vNode.children as VNode[];
+    for (let i = 0, len = children.length; i < len; ++i) {
+      const child = children[i];
       if (visit(child, list, covered)) {
         found = true;
         if (!covered) break;
@@ -283,7 +290,9 @@ function prepareOwner(
     if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
       prepareOwner(input(vNode), list, commit, true);
     } else {
-      for (const child of vNode.children as VNode[]) {
+      const children = vNode.children as VNode[];
+      for (let i = 0, len = children.length; i < len; ++i) {
+        const child = children[i];
         prepareOwner(child, list, commit, true);
       }
     }
@@ -419,9 +428,13 @@ function collectNestedLists(vNode: VNode, nested: Set<MoveList>): void {
     }
     if (vNode.childFlags === ChildFlags.HasVNodeChildren)
       collectNestedLists(input(vNode), nested);
-    else
-      for (const child of vNode.children as VNode[])
+    else {
+      const children = vNode.children as VNode[];
+      for (let i = 0, len = children.length; i < len; ++i) {
+        const child = children[i];
         collectNestedLists(child, nested);
+      }
+    }
   }
 }
 function prepareRemoval(parent: Element, invoke: boolean): boolean {
@@ -433,12 +446,18 @@ function prepareRemoval(parent: Element, invoke: boolean): boolean {
   // Outer owners cover inner fragment roots regardless of mount order.
   if (siblings.size > 1) {
     for (const list of siblings) {
-      for (const child of list.children) collectNestedLists(child, nested);
+      const children = list.children;
+      for (let i = 0, len = children.length; i < len; ++i) {
+        const child = children[i];
+        collectNestedLists(child, nested);
+      }
     }
   }
   for (const list of siblings) {
     if (nested.has(list)) continue;
-    for (const child of list.children) {
+    const children = list.children;
+    for (let i = 0, len = children.length; i < len; ++i) {
+      const child = children[i];
       if (visit(child, list, covered)) {
         found = true;
         if (!invoke) return true;
@@ -527,9 +546,13 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
         }
         if (vNode.childFlags === ChildFlags.HasVNodeChildren)
           this.reparent(input(vNode), parent);
-        else
-          for (const child of vNode.children as VNode[])
+        else {
+          const children = vNode.children as VNode[];
+          for (let i = 0, len = children.length; i < len; ++i) {
+            const child = children[i];
             this.reparent(child, parent);
+          }
+        }
       }
     },
     remove(parent, callback) {

@@ -109,7 +109,8 @@ function capitalize(token: string): string {
   return token[1].toUpperCase();
 }
 
-for (const original of ATTRS) {
+for (let i = 0, len = ATTRS.length; i < len; ++i) {
+  const original = ATTRS[i];
   const reactName = original.replace(CAMELIZE, capitalize);
 
   InfernoCompatPropertyMap[reactName] = original;

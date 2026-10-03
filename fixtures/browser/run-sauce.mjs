@@ -145,7 +145,9 @@ const sauceConnect = await new SauceLabs({
 const results = {};
 
 try {
-  for (const [id, capabilities] of Object.entries(browsers)) {
+  const browserEntries = Object.entries(browsers);
+  for (let i = 0, len = browserEntries.length; i < len; ++i) {
+    const [id, capabilities] = browserEntries[i];
     results[id] = await runBrowser(id, capabilities);
   }
 } finally {

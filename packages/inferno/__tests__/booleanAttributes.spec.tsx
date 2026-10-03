@@ -49,7 +49,8 @@ describe('Boolean attributes', () => {
     ['input', 'readOnly', 'readonly'],
   ];
 
-  for (const [type, name, property] of attributes) {
+  for (let i = 0, len = attributes.length; i < len; ++i) {
+    const [type, name, property] = attributes[i];
     it(`Should set and remove the lowercase ${name} attribute of ${type}`, () => {
       render(element(type, { [name]: true }), container);
       const dom = container.firstChild;
@@ -77,7 +78,8 @@ describe('Boolean attributes', () => {
     });
   }
 
-  for (const [type, prop, name] of camelCaseProps) {
+  for (let i = 0, len = camelCaseProps.length; i < len; ++i) {
+    const [type, prop, name] = camelCaseProps[i];
     it(`Should set and remove ${name} of ${type} through the camelCase ${prop} prop`, () => {
       render(element(type, { [prop]: false }), container);
       const dom = container.firstChild;
@@ -93,10 +95,12 @@ describe('Boolean attributes', () => {
   }
 
   // The obsolete scoped and seamless have no DOM property left, only the attribute
-  for (const [type, name] of [
+  const cases = [
     ['style', 'scoped'],
     ['iframe', 'seamless'],
-  ]) {
+  ];
+  for (let i = 0, len = cases.length; i < len; ++i) {
+    const [type, name] = cases[i];
     it(`Should set and remove the ${name} attribute of ${type}`, () => {
       render(element(type, { [name]: false }), container);
       const dom = container.firstChild;
@@ -123,7 +127,8 @@ describe('Boolean attributes', () => {
     ['video', 'playsInline', 'playsinline'],
   ];
 
-  for (const [type, camelCase, name] of moreAttributes) {
+  for (let i = 0, len = moreAttributes.length; i < len; ++i) {
+    const [type, camelCase, name] = moreAttributes[i];
     for (const prop of new Set([camelCase, name])) {
       it(`Should set and remove the ${name} attribute of ${type} through the ${prop} prop`, () => {
         render(element(type, { [prop]: false }), container);

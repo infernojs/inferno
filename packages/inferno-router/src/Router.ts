@@ -125,7 +125,9 @@ export class Router extends Component<IRouterProps, any> {
     this._loaderIteration = (this._loaderIteration + 1) % 10000;
     const currentIteration = this._loaderIteration;
 
-    for (const controller of this._loaderFetchControllers) {
+    const controllers = this._loaderFetchControllers;
+    for (let i = 0, len = controllers.length; i < len; ++i) {
+      const controller = controllers[i];
       controller.abort();
     }
     this._loaderFetchControllers = [];
@@ -157,7 +159,9 @@ export class Router extends Component<IRouterProps, any> {
     this.unlisten();
 
     // Pending loaders of a router that is gone
-    for (const controller of this._loaderFetchControllers) {
+    const controllers = this._loaderFetchControllers;
+    for (let i = 0, len = controllers.length; i < len; ++i) {
+      const controller = controllers[i];
       controller.abort();
     }
     this._loaderFetchControllers = [];

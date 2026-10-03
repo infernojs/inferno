@@ -42,7 +42,9 @@ describe('SSR -> Hydrate - Forward Ref', () => {
     }
   }
 
-  for (const method of [renderToString, streamAsString, streamQueueAsString]) {
+  const methods = [renderToString, streamAsString, streamQueueAsString];
+  for (let i = 0, len = methods.length; i < len; ++i) {
+    const method = methods[i];
     it(`Should be possible to forward createRef with ${method.name}`, (done) => {
       const FancyButton = forwardRef((props, ref) => (
         <button ref={ref} className="FancyButton">

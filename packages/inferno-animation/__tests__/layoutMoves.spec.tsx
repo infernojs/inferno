@@ -38,7 +38,9 @@ describe('coordinated layout moves', () => {
   }
 
   function measureRows() {
-    for (const node of Array.from(container.querySelectorAll('li'))) {
+    const nodes = Array.from(container.querySelectorAll('li'));
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       node.getBoundingClientRect = () => {
         reads++;
         const offset = /translate\([^,]+,\s*([\d.-]+)px\)/.exec(
@@ -75,7 +77,9 @@ describe('coordinated layout moves', () => {
   afterEach(async () => {
     await Promise.resolve();
     frames.drain();
-    for (const node of Array.from(container.querySelectorAll('li'))) {
+    const nodes = Array.from(container.querySelectorAll('li'));
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       node.dispatchEvent(new Event('transitionend'));
     }
     render(null, container);
@@ -157,8 +161,11 @@ describe('coordinated layout moves', () => {
       'translate(0px,-42px)',
     );
     frame();
-    for (const node of Array.from(container.querySelectorAll('li')))
+    const nodes = Array.from(container.querySelectorAll('li'));
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       node.dispatchEvent(new Event('transitionend'));
+    }
     render(list(['X', 'A', 'C', 'D']), container);
     await Promise.resolve();
     expect(card('A').style.transform).toBe('');
@@ -303,7 +310,9 @@ describe('coordinated layout moves', () => {
     expect(card('C').className).toBe('Item-move-active');
 
     frame();
-    for (const id of ['B', 'C']) {
+    const ids = ['B', 'C'];
+    for (let i = 0, len = ids.length; i < len; ++i) {
+      const id = ids[i];
       card(id).dispatchEvent(new Event('transitionend'));
       expect(card(id).className).toBe('');
     }
@@ -339,7 +348,9 @@ describe('coordinated layout moves', () => {
     expect(card('C').className).toBe('custom moving');
 
     frame();
-    for (const id of ['A', 'B', 'C']) {
+    const ids = ['A', 'B', 'C'];
+    for (let i = 0, len = ids.length; i < len; ++i) {
+      const id = ids[i];
       card(id).dispatchEvent(new Event('transitionend'));
       expect(card(id).className).toBe(id === 'C' ? 'custom' : '');
     }
@@ -377,7 +388,9 @@ describe('coordinated layout moves', () => {
     await Promise.resolve();
     expect(reads).toBe(10);
     expect(card('A').className).toBe('');
-    for (const id of ['B', 'C']) {
+    const moved = ['B', 'C'];
+    for (let i = 0, len = moved.length; i < len; ++i) {
+      const id = moved[i];
       expect(card(id).className).toBe(id + '-move-active');
       expect(card(id + '2').className).toBe(id + '-move-active');
     }
@@ -451,7 +464,8 @@ describe('coordinated layout moves', () => {
     render(template(['A', 'F']), container);
     await Promise.resolve();
     reads = 0;
-    for (const complete of completions) {
+    for (let i = 0, len = completions.length; i < len; ++i) {
+      const complete = completions[i];
       complete();
       complete();
     }
@@ -512,11 +526,14 @@ describe('coordinated layout moves', () => {
       subtreeQueries++;
       return [];
     };
-    for (const node of Array.from(parent.children))
+    const nodes = Array.from(parent.children);
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       node.getAnimations = () => {
         elementQueries.set(node, (elementQueries.get(node) ?? 0) + 1);
         return [];
       };
+    }
     render(list(['D', 'A', 'B', 'C']), container);
     await Promise.resolve();
     frame();
@@ -557,11 +574,14 @@ describe('coordinated layout moves', () => {
         },
       ] as any;
     };
-    for (const node of Array.from(parent.children))
+    const nodes = Array.from(parent.children);
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       node.getAnimations = () => {
         elementQueries++;
         return [];
       };
+    }
     render(list(['C', 'D', 'A', 'B']), container);
     await Promise.resolve();
     expect(subtreeQueries).toBe(1);
@@ -675,7 +695,9 @@ describe('coordinated layout moves', () => {
     render(items(['A', 'B', 'C', 'D', 'E']), container);
     await Promise.resolve();
     frames.drain();
-    for (const node of Array.from(container.querySelectorAll('li'))) {
+    const nodes = Array.from(container.querySelectorAll('li'));
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       node.dispatchEvent(new Event('transitionend'));
     }
     measureRows();
@@ -695,7 +717,9 @@ describe('coordinated layout moves', () => {
       await Promise.resolve();
       frame();
       expect(reads).toBe(0);
-      for (const node of Array.from(container.querySelectorAll('li'))) {
+      const nodes = Array.from(container.querySelectorAll('li'));
+      for (let i = 0, len = nodes.length; i < len; ++i) {
+        const node = nodes[i];
         expect(node.style.transform).toBe('');
         expect(node.className).toBe('');
       }

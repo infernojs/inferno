@@ -89,7 +89,8 @@ if (isProduction) {
   );
 }
 
-for (const dir of benchmarks) {
+for (let i = 0, len = benchmarks.length; i < len; ++i) {
+  const dir = benchmarks[i];
   const benchmarkPath = join(__dirname, dir);
   const appJsPath = resolve(benchmarkPath, 'app.js')
 

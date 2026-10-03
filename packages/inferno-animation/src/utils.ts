@@ -25,7 +25,8 @@ export function addClassName(
   }
   const classNameList = getClassNameList(className);
 
-  for (const name of classNameList) {
+  for (let i = 0, len = classNameList.length; i < len; ++i) {
+    const name = classNameList[i];
     node.classList.add(name);
   }
 }
@@ -40,7 +41,8 @@ export function removeClassName(
   }
   const classNameList = getClassNameList(className);
 
-  for (const name of classNameList) {
+  for (let i = 0, len = classNameList.length; i < len; ++i) {
+    const name = classNameList[i];
     node.classList.remove(name);
   }
 }
@@ -268,7 +270,8 @@ export function markApplied(
   saved: SavedStyle[],
   priority = '',
 ): void {
-  for (const entry of saved) {
+  for (let i = 0, len = saved.length; i < len; ++i) {
+    const entry = saved[i];
     entry.applied = style.getPropertyValue(entry.property);
     entry.appliedPriority = entry.applied === '' ? '' : priority;
   }
@@ -282,7 +285,8 @@ export function restoreStyles(
   style: CSSStyleDeclaration,
   saved: SavedStyle[],
 ): void {
-  for (const entry of saved) {
+  for (let i = 0, len = saved.length; i < len; ++i) {
+    const entry = saved[i];
     if (
       style.getPropertyValue(entry.property) === entry.applied &&
       style.getPropertyPriority(entry.property) === entry.appliedPriority
@@ -330,7 +334,8 @@ function _getMaxTransitionDuration(nodes): {
 } {
   let nrofTransitions = 0;
   let maxDuration = 0;
-  for (const node of nodes) {
+  for (let i = 0, len = nodes.length; i < len; ++i) {
+    const node = nodes[i];
     if (!node) continue;
 
     const cs = window.getComputedStyle(node);
@@ -338,7 +343,8 @@ function _getMaxTransitionDuration(nodes): {
     const del = cs.getPropertyValue('transition-delay').split(',');
     const props = cs.getPropertyValue('transition-property').split(',');
 
-    for (const prop of props) {
+    for (let j = 0, len2 = props.length; j < len2; ++j) {
+      const prop = props[j];
       const fixedProp = prop.trim();
       if (fixedProp[0] === '-') {
         const tmp = fixedProp.split('-').splice(2).join('-');
@@ -429,7 +435,8 @@ export function registerTransitionListener(
     if (!event.timeout) {
       // Make sure it isn't a child that is triggering the event
       let goAhead = false;
-      for (const node of nodes) {
+      for (let i = 0, len = nodes.length; i < len; ++i) {
+        const node = nodes[i];
         // Note: Check for undefined nodes (happens when an animated el doesn't have children)
         if (node !== undefined && event.target === node) {
           goAhead = true;
@@ -534,7 +541,8 @@ function runnableTransitions(style: CSSStyleDeclaration): void {
   runnableCount = entries === null ? 1 : entries.length;
   runnableLongest = 0;
   if (entries !== null) {
-    for (const [, combined] of entries) {
+    for (let i = 0, len = entries.length; i < len; ++i) {
+      const [, combined] = entries[i];
       if (combined > runnableLongest) runnableLongest = combined;
     }
   }
@@ -645,7 +653,10 @@ function joinTimerGroup(wait: TransitionWait, delay: number): void {
       waits: [],
       live: 0,
       timer: setTimeout(() => {
-        for (const member of created.waits) finishWait(member, true);
+        for (let i = 0, len = created.waits.length; i < len; ++i) {
+          const member = created.waits[i];
+          finishWait(member, true);
+        }
       }, delay),
     };
     taskGroups.set(delay, (group = created));

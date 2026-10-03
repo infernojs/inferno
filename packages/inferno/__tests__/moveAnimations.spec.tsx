@@ -40,12 +40,14 @@ describe('keyed layout animation preparation', () => {
     expect(container.textContent).toBe('01432');
   });
 
-  for (const order of [
+  const orders = [
     ['D', 'X', 'A', 'B', 'C'],
     ['X', 'A', 'B', 'C', 'D'],
     ['A', 'C', 'D'],
     ['D', 'A', 'C'],
-  ]) {
+  ];
+  for (let i = 0, len = orders.length; i < len; ++i) {
+    const order = orders[i];
     it(
       'prepares retained owners before changing ABCD to ' + order.join(''),
       () => {
@@ -116,7 +118,9 @@ describe('keyed layout animation preparation', () => {
     function FunctionWrapper({ id }) {
       return <Animated id={id} />;
     }
-    for (const Item of [Animated, ClassWrapper, FunctionWrapper]) {
+    const components = [Animated, ClassWrapper, FunctionWrapper];
+    for (let i = 0, len = components.length; i < len; ++i) {
+      const Item = components[i];
       render(null, container);
       calls.length = 0;
       const template = (order) => (
@@ -427,7 +431,9 @@ describe('keyed layout animation preparation', () => {
     }
     const start = [0, 1, 2, 3, 4];
     const hook = () => {};
-    for (const order of permutations(start)) {
+    const orders = permutations(start);
+    for (let i = 0, len = orders.length; i < len; ++i) {
+      const order = orders[i];
       for (let mask = 0; mask < 32; mask++) {
         const animated = start.filter((id) => mask & (1 << id));
         render(list(start, hook, animated), container);
@@ -559,7 +565,9 @@ describe('keyed layout animation preparation', () => {
           return <li>{this.props.id}</li>;
         }
       }
-      for (const Item of [InConstructor, InWillMount]) {
+      const components = [InConstructor, InWillMount];
+      for (let i = 0, len = components.length; i < len; ++i) {
+        const Item = components[i];
         const items = (order) => (
           <ul>
             {order.map((id) => (

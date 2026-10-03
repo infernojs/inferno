@@ -722,7 +722,8 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
     },
   ];
 
-  for (const test of testEntries) {
+  for (let i = 0, len = testEntries.length; i < len; ++i) {
+    const test = testEntries[i];
     it(test.description, async () => {
       const vDom = test.template('foo');
 
@@ -964,10 +965,12 @@ describe('SSR Creation Queue Streams - (non-JSX)', () => {
       expect(output[1]).toBe('<div>1</div>');
     });
 
-    for (const [description, getInitialProps] of [
+    const cases = [
       ['a promise', async () => ({ text: 'loaded' })],
       ['an object', () => ({ text: 'loaded' })],
-    ] as const) {
+    ] as const;
+    for (let i = 0, len = cases.length; i < len; ++i) {
+      const [description, getInitialProps] = cases[i];
       it(`Should pass the props from getInitialProps to getDerivedStateFromProps when it returns ${description}`, async () => {
         class Test extends Component<{ text?: string }, { text?: string }> {
           public state: { text?: string } = {};

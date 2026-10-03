@@ -47,7 +47,8 @@ describe('Basic event tests', () => {
     render(template(test), container);
 
     let divs = container.querySelectorAll('div');
-    for (const div of divs) {
+    for (let i = 0, len = divs.length; i < len; ++i) {
+      const div = divs[i];
       div.click();
     }
     expect(calledFirstTest).toBe(true);
@@ -57,7 +58,8 @@ describe('Basic event tests', () => {
 
     render(template(test2), container);
     divs = container.querySelectorAll('div');
-    for (const div of divs) {
+    for (let i = 0, len = divs.length; i < len; ++i) {
+      const div = divs[i];
       div.click();
     }
 
@@ -70,7 +72,8 @@ describe('Basic event tests', () => {
 
     render(null, container);
     divs = container.querySelectorAll('div');
-    for (const div of divs) {
+    for (let i = 0, len = divs.length; i < len; ++i) {
+      const div = divs[i];
       div.click();
     }
 
@@ -112,12 +115,14 @@ describe('Basic event tests', () => {
 
     expect((container.firstChild as Element).innerHTML).toBe('Count 0');
     expect(data.count).toBe(0);
-    for (const button of buttons) {
+    for (let i = 0, len = buttons.length; i < len; ++i) {
+      const button = buttons[i];
       button.click();
     }
     expect((container.firstChild as Element).innerHTML).toBe('Count 1');
     expect(data.count).toBe(1);
-    for (const button of buttons) {
+    for (let i = 0, len = buttons.length; i < len; ++i) {
+      const button = buttons[i];
       button.click();
     }
     expect((container.firstChild as Element).innerHTML).toBe('Count 2');
@@ -159,7 +164,8 @@ describe('Basic event tests', () => {
       '<span>Count 0</span>',
     );
     expect(data.count).toBe(0);
-    for (const button of buttons) {
+    for (let i = 0, len = buttons.length; i < len; ++i) {
+      const button = buttons[i];
       button.click();
     }
     expect((container.firstChild as Element).innerHTML).toBe(

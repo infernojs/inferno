@@ -37,11 +37,14 @@ async function printFileSizes() {
     colWidth: [100, 200, 200, 200, 200]
   });
 
-  for (const name of packages.sort()) {
+  const names = packages.sort();
+  for (let i = 0, len = names.length; i < len; ++i) {
+    const name = names[i];
     const filesToStat = [name + '.js', name + '.min.js', 'index.mjs', 'index.cjs', 'index.min.cjs'];
     const row = [name];
 
-    for (const file of filesToStat) {
+    for (let j = 0, len2 = filesToStat.length; j < len2; ++j) {
+      const file = filesToStat[j];
       const sizes = await getFileSize(`${PACKAGES_DIR}/${name}/dist/${file}`);
 
       row.push(`${sizes.fileSize}/${sizes.gzipSize}`);

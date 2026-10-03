@@ -635,7 +635,8 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
         public render() {
           const content: NormalItem[] = [<NormalItem />, <NormalItem />];
 
-          for (const _d of items) {
+          for (let i = 0, len = items.length; i < len; ++i) {
+            const _d = items[i];
             const idx = items.indexOf(_d);
             content.push(<Item index={idx} />);
           }

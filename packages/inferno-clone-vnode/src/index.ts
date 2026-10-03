@@ -51,7 +51,8 @@ export function cloneVNode(vNodeToClone: VNode, props?, ...childArgs): VNode {
   } else if (childLen > 1) {
     children = [];
 
-    for (const child of childArgs) {
+    for (let i = 0, len = childArgs.length; i < len; ++i) {
+      const child = childArgs[i];
       children.push(child);
     }
   }

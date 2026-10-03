@@ -1171,7 +1171,8 @@ describe('Components (non-JSX)', () => {
         render(tpl79713834(TEST), container);
         const buttons = container.querySelectorAll('button');
 
-        for (const button of buttons) {
+        for (let i = 0, len = buttons.length; i < len; ++i) {
+          const button = buttons[i];
           button.click();
         }
 

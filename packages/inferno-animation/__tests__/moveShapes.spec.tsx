@@ -78,7 +78,9 @@ describe('move shapes with index geometry', () => {
   // The inline style and classes of every item by id
   function states(): Record<string, string> {
     const result: Record<string, string> = {};
-    for (const node of items()) {
+    const nodes = items();
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       result[node.dataset.id!] = normalize(
         (node.getAttribute('style') || '') + '|' + node.className,
       );
@@ -87,7 +89,9 @@ describe('move shapes with index geometry', () => {
   }
   function transforms(): Record<string, string> {
     const result: Record<string, string> = {};
-    for (const node of items()) {
+    const nodes = items();
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       result[node.dataset.id!] = normalize(node.style.transform);
     }
     return result;
@@ -145,12 +149,18 @@ describe('move shapes with index geometry', () => {
     excluded: HTMLElement[] = [],
   ): Promise<HTMLElement[]> {
     const before = new Map<HTMLElement, Point>();
-    for (const node of items()) before.set(node, placeOf(node));
+    const nodesBefore = items();
+    for (let i = 0, len = nodesBefore.length; i < len; ++i) {
+      const node = nodesBefore[i];
+      before.set(node, placeOf(node));
+    }
     render(view(order), container);
     await Promise.resolve();
     const moved: HTMLElement[] = [];
     const expected: Record<string, string> = {};
-    for (const node of items()) {
+    const nodesAfter = items();
+    for (let i = 0, len = nodesAfter.length; i < len; ++i) {
+      const node = nodesAfter[i];
       const from = excluded.includes(node) ? undefined : before.get(node);
       const to = placeOf(node);
       if (from !== undefined && (from.x !== to.x || from.y !== to.y)) {
@@ -226,7 +236,9 @@ describe('move shapes with index geometry', () => {
       // Activation: the moved items transition to their own boxes, the others stay untouched
       frame();
       const active: Record<string, string> = {};
-      for (const node of items()) {
+      const activeNodes = items();
+      for (let i = 0, len = activeNodes.length; i < len; ++i) {
+        const node = activeNodes[i];
         active[node.dataset.id!] = moved.includes(node)
           ? 'transform:translate(0px,0px);|Card-move-active'
           : '|';
@@ -235,29 +247,40 @@ describe('move shapes with index geometry', () => {
       // Cleanup
       finishTransitions();
       const clean: Record<string, string> = {};
-      for (const node of items()) clean[node.dataset.id!] = '|';
+      const cleanNodes = items();
+      for (let i = 0, len = cleanNodes.length; i < len; ++i) {
+        const node = cleanNodes[i];
+        clean[node.dataset.id!] = '|';
+      }
       expect(states()).toEqual(clean);
       expect(hasPendingAnimations()).toBe(false);
     };
   }
 
-  for (const mode of ['column', 'row', 'grid'] as Layout[]) {
+  const layouts = ['column', 'row', 'grid'] as Layout[];
+  for (let i = 0, len = layouts.length; i < len; ++i) {
+    const mode = layouts[i];
     describe('in a ' + mode + ' layout', () => {
       beforeEach(() => {
         layout = mode;
       });
-      for (const [name, order] of shapes) {
+      for (let i = 0, len = shapes.length; i < len; ++i) {
+        const [name, order] = shapes[i];
         it(name, checkShape(order));
       }
     });
   }
 
-  for (const name of Object.keys(owners).slice(1)) {
+  const ownerNames = Object.keys(owners).slice(1);
+  for (let i = 0, len = ownerNames.length; i < len; ++i) {
+    const name = ownerNames[i];
     describe('with ' + name, () => {
       beforeEach(() => {
         owner = owners[name];
       });
-      for (const index of [1, 6, 8, 12, 15]) {
+      const indexes = [1, 6, 8, 12, 15];
+      for (let i = 0, len = indexes.length; i < len; ++i) {
+        const index = indexes[i];
         it(shapes[index][0], checkShape(shapes[index][1]));
       }
     });
@@ -281,7 +304,9 @@ describe('move shapes with index geometry', () => {
     render(view(['C', 'D', 'E', 'A', 'B']), container);
     await Promise.resolve();
     const expected: Record<string, string> = {};
-    for (const node of items()) {
+    const nodes = items();
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
       expected[node.dataset.id!] = translate(first.get(node)!, placeOf(node));
     }
     expect(transforms()).toEqual(expected);
@@ -294,7 +319,10 @@ describe('move shapes with index geometry', () => {
       }
     }
     function finish(ids: string[]) {
-      for (const id of ids) item(id).dispatchEvent(new Event('transitionend'));
+      for (let i = 0, len = ids.length; i < len; ++i) {
+        const id = ids[i];
+        item(id).dispatchEvent(new Event('transitionend'));
+      }
     }
 
     beforeEach(async () => {
@@ -379,7 +407,10 @@ describe('move shapes with index geometry', () => {
   it('asks only elements without a CSS animation for their script animations', async () => {
     render(view(START), container);
     const asked = jasmine.createSpy('getAnimations').and.returnValue([]);
-    for (const id of START) item(id).getAnimations = asked;
+    for (let i = 0, len = START.length; i < len; ++i) {
+      const id = START[i];
+      item(id).getAnimations = asked;
+    }
     const computed = window.getComputedStyle;
     spyOn(window, 'getComputedStyle').and.callFake(
       (node: Element, pseudo?: string | null) => {
@@ -470,7 +501,11 @@ describe('move shapes with index geometry', () => {
     expect(b.isConnected).toBe(false);
     expect(hasPendingAnimations()).toBe(false);
     // The replaced A and C leave as well; without move hooks their removal is immediate
-    for (const complete of completions.slice(1)) complete();
+    const remaining = completions.slice(1);
+    for (let i = 0, len = remaining.length; i < len; ++i) {
+      const complete = remaining[i];
+      complete();
+    }
     expect(container.textContent).toBe('AC');
   });
 });

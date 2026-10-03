@@ -329,7 +329,8 @@ export class RenderQueueStream extends Readable {
           return;
         } else if (childFlags & ChildFlags.MultipleChildren) {
           this.addToQueue(renderedString, position);
-          for (const child of children) {
+          for (let i = 0, len = children.length; i < len; ++i) {
+            const child = children[i];
             this.renderVNodeToQueue(child, context, position, childSelectValue);
           }
           this.addToQueue('</' + type + '>', position);
@@ -353,7 +354,8 @@ export class RenderQueueStream extends Readable {
       } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
         this.renderVNodeToQueue(children, context, position, selectValue);
       } else {
-        for (const child of children) {
+        for (let i = 0, len = children.length; i < len; ++i) {
+          const child = children[i];
           this.renderVNodeToQueue(child, context, position, selectValue);
         }
       }

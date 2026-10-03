@@ -37,7 +37,8 @@ const data = (() => {
       lastSample: generate()
     });
   }
-  for (const row of temp) {
+  for (let i = 0, len = temp.length; i < len; ++i) {
+    const row = temp[i];
     counter = counter + 1;
     generateRow(row, counter, 12);
   }
@@ -120,7 +121,8 @@ function generateRow(object, counter, nbQueries) {
 }
 
 function updateData() {
-  for (let row of data) {
+  for (let i = 0, len = data.length; i < len; ++i) {
+    let row = data[i];
     if (Math.random() < mutations()) {
       counter = counter + 1;
       generateRow(row, counter, Math.floor(Math.random() * 10 + 1));
@@ -219,7 +221,8 @@ observer(RowObserver);
 class TableObserver extends Component {
   render({ list }) {
     const children = [];
-    for (const db of list) {
+    for (let i = 0, len = list.length; i < len; ++i) {
+      const db = list[i];
       children.push(createComponentVNode(VNodeFlags.ComponentClass, RowObserver, { db }));
     }
     return createVNode(
@@ -305,7 +308,8 @@ observerPatch(RowClass);
 class TableClass extends Component {
   render({ list }) {
     const children = [];
-    for (const db of list) {
+    for (let i = 0, len = list.length; i < len; ++i) {
+      const db = list[i];
       children.push(createComponentVNode(VNodeFlags.ComponentClass, RowClass, { db }));
     }
     return createVNode(
@@ -390,7 +394,8 @@ const Row = observerWrap(RowComponent);
 
 function TableComponent({ list }) {
   const children = [];
-  for (const db of list) {
+  for (let i = 0, len = list.length; i < len; ++i) {
+    const db = list[i];
     children.push(createComponentVNode(VNodeFlags.ComponentFunction, Row, { db }));
   }
   return createVNode(

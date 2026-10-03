@@ -583,7 +583,8 @@ describe('Test Utils', () => {
       const result1 = scryRenderedDOMElementsWithClass(tree3, 'one');
       expect(result1 instanceof Array).toBeTruthy();
       expect(result1.length).toBe(3);
-      for (const result of result1) {
+      for (let i = 0, len = result1.length; i < len; ++i) {
+        const result = result1[i];
         expect(result.tagName).toBe('DIV');
       }
 
@@ -638,7 +639,8 @@ describe('Test Utils', () => {
         const result = scryRenderedDOMElementsWithTag(tree4, tagName);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        for (const item of result) {
+        for (let i = 0, len = result.length; i < len; ++i) {
+          const item = result[i];
           expect(item.tagName).toBe(tagName.toUpperCase());
         }
       };
@@ -666,7 +668,8 @@ describe('Test Utils', () => {
         const result = scryRenderedVNodesWithType(tree5, type);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        for (const item of result) {
+        for (let i = 0, len = result.length; i < len; ++i) {
+          const item = result[i];
           expect(item instanceof Object).toBeTruthy();
           expect(Object.keys(item).sort()).toEqual(VNodeKeys);
           expect(isVNode(item)).toBe(true);
@@ -698,7 +701,8 @@ describe('Test Utils', () => {
         const result = scryVNodesWithType(tree6, type);
         expect(result instanceof Array).toBeTruthy();
         expect(result.length).toBe(length);
-        for (const item of result) {
+        for (let i = 0, len = result.length; i < len; ++i) {
+          const item = result[i];
           expect(item instanceof Object).toBeTruthy();
           expect(Object.keys(item).sort()).toEqual(VNodeKeys);
           expect(isVNode(item)).toBe(true);

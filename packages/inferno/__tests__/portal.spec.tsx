@@ -50,10 +50,12 @@ describe('Portal spec', () => {
     mathEls = [];
 
     render(tree, container);
-    for (const el of svgEls) {
+    for (let i = 0, len = svgEls.length; i < len; ++i) {
+      const el = svgEls[i];
       expect(el.namespaceURI).toBe('http://www.w3.org/2000/svg');
     }
-    for (const el of htmlEls) {
+    for (let i = 0, len = htmlEls.length; i < len; ++i) {
+      const el = htmlEls[i];
       expect(el.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
     }
 

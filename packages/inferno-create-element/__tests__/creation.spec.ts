@@ -168,7 +168,8 @@ describe('Creation - (non-JSX)', () => {
     },
   ];
 
-  for (const test of tests) {
+  for (let i = 0, len = tests.length; i < len; ++i) {
+    const test = tests[i];
     it(test.description, () => {
       render(test.template(), container);
       expect(container.firstChild.nodeType).toBe(1);

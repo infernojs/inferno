@@ -123,7 +123,8 @@ export function findAllInVNodeTree(
         findAllInVNodeTree(children, predicate) as VNode[],
       );
     } else if (isArray(children)) {
-      for (const child of children) {
+      for (let i = 0, len = children.length; i < len; ++i) {
+        const child = children[i];
         if (!isInvalid(child)) {
           result = result.concat(
             findAllInVNodeTree(child, predicate) as VNode[],

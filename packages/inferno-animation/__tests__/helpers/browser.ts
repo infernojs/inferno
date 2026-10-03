@@ -63,7 +63,11 @@ export function zeros(
   before: Record<string, Position>,
 ): Record<string, number> {
   const result: Record<string, number> = {};
-  for (const id of Object.keys(before)) result[id] = 0;
+  const ids = Object.keys(before);
+  for (let i = 0, len = ids.length; i < len; ++i) {
+    const id = ids[i];
+    result[id] = 0;
+  }
   return result;
 }
 
@@ -81,8 +85,12 @@ export function browserHelpers(scope: () => ParentNode) {
   }
   function transitions(property: string): Animation[] {
     const result: Animation[] = [];
-    for (const node of elements()) {
-      for (const animation of node.getAnimations()) {
+    const nodes = elements();
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
+      const animations = node.getAnimations();
+      for (let j = 0, len2 = animations.length; j < len2; ++j) {
+        const animation = animations[j];
         if (
           'transitionProperty' in animation &&
           animation.transitionProperty === property
@@ -95,8 +103,14 @@ export function browserHelpers(scope: () => ParentNode) {
   // Finishes the animations of the elements until none is left
   async function settle(): Promise<void> {
     await until(() => {
-      for (const node of elements()) {
-        for (const animation of node.getAnimations()) animation.finish();
+      const nodes = elements();
+      for (let i = 0, len = nodes.length; i < len; ++i) {
+        const node = nodes[i];
+        const animations = node.getAnimations();
+        for (let j = 0, len2 = animations.length; j < len2; ++j) {
+          const animation = animations[j];
+          animation.finish();
+        }
       }
       return (
         !hasPendingAnimations() && !scope().querySelector('[class*="-active"]')
@@ -108,7 +122,9 @@ export function browserHelpers(scope: () => ParentNode) {
     await until(() => transitions('transform').length > 0);
     // Seeking a paused animation completes the pause at once. Awaiting ready, a frame for each
     // move, could outlast a move's fallback timeout on a slow machine, which cancels the move.
-    for (const animation of transitions('transform')) {
+    const animations = transitions('transform');
+    for (let i = 0, len = animations.length; i < len; ++i) {
+      const animation = animations[i];
       animation.pause();
       const timing = animation.effect!.getTiming();
       animation.currentTime =
@@ -117,13 +133,19 @@ export function browserHelpers(scope: () => ParentNode) {
   }
   function positions(): Record<string, Position> {
     const result: Record<string, Position> = {};
-    for (const node of elements()) result[node.dataset.id!] = position(node);
+    const nodes = elements();
+    for (let i = 0, len = nodes.length; i < len; ++i) {
+      const node = nodes[i];
+      result[node.dataset.id!] = position(node);
+    }
     return result;
   }
   // The distance of every element in before from its position there, in whole pixels
   function offsets(before: Record<string, Position>): Record<string, number> {
     const result: Record<string, number> = {};
-    for (const id of Object.keys(before)) {
+    const ids = Object.keys(before);
+    for (let i = 0, len = ids.length; i < len; ++i) {
+      const id = ids[i];
       const now = position(card(id));
       result[id] = Math.round(
         Math.hypot(now.x - before[id].x, now.y - before[id].y),

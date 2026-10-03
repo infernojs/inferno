@@ -415,7 +415,8 @@ describe('SSR Creation (JSX)', () => {
     },
   ];
 
-  for (const test of testEntries) {
+  for (let i = 0, len = testEntries.length; i < len; ++i) {
+    const test = testEntries[i];
     it(test.description, () => {
       const vDom = test.template();
       const output = renderToStaticMarkup(vDom);

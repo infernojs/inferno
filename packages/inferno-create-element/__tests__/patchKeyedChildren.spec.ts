@@ -1416,7 +1416,8 @@ describe('keyed-nodes', () => {
       }
 
       describe('Keyed algorithm', () => {
-        for (const t of TESTS) {
+        for (let i = 0, len = TESTS.length; i < len; ++i) {
+          const t = TESTS[i];
           const name = JSON.stringify(t[0]) + ' => ' + JSON.stringify(t[1]);
 
           it(name, () => {
@@ -1431,7 +1432,8 @@ describe('keyed-nodes', () => {
       });
 
       describe('Non keyed algorithm', () => {
-        for (const t of TESTS) {
+        for (let i = 0, len = TESTS.length; i < len; ++i) {
+          const t = TESTS[i];
           const name = JSON.stringify(t[0]) + ' => ' + JSON.stringify(t[1]);
 
           it(name, () => {

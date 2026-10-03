@@ -36,7 +36,8 @@ function extractFirstMatchFromChildren(
   router,
 ): SwitchState {
   if (isArray(children)) {
-    for (const child of children) {
+    for (let i = 0, len = children.length; i < len; ++i) {
+      const child = children[i];
       const nestedMatch = extractFirstMatchFromChildren(
         pathname,
         child,

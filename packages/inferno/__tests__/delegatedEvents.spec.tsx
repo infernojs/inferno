@@ -33,7 +33,8 @@ describe('Delegated events', () => {
     function props(suffix: string) {
       const result = {};
 
-      for (const name of names) {
+      for (let i = 0, len = names.length; i < len; ++i) {
+        const name = names[i];
         result[name] = name + suffix;
       }
       return result;
@@ -42,7 +43,8 @@ describe('Delegated events', () => {
     it('should set them as attributes when mounting', () => {
       render(element('div', props('-1')), container);
 
-      for (const name of names) {
+      for (let i = 0, len = names.length; i < len; ++i) {
+        const name = names[i];
         expect(container.firstChild.getAttribute(name)).toBe(name + '-1');
       }
     });
@@ -51,7 +53,8 @@ describe('Delegated events', () => {
       render(element('div', props('-1')), container);
       render(element('div', props('-2')), container);
 
-      for (const name of names) {
+      for (let i = 0, len = names.length; i < len; ++i) {
+        const name = names[i];
         expect(container.firstChild.getAttribute(name)).toBe(name + '-2');
       }
     });

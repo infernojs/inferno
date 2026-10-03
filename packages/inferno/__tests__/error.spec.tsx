@@ -124,18 +124,22 @@ describe('Error recovery', () => {
    */
 
   describe('Error recovery from user land errors', () => {
-    for (const location of ['last', 'mid', 'first']) {
-      for (const crashLocation of [
-        'render',
-        'constructor',
-        'DidMount',
-        'WillMount',
-        'WillReceiveProps',
-        'shouldUpdate',
-        'WillUpdate',
-        'DidUpdate',
-        'getChildContext',
-      ]) {
+    const locations = ['last', 'mid', 'first'];
+    const crashLocations = [
+      'render',
+      'constructor',
+      'DidMount',
+      'WillMount',
+      'WillReceiveProps',
+      'shouldUpdate',
+      'WillUpdate',
+      'DidUpdate',
+      'getChildContext',
+    ];
+    for (let i = 0, len = locations.length; i < len; ++i) {
+      const location = locations[i];
+      for (let j = 0, len2 = crashLocations.length; j < len2; ++j) {
+        const crashLocation = crashLocations[j];
         it(
           'Should recover from subtree crash in ' +
             location +
@@ -281,18 +285,10 @@ describe('Error recovery', () => {
       }
     }
 
-    for (const location of ['last', 'mid', 'first']) {
-      for (const crashLocation of [
-        'render',
-        'constructor',
-        'DidMount',
-        'WillMount',
-        'WillReceiveProps',
-        'shouldUpdate',
-        'WillUpdate',
-        'DidUpdate',
-        'getChildContext',
-      ]) {
+    for (let i = 0, len = locations.length; i < len; ++i) {
+      const location = locations[i];
+      for (let j = 0, len2 = crashLocations.length; j < len2; ++j) {
+        const crashLocation = crashLocations[j];
         it(
           'Should recover from subtree crash in NON-KEYED ' +
             location +
@@ -438,18 +434,10 @@ describe('Error recovery', () => {
       }
     }
 
-    for (const location of ['last', 'mid', 'first']) {
-      for (const crashLocation of [
-        'render',
-        'constructor',
-        'DidMount',
-        'WillMount',
-        'WillReceiveProps',
-        'shouldUpdate',
-        'WillUpdate',
-        'DidUpdate',
-        'getChildContext',
-      ]) {
+    for (let i = 0, len = locations.length; i < len; ++i) {
+      const location = locations[i];
+      for (let j = 0, len2 = crashLocations.length; j < len2; ++j) {
+        const crashLocation = crashLocations[j];
         it(
           'Should recover from subtree crash in KEYED ' +
             location +

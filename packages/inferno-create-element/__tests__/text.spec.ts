@@ -101,7 +101,8 @@ describe('Text', () => {
     },
   ];
 
-  for (const arg of emptyDefinitions) {
+  for (let i = 0, len = emptyDefinitions.length; i < len; ++i) {
+    const arg = emptyDefinitions[i];
     const template = () => createElement('div', null, arg.value);
 
     it('should create a static text node with ' + arg.name, () => {
@@ -401,7 +402,8 @@ describe('Text', () => {
     },
   ];
 
-  for (const arg of multiArray) {
+  for (let i = 0, len = multiArray.length; i < len; ++i) {
+    const arg = multiArray[i];
     const template1 = (textVar: MultiDefinition['value']) =>
       createElement('div', null, textVar);
 

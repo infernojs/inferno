@@ -477,7 +477,9 @@ export class Run {
   public countNewNodes(): number {
     let count = 0;
 
-    for (const root of [this.container, ...this.portalTargets]) {
+    const roots = [this.container, ...this.portalTargets];
+    for (let i = 0, len = roots.length; i < len; ++i) {
+      const root = roots[i];
       const walker = document.createTreeWalker(root, 5 /* elements and text */);
       let node: Node | null = walker.nextNode();
 
@@ -533,7 +535,9 @@ function applyStep(run: Run, step: Step): void {
   if (step.t === 'render') {
     render(run.build(step.tree), run.container);
   } else {
-    for (const box of Array.from(run.boxes)) {
+    const boxes = Array.from(run.boxes);
+    for (let i = 0, len = boxes.length; i < len; ++i) {
+      const box = boxes[i];
       box.forceUpdate();
     }
   }
@@ -575,10 +579,12 @@ export function compareRuns(
     steps.forEach((step, i) => {
       context = `${label}, step ${i}\npool: ${JSON.stringify(pool)}\nsteps: ${JSON.stringify(steps.slice(0, i + 1))}`;
 
-      for (const [run, name] of [
+      const runs = [
         [shared, 'shared run'],
         [fresh, 'fresh run'],
-      ] as const) {
+      ] as const;
+      for (let j = 0, len = runs.length; j < len; ++j) {
+        const [run, name] = runs[j];
         attempt(context, name, () => {
           if (i === 0 && step.t === 'render' && renderFirst) {
             renderFirst(run, step.tree);

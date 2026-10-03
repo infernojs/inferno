@@ -55,7 +55,9 @@ browserDescribe('move ownership in a real CSS engine', () => {
     sheet.remove();
   });
 
-  for (const property of ['opacity', 'width', 'height', 'transform']) {
+  const properties = ['opacity', 'width', 'height', 'transform'];
+  for (let i = 0, len = properties.length; i < len; ++i) {
+    const property = properties[i];
     it(
       'preserves an author ' +
         property +
@@ -110,15 +112,18 @@ browserDescribe('move ownership in a real CSS engine', () => {
         'normal, allow-discrete',
         'important',
       ]);
-    for (const [property, value, priority] of declarations)
+    for (let i = 0, len = declarations.length; i < len; ++i) {
+      const [property, value, priority] = declarations[i];
       node.style.setProperty(property, value, priority);
+    }
     const original = declarations.map(([property]) => [
       property,
       node.style.getPropertyValue(property),
       node.style.getPropertyPriority(property),
     ]);
     function unchanged() {
-      for (const [property, value, priority] of original) {
+      for (let i = 0, len = original.length; i < len; ++i) {
+        const [property, value, priority] = original[i];
         expect(node.style.getPropertyValue(property)).toBe(value);
         expect(node.style.getPropertyPriority(property)).toBe(priority);
       }
