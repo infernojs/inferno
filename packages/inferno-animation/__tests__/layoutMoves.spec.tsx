@@ -5,6 +5,7 @@ import {
   type AnimationClass,
   hasPendingAnimations,
 } from 'inferno-animation';
+import { isFunction } from 'inferno-shared';
 import { fakeFrames, type Frames, idle } from './helpers/frames';
 
 describe('coordinated layout moves', () => {
@@ -588,7 +589,7 @@ describe('coordinated layout moves', () => {
             key === 'getPropertyValue'
               ? (name: string) =>
                   name in lists ? lists[name] : target.getPropertyValue(name)
-              : typeof target[key] === 'function'
+              : isFunction(target[key])
                 ? target[key].bind(target)
                 : target[key],
         });
@@ -630,7 +631,7 @@ describe('coordinated layout moves', () => {
             key === 'getPropertyValue'
               ? (name: string) =>
                   name in lists ? lists[name] : target.getPropertyValue(name)
-              : typeof target[key] === 'function'
+              : isFunction(target[key])
                 ? target[key].bind(target)
                 : target[key],
         });

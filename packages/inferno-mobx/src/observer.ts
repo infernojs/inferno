@@ -6,7 +6,7 @@ import {
   type VNode,
 } from 'inferno';
 import { EventEmitter } from './utils/EventEmitter';
-import { warning, hoistStaticProperties } from 'inferno-shared';
+import { warning, hoistStaticProperties, isFunction } from 'inferno-shared';
 import { isStateless } from './utils/utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
@@ -175,7 +175,7 @@ const reactiveMixin = {
           // This unidiomatic React usage but React will correctly warn about this so we continue as usual
           // See #85 / Pull #44
           isRenderingPending = true;
-          if (typeof this.componentWillReact === 'function') {
+          if (isFunction(this.componentWillReact)) {
             this.componentWillReact(); // TODO: wrap in action?
           }
           if (!skipRender) {
@@ -307,7 +307,7 @@ export function observer(arg1, arg2?) {
   // Stateless function component:
   // If it is function but doesn't seem to be a React class constructor,
   // wrap it to a React class automatically
-  if (typeof component === 'function' && !component.prototype?.render) {
+  if (isFunction(component) && !component.prototype?.render) {
     return observer(
       class<P, S> extends Component<P, S> {
         public static displayName = component.displayName || component.name;
@@ -325,15 +325,12 @@ export function observer(arg1, arg2?) {
 
   const target = component.prototype || component;
   if (process.env.NODE_ENV !== 'production') {
-    if (
-      component.prototype &&
-      typeof component.getDerivedStateFromProps === 'function'
-    ) {
+    if (component.prototype && isFunction(component.getDerivedStateFromProps)) {
       throw new Error(
         "inferno-mobx 'observer' is incompatible with the 'getDerivedStateFromProps' life cycle hook.",
       );
     }
-    if (typeof target.getSnapshotBeforeUpdate === 'function') {
+    if (isFunction(target.getSnapshotBeforeUpdate)) {
       throw new Error(
         "inferno-mobx 'observer' is incompatible with the 'getSnapshotBeforeUpdate' life cycle hook.",
       );
@@ -498,7 +495,7 @@ export function inject(
   /* fn(stores, nextProps) or ...storeNames */ ...args
 ): any {
   let grabStoresFn;
-  if (typeof args[0] === 'function') {
+  if (isFunction(args[0])) {
     grabStoresFn = args[0];
 
     return function (componentClass) {

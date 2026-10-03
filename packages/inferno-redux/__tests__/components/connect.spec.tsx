@@ -17,6 +17,7 @@ import {
   type Store,
 } from 'redux';
 import { VNodeFlags } from 'inferno-vnode-flags';
+import { isFunction } from 'inferno-shared';
 
 describe('inferno-redux connect', () => {
   // IE does not support function names so error messages are different
@@ -1774,7 +1775,7 @@ describe('inferno-redux connect', () => {
       ) => {
         // Crude imitation of hot reloading that does the job
         const fns = Object.getOwnPropertyNames(SourceClass.prototype).filter(
-          (key) => typeof SourceClass.prototype[key] === 'function',
+          (key) => isFunction(SourceClass.prototype[key]),
         );
 
         for (const key of fns) {

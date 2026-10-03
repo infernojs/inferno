@@ -5,6 +5,7 @@ import {
   type VNode,
 } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { isFunction } from 'inferno-shared';
 import {
   queueRemoval,
   hasQueuedRemoval,
@@ -62,7 +63,7 @@ function changeOwners(adapter: MoveAnimationAdapter, delta: number): void {
 }
 
 function hasMoveHook(ref): number {
-  return ref != null && typeof ref.onComponentWillMove === 'function' ? 1 : 0;
+  return ref != null && isFunction(ref.onComponentWillMove) ? 1 : 0;
 }
 
 function input(vNode: VNode): VNode {
@@ -75,7 +76,7 @@ function hasCandidates(vNode: VNode): boolean {
   const flags = vNode.flags;
   if (flags & VNodeFlags.ComponentClass) {
     return (
-      typeof (vNode.children as any).componentWillMove === 'function' ||
+      isFunction((vNode.children as any).componentWillMove) ||
       hasCandidates(input(vNode))
     );
   }
@@ -120,7 +121,7 @@ function visit(vNode: VNode, list: MoveList, covered?: Set<Element>): boolean {
     if (isClass && (!owner || owner.$UN)) return false;
     const hook =
       owner && (isClass ? owner.componentWillMove : owner.onComponentWillMove);
-    if (typeof hook === 'function') {
+    if (isFunction(hook)) {
       const dom = findElementFromVNode(vNode);
       if (!dom || dom.parentNode !== list.parent) return false;
       if (covered && !covered.has(dom)) {
@@ -258,7 +259,7 @@ function prepareOwner(
     if (flags & VNodeFlags.ComponentClass) {
       const instance = vNode.children as any;
       if (instance === null || instance.$UN) return;
-      if (typeof instance.componentWillMove === 'function') {
+      if (isFunction(instance.componentWillMove)) {
         const dom = ownerElement(vNode, list, commit, inFragment);
         if (dom !== null) {
           instance.componentWillMove(list.owner, list.parent, dom);
@@ -267,7 +268,7 @@ function prepareOwner(
       }
     } else {
       const hooks = vNode.ref as any;
-      if (hooks != null && typeof hooks.onComponentWillMove === 'function') {
+      if (hooks != null && isFunction(hooks.onComponentWillMove)) {
         const dom = ownerElement(vNode, list, commit, inFragment);
         if (dom !== null) {
           hooks.onComponentWillMove(list.owner, list.parent, dom, vNode.props);

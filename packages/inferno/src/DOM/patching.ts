@@ -859,20 +859,17 @@ function patchFunctionalComponent(
   if (nextHooksDefined) {
     // A move hook that a patch adds is counted; one that a patch removes is not, which only keeps
     // inferno-animation active
-    if (
-      moveAnimations !== null &&
-      typeof nextRef.onComponentWillMove === 'function'
-    ) {
+    if (moveAnimations !== null && isFunction(nextRef.onComponentWillMove)) {
       updateMoveHooks(lastVNode, nextVNode);
     }
     if (
-      typeof nextRef.onComponentShouldUpdate === 'function' &&
+      isFunction(nextRef.onComponentShouldUpdate) &&
       !nextRef.onComponentShouldUpdate(lastProps, nextProps)
     ) {
       nextVNode.children = lastInput;
       return;
     }
-    if (typeof nextRef.onComponentWillUpdate === 'function') {
+    if (isFunction(nextRef.onComponentWillUpdate)) {
       nextRef.onComponentWillUpdate(lastProps, nextProps);
     }
   }
@@ -892,7 +889,7 @@ function patchFunctionalComponent(
     animations,
   );
   nextVNode.children = nextInput;
-  if (nextHooksDefined && typeof nextRef.onComponentDidUpdate === 'function') {
+  if (nextHooksDefined && isFunction(nextRef.onComponentDidUpdate)) {
     nextRef.onComponentDidUpdate(lastProps, nextProps);
   }
 }

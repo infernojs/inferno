@@ -1,7 +1,8 @@
+import { isFunction } from 'inferno-shared';
 import { wrapMapToPropsConstant, wrapMapToPropsFunc } from './wrapMapToProps';
 
 export const whenMapStateToPropsIsFunction = (mapStateToProps): unknown =>
-  typeof mapStateToProps === 'function'
+  isFunction(mapStateToProps)
     ? wrapMapToPropsFunc(mapStateToProps, 'mapStateToProps')
     : undefined;
 

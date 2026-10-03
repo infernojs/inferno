@@ -1,6 +1,7 @@
 import { Component, type Refs, render, type VNode } from 'inferno';
 import 'inferno-animation';
 import { createElement } from 'inferno-create-element';
+import { isFunction } from 'inferno-shared';
 
 describe('lifecycle hooks', () => {
   describe('Stateless component hooks', () => {
@@ -315,7 +316,7 @@ describe('lifecycle hooks', () => {
       expect(spy.calls.argsFor(0).length).toBe(3);
       expect(spy.calls.argsFor(0)[0] instanceof HTMLDivElement).toEqual(true);
       expect(typeof spy.calls.argsFor(0)[1] === 'object').toEqual(true);
-      expect(typeof spy.calls.argsFor(0)[2] === 'function').toEqual(true);
+      expect(isFunction(spy.calls.argsFor(0)[2])).toEqual(true);
     });
   });
 

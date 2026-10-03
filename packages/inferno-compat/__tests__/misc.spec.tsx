@@ -10,6 +10,7 @@ import React, {
   type VNode,
 } from 'inferno-compat';
 import { type InfernoMouseEvent, type InfernoNode } from 'inferno';
+import { isFunction } from 'inferno-shared';
 
 // The cloneElement tests use <foo>, which is not a standard HTML element
 declare global {
@@ -270,7 +271,7 @@ describe('MISC', () => {
       }
       const root = document.createElement('div');
       const app = render<App>(<App />, root)!;
-      expect(typeof app.inner.getNode === 'function').toEqual(true);
+      expect(isFunction(app.inner.getNode)).toEqual(true);
     });
 
     it('should call the callback with the rendered instance as this', () => {
@@ -300,7 +301,7 @@ describe('MISC', () => {
       }
       const root = document.createElement('div');
       const app = render<App>(<App />, root)!;
-      expect(typeof app.inner.getNode === 'function').toEqual(true);
+      expect(isFunction(app.inner.getNode)).toEqual(true);
     });
   });
 });

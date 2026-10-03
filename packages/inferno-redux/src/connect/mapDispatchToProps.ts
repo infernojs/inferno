@@ -1,3 +1,4 @@
+import { isFunction } from 'inferno-shared';
 import { wrapMapToPropsConstant, wrapMapToPropsFunc } from './wrapMapToProps';
 
 import { bindActionCreators } from 'redux';
@@ -5,7 +6,7 @@ import { bindActionCreators } from 'redux';
 export const whenMapDispatchToPropsIsFunction = (
   mapDispatchToProps,
 ): unknown =>
-  typeof mapDispatchToProps === 'function'
+  isFunction(mapDispatchToProps)
     ? wrapMapToPropsFunc(mapDispatchToProps, 'mapDispatchToProps')
     : undefined;
 

@@ -7,7 +7,7 @@ import {
   normalizeProps,
 } from 'inferno';
 import { Subscription } from '../utils/Subscription';
-import { hoistStaticProperties } from 'inferno-shared';
+import { hoistStaticProperties, isFunction } from 'inferno-shared';
 
 let hotReloadingVersion = 0;
 const noop = (): void => {};
@@ -147,7 +147,7 @@ export function connectAdvanced(
 
   const wrapWithConnect = <T extends Function>(WrappedComponent: T): any => {
     invariant(
-      typeof WrappedComponent === 'function',
+      isFunction(WrappedComponent),
       `You must pass a component to the function returned by ` +
         `connect. Instead received ${WrappedComponent as any}`,
     );

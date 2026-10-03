@@ -89,22 +89,34 @@ function updateOrAddSyntheticEvent(
   return eventsObject;
 }
 
-export function unmountSyntheticEvent(
-  event: DelegatedEvent,
-  name: string,
-  dom,
-): void {
+function releaseDelegatedEvent(event: DelegatedEvent): void {
+  if (--event.count === 0) {
+    document.removeEventListener(
+      event.type,
+      event.listener as (event: Event) => void,
+    );
+    event.listener = null;
+  }
+}
+
+function unmountSyntheticEvent(event: DelegatedEvent, name: string, dom): void {
   const eventsObject = dom.$EV;
 
   if (eventsObject?.[name]) {
-    if (--event.count === 0) {
-      document.removeEventListener(
-        event.type,
-        event.listener as (event: Event) => void,
-      );
-      event.listener = null;
-    }
+    releaseDelegatedEvent(event);
     eventsObject[name] = null;
+  }
+}
+
+// Releases the handlers an unmounted element registered, eventsObject is its $EV
+export function unmountSyntheticEvents(
+  eventsObject: Partial<DelegateEventTypes>,
+): void {
+  for (const name in eventsObject) {
+    if (eventsObject[name]) {
+      releaseDelegatedEvent(syntheticEvents[name] as DelegatedEvent);
+      eventsObject[name] = null;
+    }
   }
 }
 

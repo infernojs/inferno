@@ -1,5 +1,6 @@
 import { Component, type InfernoNode } from 'inferno';
 import { Action, type Transition, type Update } from 'history';
+import { isFunction } from 'inferno-shared';
 import type { GetUserConfirmation, RouterContext } from './Router';
 import { invariant } from './utils';
 
@@ -74,7 +75,7 @@ export class Prompt extends Component<IPromptProps, any> {
         ? this.getUserConfirmation(this.message, resolve)
         : resolve(window.confirm(this.message));
 
-      if (typeof cleanup === 'function') {
+      if (isFunction(cleanup)) {
         if (this.confirmation === confirmation) {
           confirmation.cleanup = cleanup;
         } else {

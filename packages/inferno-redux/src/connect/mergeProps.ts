@@ -1,3 +1,4 @@
+import { isFunction } from 'inferno-shared';
 import { verifyPlainObject } from '../utils/verifyPlainObject';
 
 export const defaultMergeProps = (stateProps, dispatchProps, ownProps) => ({
@@ -33,7 +34,7 @@ export const wrapMergePropsFunc = (mergeProps) => {
 };
 
 export const whenMergePropsIsFunction = (mergeProps): unknown =>
-  typeof mergeProps === 'function' ? wrapMergePropsFunc(mergeProps) : undefined;
+  isFunction(mergeProps) ? wrapMergePropsFunc(mergeProps) : undefined;
 
 export const whenMergePropsIsOmitted = (mergeProps): unknown =>
   !mergeProps ? () => defaultMergeProps : undefined;

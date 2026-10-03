@@ -5,6 +5,7 @@ import {
   componentWillMove,
   hasPendingAnimations,
 } from 'inferno-animation';
+import { isFunction } from 'inferno-shared';
 import {
   endTransitions,
   fakeBoxes,
@@ -388,7 +389,7 @@ describe('move shapes with index geometry', () => {
               get: (target, key) =>
                 key === 'animationName'
                   ? 'pulse'
-                  : typeof target[key] === 'function'
+                  : isFunction(target[key])
                     ? target[key].bind(target)
                     : target[key],
             })

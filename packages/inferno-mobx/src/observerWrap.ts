@@ -7,7 +7,7 @@ import {
   type VNode,
 } from 'inferno';
 import { Reaction } from 'mobx';
-import { throwError, warning } from 'inferno-shared';
+import { isFunction, throwError, warning } from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isStaticRendering } from './observer';
 
@@ -102,7 +102,7 @@ function getUpdateHooks(
 
 export function observerWrap<T extends Render>(base: T): typeof base {
   if (process.env.NODE_ENV !== 'production') {
-    if (typeof base !== 'function') {
+    if (!isFunction(base)) {
       throwError(
         `observerWrap requires a function to wrap, got ${typeof base} instead`,
       );

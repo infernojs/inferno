@@ -183,7 +183,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
       return match ? render(renderProps, this.context) : null;
     }
 
-    if (typeof children === 'function') {
+    if (isFunction(children)) {
       return (children as Function)(renderProps);
     }
 

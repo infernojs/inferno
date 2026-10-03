@@ -1,3 +1,4 @@
+import { isFunction } from 'inferno-shared';
 import { verifyPlainObject } from '../utils/verifyPlainObject';
 
 // TODO: Type
@@ -49,7 +50,7 @@ export const wrapMapToPropsFunc = (mapToProps, methodName) => {
       proxy.mapToProps = mapToProps;
       let props = proxy(stateOrDispatch, ownProps);
 
-      if (typeof props === 'function') {
+      if (isFunction(props)) {
         proxy.mapToProps = props;
         proxy.dependsOnOwnProps = getDependsOnOwnProps(props);
         props = proxy(stateOrDispatch, ownProps);

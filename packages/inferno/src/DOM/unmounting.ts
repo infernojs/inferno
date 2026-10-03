@@ -1,7 +1,7 @@
 import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
-import { syntheticEvents, unmountSyntheticEvent } from './events/delegation';
+import { unmountSyntheticEvents } from './events/delegation';
 import {
   AnimationQueues,
   NO_ANIMATIONS,
@@ -32,25 +32,19 @@ export function unmount(vNode, animations: AnimationQueues): void {
 
   if ((flags & VNodeFlags.Element) !== 0) {
     ref = vNode.ref;
-    const props = vNode.props;
-
     unmountRef(ref);
 
-    const childFlags = vNode.childFlags;
+    // Delegated handlers come from props, and $EV holds the ones the element registered.
+    // Elements without props skip the read from the DOM node.
+    if (!isNull(vNode.props)) {
+      const eventsObject = vNode.dom.$EV;
 
-    if (!isNull(props)) {
-      // for-in reads the enum cache without allocating, Object.keys copied it for every element.
-      // Only "on" props can be delegated events, others skip the lookup by name.
-      for (const key in props) {
-        if (key.charCodeAt(0) === 111 && key.charCodeAt(1) === 110) {
-          const delegatedEvent = syntheticEvents[key];
-
-          if (delegatedEvent !== undefined) {
-            unmountSyntheticEvent(delegatedEvent, key, vNode.dom);
-          }
-        }
+      if (eventsObject) {
+        unmountSyntheticEvents(eventsObject);
       }
     }
+
+    const childFlags = vNode.childFlags;
 
     if (childFlags & ChildFlags.MultipleChildren) {
       if (childFlags === ChildFlags.HasKeyedChildren) {
@@ -88,7 +82,7 @@ export function unmount(vNode, animations: AnimationQueues): void {
 
       if (
         activeMoveAnimations !== null &&
-        typeof children.componentWillMove === 'function'
+        isFunction(children.componentWillMove)
       ) {
         activeMoveAnimations.unmountClass(children);
       }
@@ -116,7 +110,7 @@ export function unmount(vNode, animations: AnimationQueues): void {
         }
         if (
           activeMoveAnimations !== null &&
-          typeof ref.onComponentWillMove === 'function'
+          isFunction(ref.onComponentWillMove)
         ) {
           activeMoveAnimations.updateHooks(ref, null);
         }

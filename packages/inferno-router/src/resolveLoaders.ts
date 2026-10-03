@@ -1,4 +1,4 @@
-import { isNullOrUndef, isUndefined } from 'inferno-shared';
+import { isFunction, isNullOrUndef, isUndefined } from 'inferno-shared';
 import { matchPath } from './matchPath';
 import type { TLoaderData, TLoaderProps } from './Router';
 import { Switch } from './Switch';
@@ -137,7 +137,7 @@ async function resolveEntry(path, params, request, loader): Promise<any> {
         // https://github.com/remix-run/react-router/blob/4f3ad7b96e6e0228cc952cd7eafe2c265c7393c7/packages/router/router.ts#L2787-L2879
 
         // Check if regular data object (from tests or initialData), which can also be null
-        if (isNullOrUndef(res) || typeof res.json !== 'function') {
+        if (isNullOrUndef(res) || !isFunction(res.json)) {
           return [path, { res }];
         }
 

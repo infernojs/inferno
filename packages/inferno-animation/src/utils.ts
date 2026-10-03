@@ -211,7 +211,7 @@ export function parentSpace(parent: Node): Linear {
     node = node.parentNode || (node as ShadowRoot).host || null
   ) {
     if (node.nodeType !== 1) continue;
-    if (typeof (node as SVGGraphicsElement).getScreenCTM === 'function') {
+    if (isFunction((node as SVGGraphicsElement).getScreenCTM)) {
       const ctm = (node as SVGGraphicsElement).getScreenCTM();
       return ctm === null
         ? space

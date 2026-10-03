@@ -1,5 +1,6 @@
 import { render } from 'inferno';
 import { AnimatedAllComponent } from 'inferno-animation';
+import { isFunction } from 'inferno-shared';
 import {
   type Rectangle,
   endTransitions,
@@ -141,7 +142,7 @@ describe('animation glitches', () => {
                     name in values
                       ? values[name]
                       : target.getPropertyValue(name)
-                : typeof target[key] === 'function'
+                : isFunction(target[key])
                   ? target[key].bind(target)
                   : target[key],
           });

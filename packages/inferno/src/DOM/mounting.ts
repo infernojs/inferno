@@ -312,7 +312,7 @@ export function mountClassComponent(
   // component animations is NO_ANIMATIONS already, so childAnimations stays equal to it.
   let childAnimations = animations;
 
-  if (typeof instance.componentDidAppear === 'function') {
+  if (isFunction(instance.componentDidAppear)) {
     childAnimations = NO_ANIMATIONS;
   }
   mount(
@@ -365,10 +365,7 @@ function createClassMountCallback(instance) {
   return () => {
     instance.componentDidMount();
     // A move hook assigned in componentDidMount still counts
-    if (
-      moveAnimations !== null &&
-      typeof instance.componentWillMove === 'function'
-    ) {
+    if (moveAnimations !== null && isFunction(instance.componentWillMove)) {
       moveAnimations.mountClass(instance);
     }
   };
@@ -409,10 +406,7 @@ export function mountClassComponentCallbacks(
   instance,
   lifecycle: Array<() => void>,
 ): void {
-  if (
-    moveAnimations !== null &&
-    typeof instance.componentWillMove === 'function'
-  ) {
+  if (moveAnimations !== null && isFunction(instance.componentWillMove)) {
     moveAnimations.mountClass(instance);
   }
   mountRef(ref, instance, lifecycle);
@@ -453,10 +447,7 @@ export function mountFunctionalComponentCallbacks(
 ): void {
   const ref = vNode.ref;
   if (!isNullOrUndef(ref)) {
-    if (
-      moveAnimations !== null &&
-      typeof ref.onComponentWillMove === 'function'
-    ) {
+    if (moveAnimations !== null && isFunction(ref.onComponentWillMove)) {
       moveAnimations.updateHooks(null, ref);
     }
     safeCall1(ref.onComponentWillMount, vNode.props || EMPTY_OBJ);

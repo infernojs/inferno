@@ -1,5 +1,6 @@
 import { createComponentVNode, type Inferno, type VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
+import { isFunction } from 'inferno-shared';
 import { Route } from './Route';
 import { type ILinkProps, Link } from './Link';
 import type { Location } from 'history';
@@ -48,13 +49,11 @@ export function NavLink({
       getIsActive ? getIsActive(match, location) : match,
     );
 
-    const className =
-      typeof classNameProp === 'function'
-        ? classNameProp(isActive)
-        : classNameProp;
+    const className = isFunction(classNameProp)
+      ? classNameProp(isActive)
+      : classNameProp;
 
-    const style =
-      typeof styleProp === 'function' ? styleProp(isActive) : styleProp;
+    const style = isFunction(styleProp) ? styleProp(isActive) : styleProp;
 
     return createComponentVNode(VNodeFlags.ComponentFunction, Link, {
       'aria-current': ((isActive && ariaCurrent) || null) as any,
