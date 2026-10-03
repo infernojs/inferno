@@ -6,7 +6,13 @@ import {
   type VNode,
 } from 'inferno';
 import { EventEmitter } from './utils/EventEmitter';
-import { warning, hoistStaticProperties, isFunction } from 'inferno-shared';
+import {
+  warning,
+  hoistStaticProperties,
+  isArray,
+  isFunction,
+  isString,
+} from 'inferno-shared';
 import { isStateless } from './utils/utils';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
@@ -277,10 +283,10 @@ export function observer<T>(stores: string[], clazz: T): T;
 export function observer<T>(target: T): T;
 
 export function observer(arg1, arg2?) {
-  if (typeof arg1 === 'string') {
+  if (isString(arg1)) {
     throw new Error('Store names should be provided as array');
   }
-  if (Array.isArray(arg1)) {
+  if (isArray(arg1)) {
     // component needs stores
     if (!warnedAboutObserverInjectDeprecation) {
       warnedAboutObserverInjectDeprecation = true;

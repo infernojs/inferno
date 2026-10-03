@@ -31,7 +31,7 @@ function createSnapshotObject(object: InfernoSnapshot): InfernoSnapshot {
 }
 
 function removeChildren(item): void {
-  if (Array.isArray(item)) {
+  if (isArray(item)) {
     for (const child of item) {
       removeChildren(child);
     }

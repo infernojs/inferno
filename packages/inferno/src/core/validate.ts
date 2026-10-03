@@ -199,7 +199,7 @@ export function validateKeys(vNode): void {
       vNode.flags & VNodeFlags.Element
     ) {
       const error = DEV_VALIDATE_KEYS(
-        Array.isArray(vNode.children) ? vNode.children : [vNode.children],
+        isArray(vNode.children) ? vNode.children : [vNode.children],
         vNode.childFlags
       );
 

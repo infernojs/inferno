@@ -161,13 +161,13 @@ function stripBasename(
 }
 
 function createLocation(location): Path {
-  return typeof location === 'string'
+  return isString(location)
     ? (parsePath(location) as Path)
     : normalizeLocation(location);
 }
 
 function createURL(location): string {
-  return typeof location === 'string' ? location : combinePath(location);
+  return isString(location) ? location : combinePath(location);
 }
 
 function staticHandler(methodName) {

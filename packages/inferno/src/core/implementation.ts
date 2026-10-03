@@ -206,7 +206,7 @@ export function createTextVNode(
 ): VNode {
   return new V(
     ChildFlags.HasInvalidChildren,
-    isNullOrUndef(text) || text === true || text === false ? '' : text,
+    isInvalid(text) ? '' : text,
     null,
     VNodeFlags.Text,
     key,

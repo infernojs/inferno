@@ -1,4 +1,5 @@
 import pathToRegexp from 'path-to-regexp';
+import { isString } from 'inferno-shared';
 import { type Match } from './Route';
 
 const patternCache = {};
@@ -40,7 +41,7 @@ const compilePath = (pattern, options): { re: any; keys: pathToRegexKey[] } => {
  * Public API for matching a URL pathname to a path pattern.
  */
 export function matchPath(pathname, options: any): Match<any> | null {
-  if (typeof options === 'string') {
+  if (isString(options)) {
     options = { path: options };
   }
 

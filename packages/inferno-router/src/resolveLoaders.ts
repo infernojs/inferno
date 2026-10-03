@@ -1,4 +1,4 @@
-import { isFunction, isNullOrUndef, isUndefined } from 'inferno-shared';
+import { isArray, isFunction, isNullOrUndef, isUndefined } from 'inferno-shared';
 import { matchPath } from './matchPath';
 import type { TLoaderData, TLoaderProps } from './Router';
 import { Switch } from './Switch';
@@ -63,7 +63,7 @@ function _traverseLoaders(
   // Make sure tree isn't null
   if (isNullOrUndef(tree)) return [];
 
-  if (Array.isArray(tree)) {
+  if (isArray(tree)) {
     let hasMatch = false;
     const entriesOfArr = tree.reduce((res, node) => {
       if (parentIsSwitch && hasMatch) return res;

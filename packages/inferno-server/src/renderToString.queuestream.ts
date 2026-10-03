@@ -49,21 +49,18 @@ export class RenderQueueStream extends Readable {
     if (!isNullOrUndef(position)) {
       const lastSlot = this.promises[position].length - 1;
       // Combine as array or push into promise collector
-      if (
-        typeof this.promises[position][lastSlot] === 'string' &&
-        typeof node === 'string'
-      ) {
+      if (isString(this.promises[position][lastSlot]) && isString(node)) {
         this.promises[position][lastSlot] += node;
       } else {
         this.promises[position].push(node);
       }
       // Collector is empty push to stream
-    } else if (typeof node === 'string' && this.collector.length - 1 === 0) {
+    } else if (isString(node) && this.collector.length - 1 === 0) {
       this.push(node);
       // Last element in collector and incoming are same then concat
     } else if (
-      typeof node === 'string' &&
-      typeof this.collector[this.collector.length - 2] === 'string'
+      isString(node) &&
+      isString(this.collector[this.collector.length - 2])
     ) {
       this.collector[this.collector.length - 2] += node;
       // Push the element to collector (before Infinity)
@@ -75,7 +72,7 @@ export class RenderQueueStream extends Readable {
   public pushQueue(): void {
     const chunk = this.collector[0];
     // Output strings directly
-    if (typeof chunk === 'string') {
+    if (isString(chunk)) {
       this.push(chunk);
       this.collector.shift();
       // For fulfilled promises, merge into collector
