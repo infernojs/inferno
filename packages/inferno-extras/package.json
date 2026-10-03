@@ -47,10 +47,10 @@
     "directory": "packages/inferno-extras"
   },
   "dependencies": {
-    "inferno": "9.1.0"
+    "inferno": "workspace:*"
   },
   "devDependencies": {
-    "inferno-vnode-flags": "9.1.0"
+    "inferno-vnode-flags": "workspace:*"
   },
   "gitHead": "930f16301f6cdaa85e48641eed9ef49f799fc68a"
 }

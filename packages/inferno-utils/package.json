@@ -11,8 +11,8 @@
     "directory": "packages/inferno-utils"
   },
   "devDependencies": {
-    "inferno-shared": "9.1.0",
-    "inferno-vnode-flags": "9.1.0"
+    "inferno-shared": "workspace:*",
+    "inferno-vnode-flags": "workspace:*"
   },
   "type": "module",
   "keywords": [],

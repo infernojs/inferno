@@ -54,14 +54,14 @@
     "node": ">=8"
   },
   "devDependencies": {
-    "inferno-create-element": "9.1.0",
-    "inferno-hydrate": "9.1.0",
-    "inferno-shared": "9.1.0",
+    "inferno-create-element": "workspace:*",
+    "inferno-hydrate": "workspace:*",
+    "inferno-shared": "workspace:*",
     "mobx": "*"
   },
   "dependencies": {
-    "inferno": "9.1.0",
-    "inferno-vnode-flags": "9.1.0"
+    "inferno": "workspace:*",
+    "inferno-vnode-flags": "workspace:*"
   },
   "rollup": {
     "bundledDependencies": [

@@ -47,17 +47,17 @@
     "vdom"
   ],
   "dependencies": {
-    "inferno": "9.1.0",
-    "inferno-clone-vnode": "9.1.0",
-    "inferno-create-element": "9.1.0",
-    "inferno-extras": "9.1.0",
-    "inferno-hydrate": "9.1.0",
-    "inferno-shared": "9.1.0"
+    "inferno": "workspace:*",
+    "inferno-clone-vnode": "workspace:*",
+    "inferno-create-element": "workspace:*",
+    "inferno-extras": "workspace:*",
+    "inferno-hydrate": "workspace:*",
+    "inferno-shared": "workspace:*"
   },
   "devDependencies": {
-    "inferno-hyperscript": "9.1.0",
-    "inferno-test-utils": "9.1.0",
-    "inferno-vnode-flags": "9.1.0"
+    "inferno-hyperscript": "workspace:*",
+    "inferno-test-utils": "workspace:*",
+    "inferno-vnode-flags": "workspace:*"
   },
   "rollup": {
     "bundledDependencies": [

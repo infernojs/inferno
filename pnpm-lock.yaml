@@ -447,151 +447,151 @@ importers:
         specifier: ^3.2.3
         version: 3.2.3
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
       opencollective-postinstall:
         specifier: ^2.0.3
         version: 2.0.3
     devDependencies:
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-utils:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-utils
 
   packages/inferno-animation:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-create-element:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-create-element
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-utils:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-utils
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-clone-vnode:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-compat:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
       inferno-clone-vnode:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-clone-vnode
       inferno-create-element:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-create-element
       inferno-extras:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-extras
       inferno-hydrate:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-hydrate
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
     devDependencies:
       inferno-hyperscript:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-hyperscript
       inferno-test-utils:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-test-utils
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-create-element:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-extras:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-hydrate:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-create-element:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-create-element
       inferno-hyperscript:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-hyperscript
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-hyperscript:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-mobx:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-create-element:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-create-element
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
       mobx:
         specifier: '*'
@@ -600,14 +600,14 @@ importers:
   packages/inferno-redux:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-create-element:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-create-element
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       redux:
         specifier: ^4
@@ -619,17 +619,17 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
       path-to-regexp:
         specifier: ^1.9.0
         version: 1.9.0
     devDependencies:
       inferno-server:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-server
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
       mobx:
         specifier: '*'
@@ -638,20 +638,20 @@ importers:
   packages/inferno-server:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
     devDependencies:
       inferno-create-element:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-create-element
       inferno-hydrate:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-hydrate
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       mobx:
         specifier: '*'
@@ -662,23 +662,23 @@ importers:
   packages/inferno-test-utils:
     dependencies:
       inferno:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno
     devDependencies:
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-utils:
     devDependencies:
       inferno-shared:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-shared
       inferno-vnode-flags:
-        specifier: 9.1.0
+        specifier: workspace:*
         version: link:../inferno-vnode-flags
 
   packages/inferno-vnode-flags: {}
