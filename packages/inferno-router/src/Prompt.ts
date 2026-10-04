@@ -92,6 +92,7 @@ export class Prompt extends Component<IPromptProps, any> {
   };
 
   private retry(tx: Transition): void {
+    const history = this.context.router.history;
     if (this.unblock) {
       this.unblock();
       this.unblock = null;
@@ -99,7 +100,7 @@ export class Prompt extends Component<IPromptProps, any> {
 
     // Subscribe before retry: PUSH, REPLACE and memory POP can commit
     // synchronously, whereas browser/hash POP commits on a later popstate.
-    const unlisten = this.context.router.history.listen((update: Update) => {
+    const unlisten = history.listen((update: Update) => {
       if (this.unlisten !== unlisten) {
         return;
       }
@@ -119,6 +120,29 @@ export class Prompt extends Component<IPromptProps, any> {
       }
     });
     this.unlisten = unlisten;
+
+    // While that restoring POP is pending, the browser still shows the
+    // requested entry (a keyless entry reads as 'default'). Chromium drops a
+    // traversal started before the pending one commits, so retry after the
+    // restoring POP, even if the prompt unmounts first: the user has decided.
+    const state = typeof window === 'undefined' ? null : window.history.state;
+    const browserKey = (state && state.key) || 'default';
+    if (
+      tx.action === Action.Pop &&
+      browserKey === tx.location.key &&
+      browserKey !== history.location.key
+    ) {
+      const stop = history.listen((update: Update) => {
+        stop();
+        if (
+          update.action === Action.Pop &&
+          update.location.key !== tx.location.key
+        ) {
+          tx.retry();
+        }
+      });
+      return;
+    }
 
     try {
       tx.retry();

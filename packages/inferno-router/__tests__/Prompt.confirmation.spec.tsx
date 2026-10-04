@@ -243,10 +243,15 @@ describe('<Prompt> custom confirmation', () => {
 
 // Exercise real asynchronous history.go()/popstate in both jsdom (CI) and
 // the Jasmine browser suite. Memory history alone cannot catch early reblocking.
-const routers = [BrowserRouter, HashRouter];
+// Name the suites explicitly: minifiers mangle class names, which made the
+// Sauce failures unreadable and can give both routers the same name.
+const routers = [
+  ['BrowserRouter', BrowserRouter],
+  ['HashRouter', HashRouter],
+] as const;
 for (let i = 0, len = routers.length; i < len; ++i) {
-  const TestRouter = routers[i];
-  describe(`<Prompt> with ${TestRouter.name} POP navigation`, () => {
+  const [routerName, TestRouter] = routers[i];
+  describe(`<Prompt> with ${routerName} POP navigation`, () => {
     let node: HTMLDivElement;
     let history: History;
     let initialURL: string;
@@ -306,6 +311,8 @@ for (let i = 0, len = routers.length; i < len; ++i) {
       node = document.createElement('div');
       initialURL = window.location.href;
       initialState = window.history.state;
+      // Like a page load, start from an entry without a history key.
+      window.history.replaceState(null, '', initialURL);
       requests = [];
       getUserConfirmation = (_message, resolve) => {
         requests.push(resolve);
@@ -383,35 +390,50 @@ for (let i = 0, len = routers.length; i < len; ++i) {
       expect(browserPath()).toBe('/prompt-a');
     });
 
-    // jsdom computes history.go destinations before queued traversals finish;
-    // real browsers queue the traversals in order. Run the synchronous hash
-    // confirmation case in the Jasmine browser suite instead of jsdom.
-    const nativePopTest =
-      TestRouter === HashRouter && global.usingJSDOM ? xit : it;
-    nativePopTest(
-      'also waits for native-confirmed POP to commit before reblocking',
-      async () => {
-        const nativeConfirm = spyOn(window, 'confirm').and.returnValues(
-          true,
-          false,
-        );
-        getUserConfirmation = undefined;
-        mount();
-        history.back();
-        await waitFor(() => history.location.pathname === '/prompt-a');
-        expect(nativeConfirm).toHaveBeenCalledTimes(1);
+    // Hash history asks on hashchange, before its restoring POP commits.
+    // Chromium drops a traversal started during that one, so a synchronous
+    // confirmation must not retry until the restoring POP has committed.
+    it('also waits for native-confirmed POP to commit before reblocking', async () => {
+      const nativeConfirm = spyOn(window, 'confirm').and.returnValues(
+        true,
+        false,
+      );
+      getUserConfirmation = undefined;
+      mount();
+      history.back();
+      await waitFor(() => history.location.pathname === '/prompt-a');
+      expect(nativeConfirm).toHaveBeenCalledTimes(1);
 
-        history.forward();
-        // As in waitForPrompt, hash history asks before restoring the URL.
-        await waitFor(
-          () =>
-            nativeConfirm.calls.count() === 2 &&
-            browserPath() === history.location.pathname,
-        );
-        expect(history.location.pathname).toBe('/prompt-a');
-        expect(browserPath()).toBe('/prompt-a');
-      },
-    );
+      history.forward();
+      // As in waitForPrompt, hash history asks before restoring the URL.
+      await waitFor(
+        () =>
+          nativeConfirm.calls.count() === 2 &&
+          browserPath() === history.location.pathname,
+      );
+      expect(history.location.pathname).toBe('/prompt-a');
+      expect(browserPath()).toBe('/prompt-a');
+    });
+
+    it('completes a synchronously accepted POP when the prompt unmounts at once', async () => {
+      getUserConfirmation = (_message, resolve) => {
+        resolve(true);
+        render(null, node);
+      };
+      mount();
+      history.back();
+      await waitFor(() => history.location.pathname === '/prompt-a');
+      expect(browserPath()).toBe('/prompt-a');
+    });
+
+    it('completes a native-confirmed POP to the first entry, which has no key', async () => {
+      const nativeConfirm = spyOn(window, 'confirm').and.returnValue(true);
+      getUserConfirmation = undefined;
+      mount();
+      history.go(-2);
+      await waitFor(() => history.location.key === 'default');
+      expect(nativeConfirm).toHaveBeenCalledTimes(1);
+    });
 
     it('cleans up a retry listener when unmounted before the POP commits', async () => {
       history.back();
