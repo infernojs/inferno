@@ -15,6 +15,8 @@ This release also rewrites `inferno-animation`, adds custom navigation confirmat
    | [`ts-plugin-inferno`](https://github.com/infernojs/ts-plugin-inferno)       | 7.x                 | 10.x       |
    | [`swc-plugin-inferno`](https://github.com/infernojs/swc-plugin-inferno)     | 3.x                 | 10.x       |
 
+   Version 10 of `babel-plugin-inferno` and `ts-plugin-inferno` requires Node.js 24 or newer to compile JSX. `ts-plugin-inferno` depends on TypeScript 6.
+
 3. Compile all your JSX again, including dependencies that ship precompiled JSX.
 4. If you write your own `componentWillMove` or `onComponentWillMove` hooks, add `import 'inferno-animation'`. See [Move animation hooks](#move-animation-hooks).
 5. Compile your own components to ES2015 or newer. A component class compiled to an ES5 function can no longer extend `Component`. See [Browser support](#browser-support).
@@ -128,11 +130,11 @@ The public API is the same. ([#1702](https://github.com/infernojs/inferno/pull/1
 - Items with CSS keyframe or script animations move with the `translate` property instead of `transform`.
 - The app's inline styles are restored after an animation.
 - Transitions with zero duration no longer leave items stuck.
-- One capture listener per root and shared timers replace the two listeners and a timer per element.
+- Transition handling shares two capture listeners per root (`transitionend` and `transitioncancel`) and groups fallback timers.
 - The move engine is dormant until a component with a move hook mounts. Apps that don't import `inferno-animation` don't pay for move support: bundlers drop the reconciler's checks.
 - `inferno-animation/index.css` is exported from the package.
 
-`inferno-animation` grew from 6.31 kB to 8.16 kB min+gzip.
+Minified and gzipped, `inferno-animation` is 9.92 kB for the UMD bundle and 9.82 kB for the CommonJS bundle.
 
 ### More boolean attributes
 
@@ -146,7 +148,7 @@ Props are applied to an element before it is inserted into the document, so `aut
 
 ### TypeScript
 
-- `createElement` has separate overloads for DOM elements, function and `forwardRef` components, and class components, each with the correct `ref` type.
+- `createElement` has separate overloads for DOM elements, function and `forwardRef` components, and class components, with improved support for callback and object refs.
 - Lifecycle hooks of function components may be `null`.
 - A multiple `<select>` accepts `number[]` as its value.
 - `inferno-compat`: `render<T>()` and `unstable_renderSubtreeIntoContainer<T>()` are generic in the returned instance; `render` accepts a callback; `Children.*`, `createFactory`, `PropTypes` and `PureComponent` have accurate types; camelCase and numeric style objects and `onDoubleClick` are accepted.
@@ -215,6 +217,7 @@ Props are applied to an element before it is inserted into the document, so `aut
 ### inferno-router
 
 - `Prompt` stopped blocking after the first confirmed transition.
+- In Chromium, `HashRouter` lost Back navigation accepted through a synchronous confirmation, such as `window.confirm`, and left the next Back navigation unblocked.
 - `Redirect` in a `Switch` went to its `to` path without the matched params, and `Redirect` dropped the `state` of a location object.
 - `Switch` dropped the key of the matched `Route` and crashed on `false`, `null` and `undefined` children.
 - `Link` with `target="_self"` loaded the page from the server.
@@ -243,10 +246,6 @@ Props are applied to an element before it is inserted into the document, so `aut
 ### inferno-redux
 
 - The UMD bundle read Redux from the wrong global.
-
-## Known issues
-
-- In Chromium, with `HashRouter` and a synchronous confirmation such as the default `window.confirm`, Back navigation that the user accepts is lost, and the next Back navigation is not blocked. Chromium drops a `history.go()` that is issued while another traversal is pending. Firefox is not affected, and neither is an asynchronous `getUserConfirmation`.
 
 ## For contributors
 

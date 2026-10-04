@@ -12,9 +12,11 @@ Inferno 10 needs JSX compiled by version 10 of its JSX plugins:
 | `ts-plugin-inferno`    | 7.x                 | 10.x       |
 | `swc-plugin-inferno`   | 3.x                 | 10.x       |
 
+Version 10 of `babel-plugin-inferno` and `ts-plugin-inferno` requires Node.js 24 or newer to compile JSX. `ts-plugin-inferno` depends on TypeScript 6.
+
 - **JSX compiled by an older plugin does not work with Inferno 10.** The vNode flags have new values (see [below](#vnodeflags-have-new-values)), so elements such as `<svg>`, `<input>`, `<select>` and `<textarea>` would render wrong. Compile all JSX again with the v10 plugins. Dependencies that ship precompiled JSX need versions built for Inferno 10 too.
 - The v10 plugins compile JSX to the new factories `newVNode`, `newComponentVNode`, `newFragment` and `newTextVNode`, see [below](#jsx-plugins).
-- The v10 plugins have `inferno` `^10.0.0` as a peer dependency, so package managers report a peer dependency conflict when they are installed with an older Inferno.
+- Update Inferno and the JSX plugin together. The v10 plugins do not declare an Inferno peer dependency, so package managers do not enforce their compatibility.
 - The v10 plugins report JSX that Inferno 10 would render wrong as a build error that shows the source code: `$ReCreate`, a `ref` without a value, and a child flag that the children cannot have, such as `$HasVNodeChildren` on several children.
 - **From version 10 on, the major version of each JSX plugin matches the major version of Inferno.** Use plugin 10.x with Inferno 10.x, plugin 11.x with Inferno 11.x, and so on.
 
