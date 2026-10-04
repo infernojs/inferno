@@ -1,12 +1,12 @@
 import {
-  createComponentVNode,
-  createFragment,
-  createTextVNode,
-  createVNode,
+  newComponentVNode,
+  newFragment,
+  newTextVNode,
+  newVNode,
   normalizeProps,
   type VNode,
 } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 /*
  directClone is preferred over cloneVNode and used internally also.
@@ -59,8 +59,9 @@ export function cloneVNode(vNodeToClone: VNode, props?, ...childArgs): VNode {
 
   // The props passed in are not changed, they may be shared between clones
   if (flags & VNodeFlags.Component) {
-    return createComponentVNode(
-      flags,
+    return newComponentVNode(
+      // The clone's flags must not keep the children's shape or the validation of vNodeToClone
+      (flags & VNodeFlags.ClearOnCopy) | VNodeFlags.HasInvalidChildren,
       vNodeToClone.type,
       { ...vNodeToClone.props, ...props, children },
       key,
@@ -69,24 +70,25 @@ export function cloneVNode(vNodeToClone: VNode, props?, ...childArgs): VNode {
   }
 
   if (flags & VNodeFlags.Text) {
-    return createTextVNode(children);
+    return newTextVNode(children);
   }
 
   if (flags & VNodeFlags.Fragment) {
-    return createFragment(
+    // No child bit, the children are normalized
+    return newFragment(
+      VNodeFlags.Fragment,
       childLen === 1 ? [children] : children,
-      ChildFlags.UnknownChildren,
       key,
     );
   }
 
   return normalizeProps(
-    createVNode(
-      flags,
+    newVNode(
+      // normalizeProps sets the children from props
+      (flags & VNodeFlags.ClearOnCopy) | VNodeFlags.HasInvalidChildren,
       vNodeToClone.type,
       className,
       null,
-      ChildFlags.HasInvalidChildren,
       { ...vNodeToClone.props, ...props, children },
       key,
       ref,

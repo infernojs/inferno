@@ -6,7 +6,7 @@ import {
   throwError,
   warning,
 } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import {
   _CI,
   _CRH as callRenderHooks,
@@ -20,9 +20,9 @@ import {
   _RFC as renderFunctionalComponent,
   AnimationQueues,
   type ContextObject,
-  createTextVNode,
   directClone,
   EMPTY_OBJ,
+  newTextVNode,
   render,
   type VNode,
 } from 'inferno';
@@ -49,7 +49,7 @@ function findLastDOMFromVNode(vNode: VNode): Element | null {
 
     if (flags & VNodeFlags.Fragment) {
       vNode =
-        vNode.childFlags === ChildFlags.HasVNodeChildren
+        (flags & VNodeFlags.HasVNodeChildren) !== 0
           ? (children as VNode)
           : (children as VNode[])[children.length - 1];
     } else if (flags & VNodeFlags.ComponentClass) {
@@ -125,13 +125,12 @@ function hydrateChildren(
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
 ): void {
-  const childFlags = parentVNode.childFlags;
   let children = parentVNode.children;
   const props = parentVNode.props;
   const flags = parentVNode.flags;
 
-  if (childFlags !== ChildFlags.HasInvalidChildren) {
-    if (childFlags === ChildFlags.HasVNodeChildren) {
+  if ((flags & VNodeFlags.HasInvalidChildren) === 0) {
+    if (flags & VNodeFlags.HasVNodeChildren) {
       if ((children as VNode).flags & VNodeFlags.InUse) {
         parentVNode.children = children = directClone(children as VNode);
       }
@@ -157,7 +156,7 @@ function hydrateChildren(
         );
         currentNode = currentNode ? currentNode.nextSibling : null;
       }
-    } else if (childFlags === ChildFlags.HasTextChildren) {
+    } else if (flags & VNodeFlags.HasTextChildren) {
       if (isNull(currentNode)) {
         parentNode.appendChild(document.createTextNode(children as string));
       } else if (
@@ -171,7 +170,8 @@ function hydrateChildren(
         }
       }
       currentNode = null;
-    } else if (childFlags & ChildFlags.MultipleChildren) {
+    } else {
+      // Keyed or non-keyed children, exactly one of the child bits is set
       let prevVNodeIsTextNode = false;
 
       for (let i = 0, len = (children as VNode[]).length; i < len; ++i) {
@@ -324,16 +324,18 @@ function hydrateFragment(
   animations: AnimationQueues,
 ): Element {
   let children = vNode.children;
+  let flags = vNode.flags;
 
   // Fragment without children has an empty text node, same as when mounting
   if (
-    vNode.childFlags & ChildFlags.MultipleChildren &&
+    flags & VNodeFlags.MultipleChildren &&
     (children as VNode[]).length === 0
   ) {
-    vNode.childFlags = ChildFlags.HasVNodeChildren;
-    vNode.children = children = createTextVNode('');
+    flags = vNode.flags =
+      (flags & VNodeFlags.ClearChildFlags) | VNodeFlags.HasVNodeChildren;
+    vNode.children = children = newTextVNode('');
   }
-  if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+  if (flags & VNodeFlags.HasVNodeChildren) {
     if ((children as VNode).flags & VNodeFlags.InUse) {
       vNode.children = children = directClone(children as VNode);
     }

@@ -1,9 +1,9 @@
 import {
   type Component,
   type ComponentType,
-  createComponentVNode,
   type ForwardRef,
   type InfernoNode,
+  newComponentVNode,
   type Ref,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
@@ -25,17 +25,21 @@ export function withRouter<
   const C: any = function (props: RouteComponentProps<any> & IWithRouterProps) {
     const { wrappedComponentRef, ...remainingProps } = props;
 
-    return createComponentVNode<any>(VNodeFlags.ComponentClass, Route, {
-      render(routeComponentProps: P & IWithRouterProps): InfernoNode {
-        return createComponentVNode(
-          VNodeFlags.ComponentUnknown,
-          Com,
-          { ...remainingProps, ...routeComponentProps },
-          null,
-          wrappedComponentRef,
-        );
+    return newComponentVNode<any>(
+      VNodeFlags.ComponentClass | VNodeFlags.HasInvalidChildren,
+      Route,
+      {
+        render(routeComponentProps: P & IWithRouterProps): InfernoNode {
+          return newComponentVNode(
+            VNodeFlags.ComponentUnknown,
+            Com,
+            { ...remainingProps, ...routeComponentProps },
+            null,
+            wrappedComponentRef,
+          );
+        },
       },
-    });
+    );
   };
 
   // @ts-expect-error function name property

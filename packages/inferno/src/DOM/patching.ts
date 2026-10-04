@@ -1,6 +1,6 @@
 import type { ContextObject, VNode } from '../core/types';
 import { isFunction, isInvalid, isNull, isNullOrUndef } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import {
   createVoidVNode,
   directClone,
@@ -88,8 +88,8 @@ export function patch(
   const nextFlags = (nextVNode.flags |= VNodeFlags.InUse);
 
   if (
-    // Normalized flag tells only whether the vNode has been normalized, it is not part of the vNode type
-    ((lastVNode.flags ^ nextFlags) & ~VNodeFlags.Normalized) !== 0 ||
+    // Normalized flag and the children shape bits are not part of the vNode type
+    ((lastVNode.flags ^ nextFlags) & ~VNodeFlags.IgnoredByPatch) !== 0 ||
     lastVNode.type !== nextVNode.type ||
     lastVNode.key !== nextVNode.key ||
     nextFlags & VNodeFlags.ReCreate
@@ -188,35 +188,37 @@ function patchFragment(
 ): void {
   const lastChildren = lastVNode.children as VNode[];
   let nextChildren = nextVNode.children as any;
-  const lastChildFlags = lastVNode.childFlags;
-  let nextChildFlags = nextVNode.childFlags;
+  const lastChildFlags = lastVNode.flags & VNodeFlags.ChildFlagsMask;
+  let nextChildFlags = nextVNode.flags & VNodeFlags.ChildFlagsMask;
   let nextNode: Element | null = null;
 
   // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
   // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
   if (
-    nextChildFlags & ChildFlags.MultipleChildren &&
+    nextChildFlags & VNodeFlags.MultipleChildren &&
     nextChildren.length === 0
   ) {
-    nextChildFlags = nextVNode.childFlags = ChildFlags.HasVNodeChildren;
+    nextChildFlags = VNodeFlags.HasVNodeChildren;
+    nextVNode.flags =
+      (nextVNode.flags & VNodeFlags.ClearChildFlags) | nextChildFlags;
     nextChildren = nextVNode.children = createVoidVNode();
   }
 
   const nextIsSingle: boolean =
-    (nextChildFlags & ChildFlags.HasVNodeChildren) !== 0;
+    (nextChildFlags & VNodeFlags.HasVNodeChildren) !== 0;
 
   if (nextIsSingle && mustCloneVNode(nextChildren, lastChildren as any)) {
     nextChildren = nextVNode.children = directClone(nextChildren);
   }
 
-  if (lastChildFlags & ChildFlags.MultipleChildren) {
+  if (lastChildFlags & VNodeFlags.MultipleChildren) {
     const lastLen = lastChildren.length;
 
     // We need to know Fragment's edge node when
     if (
       // It uses keyed algorithm
-      (lastChildFlags & ChildFlags.HasKeyedChildren &&
-        nextChildFlags & ChildFlags.HasKeyedChildren) ||
+      (lastChildFlags & VNodeFlags.HasKeyedChildren &&
+        nextChildFlags & VNodeFlags.HasKeyedChildren) ||
       // It transforms from many to single
       nextIsSingle ||
       // It will append more nodes
@@ -253,17 +255,18 @@ function patchPortal(
   const lastContainer = lastVNode.ref as Element;
   const nextContainer = nextVNode.ref as Element;
   let nextChildren = nextVNode.children as VNode;
+  const nextChildFlags = nextVNode.flags & VNodeFlags.ChildFlagsMask;
 
   if (
-    nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
+    nextChildFlags === VNodeFlags.HasVNodeChildren &&
     mustCloneVNode(nextChildren, lastVNode.children as VNode)
   ) {
     nextChildren = nextVNode.children = directClone(nextChildren);
   }
 
   patchChildren(
-    lastVNode.childFlags,
-    nextVNode.childFlags,
+    lastVNode.flags & VNodeFlags.ChildFlagsMask,
+    nextChildFlags,
     lastVNode.children as VNode,
     nextChildren,
     lastContainer,
@@ -295,12 +298,12 @@ export function patchElement(
 ): void {
   const dom = (nextVNode.dom = lastVNode.dom as Element);
   let lastChildren = lastVNode.children;
-  let lastChildFlags = lastVNode.childFlags;
+  let lastChildFlags = lastVNode.flags & VNodeFlags.ChildFlagsMask;
 
   // The move hooks of a keyed list measure its items before anything changes, props included.
   // The local test goes first, so that optimized code reads the variable only for keyed lists, and
   // a bundler that knows the variable stays null removes both.
-  if (lastChildFlags === ChildFlags.HasKeyedChildren) {
+  if (lastChildFlags === VNodeFlags.HasKeyedChildren) {
     if (activeMoveAnimations !== null) {
       activeMoveAnimations.prepare(lastVNode, nextVNode, dom, animations);
     }
@@ -342,7 +345,7 @@ export function patchElement(
           ) {
             // Keep the reusable vNode intact after innerHTML unmounts its children.
             lastChildren = null;
-            lastChildFlags = ChildFlags.HasInvalidChildren;
+            lastChildFlags = VNodeFlags.HasInvalidChildren;
           }
         }
       }
@@ -365,7 +368,7 @@ export function patchElement(
             )
           ) {
             lastChildren = null;
-            lastChildFlags = ChildFlags.HasInvalidChildren;
+            lastChildFlags = VNodeFlags.HasInvalidChildren;
           }
         }
       }
@@ -391,15 +394,17 @@ export function patchElement(
   if (nextFlags & VNodeFlags.ContentEditable) {
     patchContentEditableChildren(dom, nextChildren);
   } else {
+    const nextChildFlags = nextFlags & VNodeFlags.ChildFlagsMask;
+
     if (
-      nextVNode.childFlags === ChildFlags.HasVNodeChildren &&
+      nextChildFlags === VNodeFlags.HasVNodeChildren &&
       mustCloneVNode(nextChildren as VNode, lastChildren as VNode)
     ) {
       nextChildren = nextVNode.children = directClone(nextChildren as VNode);
     }
     patchChildren(
       lastChildFlags,
-      nextVNode.childFlags,
+      nextChildFlags,
       lastChildren,
       nextChildren,
       dom,
@@ -466,16 +471,8 @@ function commonChildrenSwitch(
   lifecycle: Array<() => void>,
   animations: AnimationQueues,
   parentVNode: VNode,
-  nextChildFlags:
-    | ChildFlags.UnknownChildren
-    | ChildFlags.HasNonKeyedChildren
-    | ChildFlags.HasKeyedChildren
-    | ChildFlags.MultipleChildren,
-  lastChildFlags:
-    | ChildFlags.UnknownChildren
-    | ChildFlags.HasNonKeyedChildren
-    | ChildFlags.HasKeyedChildren
-    | ChildFlags.MultipleChildren,
+  nextChildFlags: VNodeFlags,
+  lastChildFlags: VNodeFlags,
 ): void {
   const lastLength = lastChildren.length | 0;
   const nextLength = nextChildren.length | 0;
@@ -496,8 +493,8 @@ function commonChildrenSwitch(
   } else if (nextLength === 0) {
     removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
   } else if (
-    nextChildFlags === ChildFlags.HasKeyedChildren &&
-    lastChildFlags === ChildFlags.HasKeyedChildren
+    nextChildFlags === VNodeFlags.HasKeyedChildren &&
+    lastChildFlags === VNodeFlags.HasKeyedChildren
   ) {
     patchKeyedChildren(
       lastChildren,
@@ -529,8 +526,8 @@ function commonChildrenSwitch(
 }
 
 function patchChildren(
-  lastChildFlags: ChildFlags,
-  nextChildFlags: ChildFlags,
+  lastChildFlags: VNodeFlags,
+  nextChildFlags: VNodeFlags,
   lastChildren,
   nextChildren,
   parentDOM: Element,
@@ -542,9 +539,9 @@ function patchChildren(
   animations: AnimationQueues,
 ): void {
   switch (lastChildFlags) {
-    case ChildFlags.HasVNodeChildren:
+    case VNodeFlags.HasVNodeChildren:
       switch (nextChildFlags) {
-        case ChildFlags.HasVNodeChildren:
+        case VNodeFlags.HasVNodeChildren:
           patch(
             lastChildren,
             nextChildren,
@@ -556,10 +553,10 @@ function patchChildren(
             animations,
           );
           break;
-        case ChildFlags.HasInvalidChildren:
+        case VNodeFlags.HasInvalidChildren:
           remove(lastChildren, parentDOM, animations);
           break;
-        case ChildFlags.HasTextChildren:
+        case VNodeFlags.HasTextChildren:
           unmount(lastChildren, NO_ANIMATIONS);
           setTextContent(parentDOM, nextChildren);
           break;
@@ -576,9 +573,9 @@ function patchChildren(
           break;
       }
       break;
-    case ChildFlags.HasInvalidChildren:
+    case VNodeFlags.HasInvalidChildren:
       switch (nextChildFlags) {
-        case ChildFlags.HasVNodeChildren:
+        case VNodeFlags.HasVNodeChildren:
           mount(
             nextChildren,
             parentDOM,
@@ -589,9 +586,9 @@ function patchChildren(
             animations,
           );
           break;
-        case ChildFlags.HasInvalidChildren:
+        case VNodeFlags.HasInvalidChildren:
           break;
-        case ChildFlags.HasTextChildren:
+        case VNodeFlags.HasTextChildren:
           setTextContent(parentDOM, nextChildren);
           break;
         default:
@@ -607,12 +604,12 @@ function patchChildren(
           break;
       }
       break;
-    case ChildFlags.HasTextChildren:
+    case VNodeFlags.HasTextChildren:
       switch (nextChildFlags) {
-        case ChildFlags.HasTextChildren:
+        case VNodeFlags.HasTextChildren:
           patchSingleTextChild(lastChildren, nextChildren, parentDOM);
           break;
-        case ChildFlags.HasVNodeChildren:
+        case VNodeFlags.HasVNodeChildren:
           setTextContent(parentDOM, '');
           mount(
             nextChildren,
@@ -624,7 +621,7 @@ function patchChildren(
             animations,
           );
           break;
-        case ChildFlags.HasInvalidChildren:
+        case VNodeFlags.HasInvalidChildren:
           setTextContent(parentDOM, '');
           break;
         default:
@@ -643,14 +640,14 @@ function patchChildren(
       break;
     default:
       // A keyed fragment's move hooks measure its items before any of them change
-      if (lastChildFlags === ChildFlags.HasKeyedChildren) {
+      if (lastChildFlags === VNodeFlags.HasKeyedChildren) {
         if (
           activeMoveAnimations !== null &&
           (parentVNode.flags & VNodeFlags.Fragment) !== 0
         ) {
           activeMoveAnimations.prepareFragment(
             parentVNode,
-            nextChildFlags === ChildFlags.HasKeyedChildren
+            nextChildFlags === VNodeFlags.HasKeyedChildren
               ? nextChildren
               : null,
             parentDOM,
@@ -659,11 +656,11 @@ function patchChildren(
         }
       }
       switch (nextChildFlags) {
-        case ChildFlags.HasTextChildren:
+        case VNodeFlags.HasTextChildren:
           unmountAllChildren(lastChildren, NO_ANIMATIONS);
           setTextContent(parentDOM, nextChildren);
           break;
-        case ChildFlags.HasVNodeChildren:
+        case VNodeFlags.HasVNodeChildren:
           removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
           mount(
             nextChildren,
@@ -675,7 +672,7 @@ function patchChildren(
             animations,
           );
           break;
-        case ChildFlags.HasInvalidChildren:
+        case VNodeFlags.HasInvalidChildren:
           removeAllChildren(parentDOM, parentVNode, lastChildren, animations);
           break;
         default:

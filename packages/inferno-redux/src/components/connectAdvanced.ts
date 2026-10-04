@@ -2,8 +2,8 @@ import { VNodeFlags } from 'inferno-vnode-flags';
 import { type Dispatch, type Store } from 'redux';
 import {
   Component,
-  createComponentVNode,
   type InfernoNode,
+  newComponentVNode,
   normalizeProps,
 } from 'inferno';
 import { Subscription } from '../utils/Subscription';
@@ -362,7 +362,7 @@ export function connectAdvanced(
           throw selector.error;
         } else {
           return normalizeProps(
-            createComponentVNode(
+            newComponentVNode(
               VNodeFlags.ComponentUnknown,
               WrappedComponent,
               this.addExtraProps(selector.props),

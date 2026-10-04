@@ -1,4 +1,4 @@
-import { Fragment, render } from 'inferno';
+import { createFragment, createPortal, Fragment, render } from 'inferno';
 import {
   AnimatedAllComponent,
   AnimatedMoveComponent,
@@ -6,6 +6,7 @@ import {
   hasPendingAnimations,
 } from 'inferno-animation';
 import { isFunction } from 'inferno-shared';
+import { ChildFlags } from 'inferno-vnode-flags';
 import {
   endTransitions,
   fakeBoxes,
@@ -13,6 +14,12 @@ import {
   type Frames,
   idle,
 } from './helpers/frames';
+
+// A fragment with one child as createFragment makes it: JSX compiles <Fragment><li /></Fragment>
+// to a fragment whose children are an array of one.
+function single(child, key?: string) {
+  return createFragment(child, ChildFlags.HasVNodeChildren, key);
+}
 
 // Every retained item that changes place starts from its previous box. The geometry is computed
 // from the element index, so the same checks run in jsdom and in browsers.
@@ -120,6 +127,11 @@ describe('move shapes with index geometry', () => {
       );
     }
   }
+  class Single extends AnimatedMoveComponent<{ id: string }, unknown> {
+    public render() {
+      return single(<li data-id={this.props.id}>{this.props.id}</li>);
+    }
+  }
   const owners: Record<string, (id: string) => any> = {
     'a class owner': (id) => <Card key={id} id={id} animation="Card" />,
     'a function owner': (id) => (
@@ -136,6 +148,11 @@ describe('move shapes with index geometry', () => {
     'an owner rendering a fragment': (id) => (
       <Pair key={id} id={id} animation="Card" />
     ),
+    'an owner rendering a fragment with one root': (id) => (
+      <Single key={id} id={id} animation="Card" />
+    ),
+    'an owner inside a keyed fragment with one child': (id) =>
+      single(<Card id={id} animation="Card" />, id),
   };
   let owner: (id: string) => any;
   function view(order: string[]) {
@@ -507,5 +524,179 @@ describe('move shapes with index geometry', () => {
       complete();
     }
     expect(container.textContent).toBe('AC');
+  });
+
+  describe('with leaves in a parent that holds fragments', () => {
+    const completions: Array<() => void> = [];
+    class Leaving extends Card {
+      public componentWillDisappear(_dom, done: () => void) {
+        completions.push(done);
+      }
+    }
+
+    beforeEach(() => {
+      completions.length = 0;
+    });
+
+    it('closes the gap of a leaving item when the items are keyed fragments with one child', async () => {
+      owner = (id) => single(<Leaving id={id} animation="Card" />, id);
+      render(view(['A', 'B', 'C', 'D']), container);
+      const b = item('B');
+      render(view(['A', 'C', 'D']), container);
+      await Promise.resolve();
+      frames.drain();
+      finishTransitions();
+      expect(b.isConnected).toBe(true);
+      // Completing the leave removes B in the next frame, and the items after it close the gap
+      completions[0]();
+      expect(b.isConnected).toBe(true);
+      frame();
+      await Promise.resolve();
+      expect(b.isConnected).toBe(false);
+      expect(transforms()).toEqual({
+        A: '',
+        C: `translate(0px,${ROW}px)`,
+        D: `translate(0px,${ROW}px)`,
+      });
+    });
+
+    it('closes the gap of a leaving item in a parent that it shares with a keyed fragment list', async () => {
+      function Group({ ids }: { ids: string[] }) {
+        return (
+          <Fragment>
+            {ids.map((id) => (
+              <Leaving key={id} id={id} animation="Card" />
+            ))}
+          </Fragment>
+        );
+      }
+      // An owner in a fragment with one child, a fragment list that shares the parent, a fragment
+      // without keys and owners of their own
+      const shared = (order: string[]) => (
+        <ul>
+          {order.map((id) => {
+            switch (id) {
+              case 'F':
+                return single(<Leaving id="F" animation="Card" />, 'F');
+              case 'G':
+                return <Group key="G" ids={['G1', 'G2']} />;
+              case 'N':
+                return (
+                  <Fragment key="N">
+                    <li data-id="N1">N1</li>
+                    <li data-id="N2">N2</li>
+                  </Fragment>
+                );
+              default:
+                return <Leaving key={id} id={id} animation="Card" />;
+            }
+          })}
+        </ul>
+      );
+      render(shared(['A', 'F', 'G', 'N', 'B']), container);
+      const a = item('A');
+      render(shared(['F', 'G', 'N', 'B']), container);
+      await Promise.resolve();
+      frames.drain();
+      finishTransitions();
+      completions[0]();
+      expect(a.isConnected).toBe(true);
+      frame();
+      await Promise.resolve();
+      expect(a.isConnected).toBe(false);
+      // The move batch of the parent measures all of its elements, so the elements of the
+      // fragment without owners close the gap too
+      expect(transforms()).toEqual({
+        F: `translate(0px,${ROW}px)`,
+        G1: `translate(0px,${ROW}px)`,
+        G2: `translate(0px,${ROW}px)`,
+        N1: `translate(0px,${ROW}px)`,
+        N2: `translate(0px,${ROW}px)`,
+        B: `translate(0px,${ROW}px)`,
+      });
+    });
+
+    it('removes completed leaves at once when a keyed fragment stops being keyed', async () => {
+      function Group({ ids, keyed }: { ids: string[]; keyed: boolean }) {
+        return keyed ? (
+          <Fragment>
+            {ids.map((id) => (
+              <Leaving key={id} id={id} animation="Card" />
+            ))}
+          </Fragment>
+        ) : (
+          <Fragment>
+            <li data-id="A">A</li>
+            <li data-id="C">C</li>
+          </Fragment>
+        );
+      }
+      render(
+        <ul>
+          <Group ids={['A', 'B', 'C']} keyed />
+        </ul>,
+        container,
+      );
+      render(
+        <ul>
+          <Group ids={['A', 'C']} keyed />
+        </ul>,
+        container,
+      );
+      await Promise.resolve();
+      frames.drain();
+      finishTransitions();
+      const b = item('B');
+      // The completion waits for the next frame to remove B together with other leaves
+      completions[0]();
+      expect(b.isConnected).toBe(true);
+      expect(hasPendingAnimations()).toBe(true);
+      render(
+        <ul>
+          <Group ids={['A', 'C']} keyed={false} />
+        </ul>,
+        container,
+      );
+      expect(b.isConnected).toBe(false);
+      expect(hasPendingAnimations()).toBe(false);
+      // The replaced A and C leave as well; without move hooks their removal is immediate
+      const remaining = completions.slice(1);
+      for (let i = 0, len = remaining.length; i < len; ++i) {
+        const complete = remaining[i];
+        complete();
+      }
+      expect(container.textContent).toBe('AC');
+    });
+  });
+
+  it('moves the items of a keyed fragment list in a portal after the portal changes its container', async () => {
+    const first = document.createElement('ul');
+    const second = document.createElement('ul');
+    const host = document.createElement('div');
+    container.append(host, first, second);
+    function Group({ ids }: { ids: string[] }) {
+      return (
+        <Fragment>
+          {ids.map((id) => (
+            <Card key={id} id={id} animation="Card" />
+          ))}
+        </Fragment>
+      );
+    }
+    const portal = (target: Element, ids: string[]) => (
+      <div>{createPortal(single(<Group ids={ids} />), target)}</div>
+    );
+    render(portal(first, ['A', 'B', 'C']), host);
+    render(portal(second, ['A', 'B', 'C']), host);
+    expect(first.childNodes.length).toBe(0);
+    expect(second.textContent).toBe('ABC');
+    render(portal(second, ['C', 'A', 'B']), host);
+    await Promise.resolve();
+    expect(transforms()).toEqual({
+      C: `translate(0px,${2 * ROW}px)`,
+      A: `translate(0px,-${ROW}px)`,
+      B: `translate(0px,-${ROW}px)`,
+    });
+    render(null, host);
   });
 });

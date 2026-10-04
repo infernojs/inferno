@@ -1,8 +1,8 @@
 import { _allowStateChanges, createAtom, Reaction } from 'mobx';
 import {
   Component,
-  createComponentVNode,
   type InfernoNode,
+  newComponentVNode,
   type VNode,
 } from 'inferno';
 import { EventEmitter } from './utils/EventEmitter';
@@ -421,7 +421,7 @@ function createStoreInjector(grabStoresFn: Function, component, injectNames?) {
         newProps[key] = additionalProps[key];
       }
 
-      return createComponentVNode(
+      return newComponentVNode(
         VNodeFlags.ComponentUnknown,
         component,
         newProps,

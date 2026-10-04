@@ -1,8 +1,8 @@
 import {
   _HI as normalizeRoot,
-  createComponentVNode,
   findDOMFromVNode,
   type InfernoNode,
+  newComponentVNode,
   render,
   type VNode,
 } from 'inferno';
@@ -38,8 +38,8 @@ function innerVNode<T>(
     Object.freeze(properties);
     Object.freeze(ref);
   }
-  return createComponentVNode(
-    VNodeFlags.ComponentFunction,
+  return newComponentVNode(
+    VNodeFlags.ComponentFunction | VNodeFlags.HasInvalidChildren,
     type,
     properties,
     undefined,

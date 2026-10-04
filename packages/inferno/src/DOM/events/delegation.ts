@@ -1,5 +1,5 @@
 import type { LinkedEvent, SemiSyntheticEvent } from './../../core/types';
-import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
+import { isFunction, isNull } from 'inferno-shared';
 import {
   isLastValueSameLinkEvent,
   normalizeEventName,
@@ -33,6 +33,10 @@ export interface DelegatedEvent {
   listener: ((event: SemiSyntheticEvent<any>) => void) | null;
   // DOM event type, for example "click"
   readonly type: keyof DocumentEventMap;
+  // The bit of this event in an element's $EV
+  readonly bit: number;
+  // The element property that holds the element's handler, for example "$onClick"
+  readonly prop: string;
 }
 
 const delegatedEventNames: Array<keyof DelegateEventTypes> = [
@@ -60,41 +64,43 @@ const delegatedEventNames: Array<keyof DelegateEventTypes> = [
 export const syntheticEvents: Record<string, DelegatedEvent | undefined> =
   Object.create(null);
 
+// The same records in bit order, for walking the bits of an $EV
+export const delegatedEvents: DelegatedEvent[] = [];
+
 for (let i = 0, len = delegatedEventNames.length; i < len; ++i) {
   const name = delegatedEventNames[i];
-  syntheticEvents[name] = {
+  const event: DelegatedEvent = {
     count: 0,
     listener: null,
     type: normalizeEventName(name),
+    bit: 1 << i,
+    prop: '$' + name,
   };
+  syntheticEvents[name] = event;
+  delegatedEvents.push(event);
 }
 
 /*
- * An element's $EV. V8 watches the first objects a constructor creates and then shrinks the object
- * to the property slots they used: one for an element with one handler, the usual case, where an
- * empty {} literal reserves four. Handlers past the slots go to an out-of-object property store.
+ * An element keeps its handlers in its own properties, $onClick and so on, and its $EV has a bit
+ * set for each event it registered. The element has no spare in-object slots, so the first added
+ * property allocates a property array with room for three: $EV and one or two handlers fit there,
+ * and the element needs no object of its own for them. Node.prototype has defaults for all of
+ * these properties, see rendering.ts.
  */
-function EventHandlers(): void {}
-
 function updateOrAddSyntheticEvent(
   event: DelegatedEvent,
-  name: string,
+  handler: (() => void) | LinkedEvent<any, any>,
   dom,
-): Partial<DelegateEventTypes> {
-  let eventsObject = dom.$EV;
+): void {
+  const bits = dom.$EV;
 
-  if (!eventsObject) {
-    // Only the handlers the element has: an object with a slot for every delegated event cost
-    // 13 fields per element, which usually has one handler
-    eventsObject = dom.$EV = new EventHandlers();
-  }
-  if (!eventsObject[name]) {
+  if ((bits & event.bit) === 0) {
+    dom.$EV = bits | event.bit;
     if (++event.count === 1) {
-      event.listener = attachEventToDocument(event.type, name);
+      event.listener = attachEventToDocument(event);
     }
   }
-
-  return eventsObject;
+  dom[event.prop] = handler;
 }
 
 function releaseDelegatedEvent(event: DelegatedEvent): void {
@@ -107,43 +113,47 @@ function releaseDelegatedEvent(event: DelegatedEvent): void {
   }
 }
 
-function unmountSyntheticEvent(event: DelegatedEvent, name: string, dom): void {
-  const eventsObject = dom.$EV;
+function unmountSyntheticEvent(event: DelegatedEvent, dom): void {
+  const bits = dom.$EV;
 
-  if (eventsObject?.[name]) {
+  if ((bits & event.bit) !== 0) {
+    dom.$EV = bits & ~event.bit;
     releaseDelegatedEvent(event);
-    eventsObject[name] = null;
+    dom[event.prop] = null;
   }
 }
 
-// Releases the handlers an unmounted element registered, eventsObject is its $EV
-export function unmountSyntheticEvents(
-  eventsObject: Partial<DelegateEventTypes>,
-): void {
-  for (const name in eventsObject) {
-    if (eventsObject[name]) {
-      releaseDelegatedEvent(syntheticEvents[name] as DelegatedEvent);
-      eventsObject[name] = null;
+// Releases the handlers an unmounted element registered, the caller checks that its $EV is not 0
+export function unmountSyntheticEvents(dom): void {
+  let bits: number = dom.$EV;
+
+  dom.$EV = 0;
+  for (let i = 0, len = delegatedEvents.length; i < len && bits !== 0; ++i) {
+    const event = delegatedEvents[i];
+
+    if ((bits & event.bit) !== 0) {
+      bits &= ~event.bit;
+      releaseDelegatedEvent(event);
+      dom[event.prop] = null;
     }
   }
 }
 
 export function handleSyntheticEvent(
   event: DelegatedEvent,
-  name: string,
   lastEvent: (() => void) | LinkedEvent<any, any> | null | false | true,
   nextEvent: (() => void) | LinkedEvent<any, any> | null | false | true,
   dom,
 ): void {
   if (isFunction(nextEvent)) {
-    updateOrAddSyntheticEvent(event, name, dom)[name] = nextEvent;
+    updateOrAddSyntheticEvent(event, nextEvent, dom);
   } else if (isLinkEventObject(nextEvent)) {
     if (isLastValueSameLinkEvent(lastEvent, nextEvent)) {
       return;
     }
-    updateOrAddSyntheticEvent(event, name, dom)[name] = nextEvent;
+    updateOrAddSyntheticEvent(event, nextEvent, dom);
   } else {
-    unmountSyntheticEvent(event, name, dom);
+    unmountSyntheticEvent(event, dom);
   }
 }
 
@@ -157,7 +167,7 @@ function getTargetNode(event): any {
 function dispatchEvents(
   event: SemiSyntheticEvent<any>,
   isClick: boolean,
-  name: string,
+  prop: string,
   eventData: IEventData,
 ): void {
   let dom = getTargetNode(event);
@@ -168,23 +178,19 @@ function dispatchEvents(
     if (isClick && dom.disabled) {
       return;
     }
-    const eventsObject = dom.$EV;
+    const currentEvent = dom[prop];
 
-    if (!isNullOrUndef(eventsObject)) {
-      const currentEvent = eventsObject[name];
+    if (currentEvent) {
+      // linkEvent object
+      eventData.dom = dom;
+      if (currentEvent.event) {
+        currentEvent.event(currentEvent.data, event);
+      } else {
+        currentEvent(event);
+      }
 
-      if (currentEvent) {
-        // linkEvent object
-        eventData.dom = dom;
-        if (currentEvent.event) {
-          currentEvent.event(currentEvent.data, event);
-        } else {
-          currentEvent(event);
-        }
-
-        if (event.cancelBubble) {
-          return;
-        }
+      if (event.cancelBubble) {
+        return;
       }
     }
     dom = dom.parentNode;
@@ -227,18 +233,21 @@ function extendEventProperties(event): IEventData {
   return eventData;
 }
 
-function rootEvent(name: string): (event: SemiSyntheticEvent<any>) => void {
-  const isClick = name === 'onClick' || name === 'onDblClick';
+function rootEvent(
+  delegatedEvent: DelegatedEvent,
+): (event: SemiSyntheticEvent<any>) => void {
+  const type = delegatedEvent.type;
+  const isClick = type === 'click' || type === 'dblclick';
+  const prop = delegatedEvent.prop;
   return function (event: SemiSyntheticEvent<any>) {
-    dispatchEvents(event, isClick, name, extendEventProperties(event));
+    dispatchEvents(event, isClick, prop, extendEventProperties(event));
   };
 }
 
 function attachEventToDocument(
-  type: keyof DocumentEventMap,
-  name: string,
+  delegatedEvent: DelegatedEvent,
 ): (event: SemiSyntheticEvent<any>) => void {
-  const attachedEvent = rootEvent(name);
-  document.addEventListener(type, attachedEvent);
+  const attachedEvent = rootEvent(delegatedEvent);
+  document.addEventListener(delegatedEvent.type, attachedEvent);
   return attachedEvent;
 }

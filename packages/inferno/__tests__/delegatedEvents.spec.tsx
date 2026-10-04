@@ -181,6 +181,16 @@ describe('Delegated events', () => {
       expect(calls(removeSpy, 'touchend').length).toBe(1);
     });
 
+    it('should not keep the handlers of an unmounted element', () => {
+      render(<span onTouchMove={() => {}} onTouchEnd={() => {}} />, container);
+      const span = container.firstChild;
+
+      render(null, container);
+      expect(span.$onTouchMove).toBeNull();
+      expect(span.$onTouchEnd).toBeNull();
+      expect(span.$EV).toBe(0);
+    });
+
     it('should count an element once when its handler changes', () => {
       render(<span onTouchMove={() => {}} />, container);
       render(<span onTouchMove={() => {}} />, container);

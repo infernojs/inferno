@@ -22,7 +22,7 @@ import {
   EMPTY_OBJ,
   renderCheck,
 } from './utils/common';
-import { type DelegateEventTypes } from './events/delegation';
+import { type DelegateEventTypes, delegatedEvents } from './events/delegation';
 
 const hasDocumentAvailable: boolean = typeof document !== 'undefined';
 
@@ -39,13 +39,18 @@ let documentBody: HTMLElement | null = null;
 if (hasDocumentAvailable) {
   documentBody = document.body;
   /*
-   * Defining $EV and $V properties on Node.prototype
+   * Defining $EV, the delegated handler properties and $V on Node.prototype
    * fixes v8 "wrong map" de-optimization
    */
 
   if (window.Node) {
-    (Node.prototype as any).$EV = null as Partial<DelegateEventTypes> | null;
-    (Node.prototype as any).$V = null as DelegateEventTypes | null;
+    const nodePrototype = Node.prototype as any;
+
+    nodePrototype.$EV = 0;
+    for (let i = 0, len = delegatedEvents.length; i < len; ++i) {
+      nodePrototype[delegatedEvents[i].prop] = null;
+    }
+    nodePrototype.$V = null as DelegateEventTypes | null;
   }
 }
 

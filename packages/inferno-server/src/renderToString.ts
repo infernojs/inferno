@@ -8,7 +8,7 @@ import {
   isString,
   throwError,
 } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { renderStyleAttribute } from './prop-renderers';
 import {
   arrayToFragment,
@@ -175,19 +175,18 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
       renderedString += `>`;
     } else {
       renderedString += `>`;
-      const childFlags = vNode.childFlags;
       const childSelectValue = getChildSelectValue(type, props, selectValue);
 
       // The html wins over children, as on the client
       if (html) {
         renderedString += html;
-      } else if (childFlags === ChildFlags.HasVNodeChildren) {
+      } else if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
         renderedString += renderVNodeToString(
           children,
           context,
           childSelectValue,
         );
-      } else if (childFlags & ChildFlags.MultipleChildren) {
+      } else if ((flags & VNodeFlags.MultipleChildren) !== 0) {
         for (let i = 0, len = children.length; i < len; ++i) {
           const child = children[i];
           renderedString += renderVNodeToString(
@@ -196,7 +195,7 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
             childSelectValue,
           );
         }
-      } else if (childFlags === ChildFlags.HasTextChildren) {
+      } else if ((flags & VNodeFlags.HasTextChildren) !== 0) {
         renderedString += children === '' ? ' ' : escapeText(children);
       }
       if (!isVoidElement) {
@@ -211,7 +210,7 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
     if (isEmptyFragment(vNode)) {
       return '<!--!-->';
     }
-    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
       return renderVNodeToString(children, context, selectValue);
     }
     let renderedString = '';

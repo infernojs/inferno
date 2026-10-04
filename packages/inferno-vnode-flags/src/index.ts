@@ -21,6 +21,20 @@ export const enum VNodeFlags {
   ForwardRef = 1 << 15,
   Normalized = 1 << 16,
 
+  /*
+   * Bits 17-21 hold the shape of the vNode's children, so a vNode has no field for it. They are the
+   * ChildFlags shifted left by ChildFlagsShift, and a created vNode has exactly one of them set.
+   */
+  ChildFlagsShift = 17,
+  HasInvalidChildren = 1 << 17,
+  HasVNodeChildren = 1 << 18,
+  HasNonKeyedChildren = 1 << 19,
+  HasKeyedChildren = 1 << 20,
+  HasTextChildren = 1 << 21,
+  ChildFlagsMask = 31 << ChildFlagsShift,
+  /* Development only: the keys of the vNode's children have been validated */
+  Validated = 1 << 22,
+
   /* Masks */
   ForwardRefComponent = ForwardRef | ComponentFunction,
   FormElement = InputElement | TextareaElement | SelectElement,
@@ -29,6 +43,13 @@ export const enum VNodeFlags {
   DOMRef = Element | Text | Portal,
   InUseOrNormalized = InUse | Normalized,
   ClearInUse = ~InUse,
+  ClearOnClone = ~(InUse | Validated),
+  MultipleChildren = HasNonKeyedChildren | HasKeyedChildren,
+  ClearChildFlags = ~ChildFlagsMask,
+  // A new vNode made from another vNode's flags must not take its children's shape or its validation
+  ClearOnCopy = ~(ChildFlagsMask | Validated),
+  // Patching ignores these bits when it compares the types of two vNodes, children change in place
+  IgnoredByPatch = Normalized | ChildFlagsMask | Validated,
   ComponentKnown = ComponentFunction | ComponentClass,
 }
 

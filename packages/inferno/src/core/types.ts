@@ -5,7 +5,7 @@ import type {
   NativeDragEvent,
   NativeFocusEvent,
 } from './nativetypes';
-import type { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import type { VNodeFlags } from 'inferno-vnode-flags';
 import type { Properties, PropertiesHyphen } from 'csstype';
 
 export interface LinkedEvent<T, E extends Event> {
@@ -196,11 +196,10 @@ type CrossOrigin = 'anonymous' | 'use-credentials' | '' | null | undefined;
 
 export interface VNode {
   children: InfernoNode;
-  childFlags: ChildFlags;
   dom: Element | null;
   className: string | null | undefined;
+  // Also holds the shape of the children, in the bits of VNodeFlags.ChildFlagsMask
   flags: VNodeFlags;
-  isValidated?: boolean;
   key: Key;
   props: any;
   ref: any;

@@ -1,5 +1,5 @@
 import { render, rerender, type VNode } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { isArray, isNullOrUndef } from 'inferno-shared';
 import { getTagNameOfVNode } from './utils';
 
@@ -56,16 +56,16 @@ function buildVNodeSnapshot(vNode: VNode): InfernoSnapshot {
     childVNode = buildVNodeSnapshot(children);
   }
 
-  if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+  if (flags & VNodeFlags.HasVNodeChildren) {
     childVNode = buildVNodeSnapshot(children);
-  } else if (vNode.childFlags & ChildFlags.MultipleChildren) {
+  } else if (flags & VNodeFlags.MultipleChildren) {
     childVNode = [];
 
     for (let i = 0, len = children.length; i < len; ++i) {
       const child = children[i];
       childVNode.push(buildVNodeSnapshot(child));
     }
-  } else if (vNode.childFlags & ChildFlags.HasTextChildren) {
+  } else if (flags & VNodeFlags.HasTextChildren) {
     childVNode = (vNode.children as string | number) + '';
   }
 

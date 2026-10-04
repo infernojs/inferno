@@ -39,7 +39,6 @@ function getIndexKey(index: number): string {
 }
 
 function V(
-  childFlags: ChildFlags,
   children,
   className: string | null | undefined,
   flags: VNodeFlags,
@@ -48,10 +47,6 @@ function V(
   ref,
   type,
 ): void {
-  if (process.env.NODE_ENV !== 'production') {
-    this.isValidated = false;
-  }
-  this.childFlags = childFlags;
   this.children = children;
   this.className = className;
   this.dom = null;
@@ -62,12 +57,12 @@ function V(
   this.type = type;
 }
 
-export function createVNode<P>(
+// The child bits are packed in the flags, flags without a child bit have unknown children that get normalized
+export function newVNode<P>(
   flags: VNodeFlags,
   type: string,
   className?: string | null,
   children?: InfernoNode,
-  childFlags?: ChildFlags,
   props?: Readonly<P> | null,
   key?: string | number | null,
   ref?: Ref | Refs<P> | null,
@@ -75,14 +70,11 @@ export function createVNode<P>(
   if (process.env.NODE_ENV !== 'production') {
     if (flags & VNodeFlags.Component) {
       throwError(
-        'Creating Component vNodes using createVNode is not allowed. Use Inferno.createComponentVNode method.',
+        'Creating Component vNodes using newVNode is not allowed. Use Inferno.newComponentVNode method.',
       );
     }
   }
-  const childFlag: ChildFlags =
-    childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags;
   const vNode = new V(
-    childFlag,
     children,
     className,
     flags,
@@ -96,18 +88,47 @@ export function createVNode<P>(
     options.createVNode(vNode);
   }
 
-  if (childFlag === ChildFlags.UnknownChildren) {
+  const hasUnknownChildren = (flags & VNodeFlags.ChildFlagsMask) === 0;
+
+  if (hasUnknownChildren) {
     normalizeChildren(vNode, vNode.children);
   }
 
   if (process.env.NODE_ENV !== 'production') {
-    if (childFlag !== ChildFlags.UnknownChildren) {
+    if (!hasUnknownChildren) {
       validateChildFlags(vNode);
     }
     validateVNodeElementChildren(vNode);
   }
 
   return vNode;
+}
+
+/**
+ * @deprecated Use newVNode, its flags include the child bit: `flags | (childFlags << VNodeFlags.ChildFlagsShift)`.
+ */
+export function createVNode<P>(
+  flags: VNodeFlags,
+  type: string,
+  className?: string | null,
+  children?: InfernoNode,
+  childFlags?: ChildFlags,
+  props?: Readonly<P> | null,
+  key?: string | number | null,
+  ref?: Ref | Refs<P> | null,
+): VNode {
+  return newVNode(
+    // The flags can be copied from another vNode (cloneVNode does), its children and validation do not apply
+    (flags & VNodeFlags.ClearOnCopy) |
+      ((childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags) <<
+        VNodeFlags.ChildFlagsShift),
+    type,
+    className,
+    children,
+    props,
+    key,
+    ref,
+  );
 }
 
 function mergeDefaultHooks(flags, type, ref) {
@@ -145,23 +166,20 @@ function mergeDefaultProps(flags, type, props) {
   return mergeUnsetProperties(props, defaultProps);
 }
 
-function resolveComponentFlags(flags: VNodeFlags, type): VNodeFlags {
-  if (flags & VNodeFlags.ComponentKnown) {
-    return flags;
-  }
-
+function resolveComponentFlags(type): VNodeFlags {
   if (type.prototype?.render) {
-    return VNodeFlags.ComponentClass;
+    return VNodeFlags.ComponentClass | VNodeFlags.HasInvalidChildren;
   }
 
   if (type.render) {
-    return VNodeFlags.ForwardRefComponent;
+    return VNodeFlags.ForwardRefComponent | VNodeFlags.HasInvalidChildren;
   }
 
-  return VNodeFlags.ComponentFunction;
+  return VNodeFlags.ComponentFunction | VNodeFlags.HasInvalidChildren;
 }
 
-export function createComponentVNode<P>(
+// Flags of a known component type are kept as they are, they include VNodeFlags.HasInvalidChildren
+export function newComponentVNode<P>(
   flags: VNodeFlags,
   type:
     | Function
@@ -175,15 +193,24 @@ export function createComponentVNode<P>(
   if (process.env.NODE_ENV !== 'production') {
     if ((flags & VNodeFlags.HtmlElement) !== 0) {
       throwError(
-        'Creating element vNodes using createComponentVNode is not allowed. Use Inferno.createVNode method.',
+        'Creating element vNodes using newComponentVNode is not allowed. Use Inferno.newVNode method.',
+      );
+    }
+    if (
+      (flags & VNodeFlags.ComponentKnown) !== 0 &&
+      (flags & VNodeFlags.ChildFlagsMask) !== VNodeFlags.HasInvalidChildren
+    ) {
+      throwError(
+        'newComponentVNode flags of a known component type must have VNodeFlags.HasInvalidChildren as their only child bit.',
       );
     }
   }
 
-  flags = resolveComponentFlags(flags, type);
+  if ((flags & VNodeFlags.ComponentKnown) === 0) {
+    flags = resolveComponentFlags(type);
+  }
 
   const vNode = new V(
-    ChildFlags.HasInvalidChildren,
     null,
     null,
     flags,
@@ -200,15 +227,38 @@ export function createComponentVNode<P>(
   return vNode;
 }
 
-export function createTextVNode(
+/**
+ * @deprecated Use newComponentVNode, its flags of a known component type include `VNodeFlags.HasInvalidChildren`.
+ */
+export function createComponentVNode<P>(
+  flags: VNodeFlags,
+  type:
+    | Function
+    | ComponentType<P>
+    | Component<P, unknown>
+    | ForwardRef<P, unknown>,
+  props?: Readonly<P> | null,
+  key?: null | string | number,
+  ref?: Ref | Refs<P> | null,
+): VNode {
+  return newComponentVNode(
+    // The flags can be copied from another vNode (inferno-router Switch does), its validation does not apply
+    (flags & VNodeFlags.ClearOnCopy) | VNodeFlags.HasInvalidChildren,
+    type,
+    props,
+    key,
+    ref,
+  );
+}
+
+export function newTextVNode(
   text?: string | boolean | null | number,
   key?: string | number | null,
 ): VNode {
   return new V(
-    ChildFlags.HasInvalidChildren,
     isInvalid(text) ? '' : text,
     null,
-    VNodeFlags.Text,
+    VNodeFlags.Text | VNodeFlags.HasInvalidChildren,
     key,
     null,
     null,
@@ -216,36 +266,72 @@ export function createTextVNode(
   ) as VNode;
 }
 
-export function createFragment(
-  children: any,
-  childFlags: ChildFlags,
+/**
+ * @deprecated Use newTextVNode, it takes the same arguments.
+ */
+export function createTextVNode(
+  text?: string | boolean | null | number,
   key?: string | number | null,
 ): VNode {
-  const fragment = createVNode(
-    VNodeFlags.Fragment,
+  return newTextVNode(text, key);
+}
+
+// The flags are VNodeFlags.Fragment and the child bit, a fragment without a child bit has unknown children
+export function newFragment(
+  flags: VNodeFlags,
+  children: any,
+  key?: string | number | null,
+): VNode {
+  if (process.env.NODE_ENV !== 'production') {
+    if ((flags & VNodeFlags.Fragment) === 0) {
+      throwError('newFragment flags must include VNodeFlags.Fragment.');
+    }
+  }
+  const fragment = newVNode(
+    flags,
     VNodeFlags.Fragment as any,
     null,
     children,
-    childFlags,
     null,
     key,
     null,
   );
 
-  switch (fragment.childFlags) {
-    case ChildFlags.HasInvalidChildren:
+  flags = fragment.flags;
+
+  switch (flags & VNodeFlags.ChildFlagsMask) {
+    case VNodeFlags.HasInvalidChildren:
       fragment.children = createVoidVNode();
-      fragment.childFlags = ChildFlags.HasVNodeChildren;
+      fragment.flags =
+        (flags & VNodeFlags.ClearChildFlags) | VNodeFlags.HasVNodeChildren;
       break;
-    case ChildFlags.HasTextChildren:
-      fragment.children = [createTextVNode(children)];
-      fragment.childFlags = ChildFlags.HasNonKeyedChildren;
+    case VNodeFlags.HasTextChildren:
+      fragment.children = [newTextVNode(children)];
+      fragment.flags =
+        (flags & VNodeFlags.ClearChildFlags) | VNodeFlags.HasNonKeyedChildren;
       break;
     default:
       break;
   }
 
   return fragment;
+}
+
+/**
+ * @deprecated Use newFragment, its flags are `VNodeFlags.Fragment | (childFlags << VNodeFlags.ChildFlagsShift)`.
+ */
+export function createFragment(
+  children: any,
+  childFlags: ChildFlags,
+  key?: string | number | null,
+): VNode {
+  return newFragment(
+    VNodeFlags.Fragment |
+      ((childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags) <<
+        VNodeFlags.ChildFlagsShift),
+    children,
+    key,
+  );
 }
 
 export function normalizeProps(vNode: VNode): VNode {
@@ -297,19 +383,21 @@ export function normalizeProps(vNode: VNode): VNode {
  */
 function cloneFragment(vNodeToClone: VNode): VNode {
   const oldChildren = vNodeToClone.children;
-  const childFlags = vNodeToClone.childFlags;
 
-  return createFragment(
-    childFlags === ChildFlags.HasVNodeChildren
+  const flags = vNodeToClone.flags;
+
+  return newFragment(
+    VNodeFlags.Fragment | (flags & VNodeFlags.ChildFlagsMask),
+    (flags & VNodeFlags.HasVNodeChildren) !== 0
       ? directClone(oldChildren as VNode)
       : (oldChildren as VNode[]).map(directClone),
-    childFlags,
     vNodeToClone.key,
   );
 }
 
 export function directClone(vNodeToClone: VNode): VNode {
-  const flags = vNodeToClone.flags & VNodeFlags.ClearInUse;
+  // The clone is not mounted yet, and development validates it again
+  const flags = vNodeToClone.flags & VNodeFlags.ClearOnClone;
   let props = vNodeToClone.props;
 
   if (flags & VNodeFlags.Component) {
@@ -322,15 +410,13 @@ export function directClone(vNodeToClone: VNode): VNode {
     }
   }
   if ((flags & VNodeFlags.Fragment) === 0) {
-    const childFlags = vNodeToClone.childFlags;
     let children = vNodeToClone.children;
 
     // Mounting and patching write clones into the children array, so the clone needs its own array
-    if (childFlags & ChildFlags.MultipleChildren) {
+    if (flags & VNodeFlags.MultipleChildren) {
       children = (children as VNode[]).slice();
     }
     return new V(
-      childFlags,
       children,
       vNodeToClone.className,
       flags,
@@ -363,18 +449,18 @@ export function mustCloneVNode(
 }
 
 export function createVoidVNode(): VNode {
-  return createTextVNode('', null);
+  return newTextVNode('', null);
 }
 
 export function createPortal(children, container: ParentDOM): VNode {
   const normalizedRoot = normalizeRoot(children);
 
-  return createVNode(
+  // No child bit, the children are normalized
+  return newVNode(
     VNodeFlags.Portal,
     VNodeFlags.Portal as any,
     null,
     normalizedRoot,
-    ChildFlags.UnknownChildren,
     null,
     normalizedRoot.key,
     container as any, // Should there be own prop for this?
@@ -397,7 +483,7 @@ export function _normalizeVNodes(
         _normalizeVNodes(n, result, 0, newKey);
       } else {
         if (isStringOrNumber(n)) {
-          n = createTextVNode(n, newKey);
+          n = newTextVNode(n, newKey);
         } else {
           if (process.env.NODE_ENV !== 'production') {
             throwIfObjectIsNotVNode(n);
@@ -452,13 +538,13 @@ export function getFlagsForElementVnode(type: string): VNodeFlags {
 
 export function normalizeChildren(vNode: VNode, children): VNode {
   let newChildren;
-  let newChildFlags: ChildFlags = ChildFlags.HasInvalidChildren;
+  let newChildFlags = VNodeFlags.HasInvalidChildren;
 
   // Don't change children to match strict equal (===) true in patching
   if (isInvalid(children)) {
     newChildren = children;
   } else if (isStringOrNumber(children)) {
-    newChildFlags = ChildFlags.HasTextChildren;
+    newChildFlags = VNodeFlags.HasTextChildren;
     newChildren = children;
   } else if (isArray(children)) {
     const len = children.length;
@@ -473,7 +559,7 @@ export function normalizeChildren(vNode: VNode, children): VNode {
         break;
       } else if (isStringOrNumber(n)) {
         newChildren = newChildren || children.slice(0, i);
-        newChildren.push(createTextVNode(n, getIndexKey(i)));
+        newChildren.push(newTextVNode(n, getIndexKey(i)));
       } else {
         if (process.env.NODE_ENV !== 'production') {
           throwIfObjectIsNotVNode(n);
@@ -506,29 +592,29 @@ export function normalizeChildren(vNode: VNode, children): VNode {
     }
     newChildren = newChildren || children;
     if (newChildren.length === 0) {
-      newChildFlags = ChildFlags.HasInvalidChildren;
+      newChildFlags = VNodeFlags.HasInvalidChildren;
     } else {
-      newChildFlags = ChildFlags.HasKeyedChildren;
+      newChildFlags = VNodeFlags.HasKeyedChildren;
     }
   } else {
     // Single child keeps its key, placing the vNode clones it when it is mounted
     newChildren = children;
     newChildren.flags |= VNodeFlags.Normalized;
-    newChildFlags = ChildFlags.HasVNodeChildren;
+    newChildFlags = VNodeFlags.HasVNodeChildren;
   }
 
   vNode.children = newChildren;
-  vNode.childFlags = newChildFlags;
+  vNode.flags = (vNode.flags & VNodeFlags.ClearChildFlags) | newChildFlags;
 
   return vNode;
 }
 
 export function normalizeRoot(input, lastInput?: VNode | null): VNode {
   if (isInvalid(input) || isStringOrNumber(input)) {
-    return createTextVNode(input, null);
+    return newTextVNode(input, null);
   }
   if (isArray(input)) {
-    return createFragment(input, ChildFlags.UnknownChildren, null);
+    return newFragment(VNodeFlags.Fragment, input, null);
   }
 
   return mustCloneVNode(input, lastInput) ? directClone(input) : input;

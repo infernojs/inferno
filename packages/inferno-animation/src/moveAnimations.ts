@@ -4,7 +4,7 @@ import {
   type AnimationQueues,
   type VNode,
 } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { isFunction } from 'inferno-shared';
 import {
   queueRemoval,
@@ -84,7 +84,7 @@ function hasCandidates(vNode: VNode): boolean {
     return hasMoveHook(vNode.ref) !== 0 || hasCandidates(input(vNode));
   }
   if (flags & VNodeFlags.Fragment) {
-    return vNode.childFlags === ChildFlags.HasVNodeChildren
+    return flags & VNodeFlags.HasVNodeChildren
       ? hasCandidates(input(vNode))
       : (vNode.children as VNode[]).some(hasCandidates);
   }
@@ -96,8 +96,7 @@ function coverRoots(vNode: VNode, covered: Set<Element>): void {
   if (flags & VNodeFlags.Element) covered.add(vNode.dom!);
   else if (flags & VNodeFlags.Component) coverRoots(input(vNode), covered);
   else if (flags & VNodeFlags.Fragment) {
-    if (vNode.childFlags === ChildFlags.HasVNodeChildren)
-      coverRoots(input(vNode), covered);
+    if (flags & VNodeFlags.HasVNodeChildren) coverRoots(input(vNode), covered);
     else {
       const children = vNode.children as VNode[];
       for (let i = 0, len = children.length; i < len; ++i) {
@@ -145,7 +144,7 @@ function visit(vNode: VNode, list: MoveList, covered?: Set<Element>): boolean {
     return visit(input(vNode), list, covered);
   }
   if (flags & VNodeFlags.Fragment) {
-    if (vNode.childFlags === ChildFlags.HasVNodeChildren)
+    if (flags & VNodeFlags.HasVNodeChildren)
       return visit(input(vNode), list, covered);
     let found = false;
     const children = vNode.children as VNode[];
@@ -184,16 +183,16 @@ function refresh(list: MoveList): void {
 
 function fragmentListOf(vNode: VNode): MoveList | undefined {
   return vNode.flags & VNodeFlags.Fragment &&
-    vNode.childFlags === ChildFlags.HasKeyedChildren
+    (vNode.flags & VNodeFlags.HasKeyedChildren) !== 0
     ? fragmentLists.get(vNode.children as VNode[])
     : undefined;
 }
 
 // The list of a keyed element or fragment, synced to vNode: created when missing, rescanned for
 // hooks when owner changes happened since, or when its children are not the ones last seen (a
-// patch that threw keeps the old vNode and its written-back children).
-function track(vNode: VNode, parent: Element): MoveList | undefined {
-  if (vNode.childFlags !== ChildFlags.HasKeyedChildren) return;
+// patch that threw keeps the old vNode and its written-back children). Patching asks for it only
+// when vNode has keyed children.
+function track(vNode: VNode, parent: Element): MoveList {
   const children = vNode.children as VNode[];
   const isFragment = (vNode.flags & VNodeFlags.Fragment) !== 0;
   let list = isFragment
@@ -287,7 +286,7 @@ function prepareOwner(
     flags = vNode.flags;
   }
   if (flags & VNodeFlags.Fragment) {
-    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    if (flags & VNodeFlags.HasVNodeChildren) {
       prepareOwner(input(vNode), list, commit, true);
     } else {
       const children = vNode.children as VNode[];
@@ -326,7 +325,10 @@ function isRetained(child: VNode, next: VNode | undefined): boolean {
   return (
     next !== undefined &&
     next.type === child.type &&
-    !((next.flags ^ child.flags) & ~VNodeFlags.InUseOrNormalized) &&
+    !(
+      (next.flags ^ child.flags) &
+      ~(VNodeFlags.InUse | VNodeFlags.IgnoredByPatch)
+    ) &&
     !(next.flags & VNodeFlags.ReCreate)
   );
 }
@@ -426,7 +428,7 @@ function collectNestedLists(vNode: VNode, nested: Set<MoveList>): void {
       nested.add(list);
       return;
     }
-    if (vNode.childFlags === ChildFlags.HasVNodeChildren)
+    if (flags & VNodeFlags.HasVNodeChildren)
       collectNestedLists(input(vNode), nested);
     else {
       const children = vNode.children as VNode[];
@@ -483,8 +485,8 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
       if (delta !== 0) changeOwners(adapter, delta);
     },
     prepare(last, next, parent, commit) {
-      const list = track(last, parent)!;
-      if (next.childFlags === ChildFlags.HasKeyedChildren) {
+      const list = track(last, parent);
+      if ((next.flags & VNodeFlags.HasKeyedChildren) !== 0) {
         const children = next.children as VNode[];
         if (list.active)
           prepareItems(
@@ -502,7 +504,7 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
       }
     },
     prepareFragment(last, nextChildren, parent, commit) {
-      const list = track(last, parent)!;
+      const list = track(last, parent);
       if (nextChildren !== null) {
         if (list.active)
           prepareItems(
@@ -544,7 +546,7 @@ export function installMoveAnimations(cancel: (parent: Node) => void): void {
           list.parent = parent;
           if (list.active) attach(list, parent);
         }
-        if (vNode.childFlags === ChildFlags.HasVNodeChildren)
+        if (flags & VNodeFlags.HasVNodeChildren)
           this.reparent(input(vNode), parent);
         else {
           const children = vNode.children as VNode[];

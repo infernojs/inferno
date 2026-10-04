@@ -7,7 +7,7 @@ import {
   isStringOrNumber,
   throwError,
 } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import {
   createVoidVNode,
   directClone,
@@ -137,16 +137,17 @@ function mountFragment(
   animations: AnimationQueues,
 ): void {
   let children = vNode.children;
-  let childFlags = vNode.childFlags;
+  let flags = vNode.flags;
 
   // When fragment is optimized for multiple children, check if there is no children and change flag to invalid
   // This is the only normalization always done, to keep optimization flags API same for fragments and regular elements
-  if (childFlags & ChildFlags.MultipleChildren && children.length === 0) {
-    childFlags = vNode.childFlags = ChildFlags.HasVNodeChildren;
+  if (flags & VNodeFlags.MultipleChildren && children.length === 0) {
+    flags = vNode.flags =
+      (flags & VNodeFlags.ClearChildFlags) | VNodeFlags.HasVNodeChildren;
     children = vNode.children = createVoidVNode();
   }
 
-  if (childFlags === ChildFlags.HasVNodeChildren) {
+  if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
     if (mustCloneVNode(children, null)) {
       vNode.children = children = directClone(children);
     }
@@ -198,7 +199,6 @@ export function mountElement(
   const flags = vNode.flags;
   const props = vNode.props;
   const className = vNode.className;
-  const childFlags = vNode.childFlags;
   const dom = (vNode.dom = documentCreateElement(
     vNode.type,
     (isSVG = isSVG || (flags & VNodeFlags.SvgElement) > 0),
@@ -217,12 +217,12 @@ export function mountElement(
     validateKeys(vNode);
   }
 
-  if (childFlags === ChildFlags.HasTextChildren) {
+  if ((flags & VNodeFlags.HasTextChildren) !== 0) {
     setTextContent(dom, children as string);
-  } else if (childFlags !== ChildFlags.HasInvalidChildren) {
+  } else if ((flags & VNodeFlags.HasInvalidChildren) === 0) {
     const childrenIsSVG = isSVG && vNode.type !== 'foreignObject';
 
-    if (childFlags === ChildFlags.HasVNodeChildren) {
+    if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
       if (mustCloneVNode(children as VNode, null)) {
         vNode.children = children = directClone(children as VNode);
       }
@@ -235,10 +235,8 @@ export function mountElement(
         lifecycle,
         animations,
       );
-    } else if (
-      childFlags === ChildFlags.HasKeyedChildren ||
-      childFlags === ChildFlags.HasNonKeyedChildren
-    ) {
+    } else {
+      // Keyed or non-keyed children, exactly one of the child bits is set
       mountArrayChildren(
         children,
         dom,

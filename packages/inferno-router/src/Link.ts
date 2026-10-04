@@ -1,11 +1,11 @@
 import {
-  createVNode,
   type Inferno,
   type InfernoMouseEvent, LinkedEvent,
   linkEvent,
+  newVNode,
   type VNode,
 } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant } from './utils';
 import {isFunction, isString} from 'inferno-shared';
 import type { Location } from 'history';
@@ -81,12 +81,12 @@ export function Link(
     handleClick,
   );
 
-  return createVNode(
+  // No child bit, the children are normalized
+  return newVNode(
     VNodeFlags.HtmlElement,
     'a',
     className,
     children,
-    ChildFlags.UnknownChildren,
     newProps,
     null,
     innerRef,

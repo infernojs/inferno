@@ -27,13 +27,12 @@ import {
   scryVNodesWithType,
 } from 'inferno-test-utils';
 
+// The same fields in development and production, ChildFlags and validation are bits of flags
 const VNodeKeys = [
   'children',
-  'childFlags',
   'className',
   'dom',
   'flags',
-  'isValidated',
   'key',
   'ref',
   'props',

@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, type InfernoNode } from 'inferno';
+import { Component, type InfernoNode, newComponentVNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { invariant, warning } from './utils';
 import { matchPath } from './matchPath';
@@ -171,11 +171,7 @@ class Route extends Component<Partial<IRouteProps>, RouteState> {
         }
       }
       return match
-        ? createComponentVNode(
-            VNodeFlags.ComponentUnknown,
-            component,
-            renderProps,
-          )
+        ? newComponentVNode(VNodeFlags.ComponentUnknown, component, renderProps)
         : null;
     }
 

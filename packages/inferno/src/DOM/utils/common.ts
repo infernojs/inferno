@@ -16,6 +16,14 @@ export const EMPTY_OBJ = {};
 export const Fragment: Inferno.ExoticComponent<{ children?: InfernoNode }> =
   '$F';
 
+// The shape of the children is kept in bits of flags, and code that tests it uses those bits.
+// This converts them back to the ChildFlags value that the factories take.
+export function getChildFlags(vNode: VNode): ChildFlags {
+  return (
+    (vNode.flags & VNodeFlags.ChildFlagsMask) >>> VNodeFlags.ChildFlagsShift
+  );
+}
+
 /**
  * The move animation integration of inferno-animation. Move hook owners are class components that
  * have componentWillMove by the end of their mount, and function components whose hooks include
@@ -26,7 +34,8 @@ export interface MoveAnimationAdapter {
   mountClass(instance: any): void;
   unmountClass(instance: any): void;
   updateHooks(lastRef: any, nextRef: any): void;
-  // Reported only while the adapter is active
+  // Reported only while the adapter is active. The prepare calls come only for a last vNode with
+  // keyed children.
   prepare(
     last: VNode,
     next: VNode,
@@ -142,7 +151,7 @@ function findChildVNode(
   }
 
   if ((flags & VNodeFlags.Fragment) !== 0) {
-    return vNode.childFlags === ChildFlags.HasVNodeChildren
+    return (flags & VNodeFlags.HasVNodeChildren) !== 0
       ? (children as VNode)
       : (children as VNode[])[startEdge ? 0 : (children as VNode[]).length - 1];
   }
@@ -182,10 +191,7 @@ export function findElementFromVNode(vNode: VNode | null): Element | null {
     if (flags & VNodeFlags.DOMRef) {
       return null;
     }
-    if (
-      flags & VNodeFlags.Fragment &&
-      vNode.childFlags & ChildFlags.MultipleChildren
-    ) {
+    if (flags & VNodeFlags.Fragment && flags & VNodeFlags.MultipleChildren) {
       const children = vNode.children as VNode[];
       for (let i = 0, len = children.length; i < len; ++i) {
         const dom = findElementFromVNode(children[i]);
@@ -246,7 +252,7 @@ export function clearVNodeDOM(
       vNode = children;
     }
     if ((flags & VNodeFlags.Fragment) !== 0) {
-      if ((vNode as VNode).childFlags === ChildFlags.HasVNodeChildren) {
+      if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
         vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
@@ -277,7 +283,7 @@ export function appendVNodeDOM(vNode: VNode | null, parentDOM: Element): void {
       vNode = children;
     }
     if ((flags & VNodeFlags.Fragment) !== 0) {
-      if ((vNode as VNode).childFlags === ChildFlags.HasVNodeChildren) {
+      if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
         vNode = children;
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {
@@ -344,7 +350,7 @@ export function moveVNodeDOM(vNode, parentDOM, nextNode): void {
       vNode = children.$LI;
     } else if (flags & VNodeFlags.ComponentFunction) {
       vNode = children;
-    } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    } else if (flags & VNodeFlags.HasVNodeChildren) {
       vNode = children;
     } else {
       for (let i = 0, len = children.length; i < len; ++i) {

@@ -5,7 +5,7 @@ import {
   isNumber,
   isString,
 } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStyleAttribute } from './prop-renderers';
 import {
@@ -81,7 +81,7 @@ export class RenderStream extends Readable {
     if (isEmptyFragment(vNode)) {
       return this.push('<!--!-->');
     }
-    if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    if ((vNode.flags & VNodeFlags.HasVNodeChildren) !== 0) {
       return this.renderNode(vNode.children, context, selectValue);
     }
 
@@ -156,28 +156,27 @@ export class RenderStream extends Readable {
   public renderChildren(
     children: VNode[] | VNode | string,
     context: any,
-    childFlags: ChildFlags,
+    childFlags: VNodeFlags,
     selectValue: unknown,
   ) {
-    if (childFlags === ChildFlags.HasVNodeChildren) {
+    if (childFlags === VNodeFlags.HasVNodeChildren) {
       return this.renderNode(children, context, selectValue);
     }
-    if (childFlags === ChildFlags.HasTextChildren) {
+    if (childFlags === VNodeFlags.HasTextChildren) {
       return this.push(
         (children as string) === ''
           ? ' '
           : escapeText((children as string) + ''),
       );
     }
-    if (childFlags & ChildFlags.MultipleChildren) {
-      return (children as VNode[]).reduce(async (p, child) => {
-        return await p.then(async () => {
-          return await Promise.resolve(
-            this.renderNode(child, context, selectValue),
-          ).then(() => !!(child.flags & VNodeFlags.Text));
-        });
-      }, Promise.resolve(false));
-    }
+    // Keyed or non-keyed children, the caller handles invalid ones
+    return (children as VNode[]).reduce(async (p, child) => {
+      return await p.then(async () => {
+        return await Promise.resolve(
+          this.renderNode(child, context, selectValue),
+        ).then(() => !!(child.flags & VNodeFlags.Text));
+      });
+    }, Promise.resolve(false));
   }
 
   public renderText(vNode): void {
@@ -269,9 +268,9 @@ export class RenderStream extends Readable {
         return;
       }
     }
-    const childFlags = vNode.childFlags;
+    const childFlags = vNode.flags & VNodeFlags.ChildFlagsMask;
 
-    if (childFlags === ChildFlags.HasInvalidChildren) {
+    if (childFlags === VNodeFlags.HasInvalidChildren) {
       this.push(`</${type}>`);
       return;
     }

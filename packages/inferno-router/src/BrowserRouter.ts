@@ -1,4 +1,4 @@
-import { Component, createComponentVNode, type VNode } from 'inferno';
+import { Component, newComponentVNode, type VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { createBrowserHistory } from 'history';
 import { Router, type GetUserConfirmation, type TLoaderData } from './Router';
@@ -22,12 +22,16 @@ export class BrowserRouter extends Component<IBrowserRouterProps, any> {
   }
 
   public render(): VNode {
-    return createComponentVNode(VNodeFlags.ComponentClass, Router, {
-      children: this.props.children,
-      history: this.history,
-      getUserConfirmation: this.props.getUserConfirmation,
-      initialData: this.props.initialData,
-    });
+    return newComponentVNode(
+      VNodeFlags.ComponentClass | VNodeFlags.HasInvalidChildren,
+      Router,
+      {
+        children: this.props.children,
+        history: this.history,
+        getUserConfirmation: this.props.getUserConfirmation,
+        initialData: this.props.initialData,
+      },
+    );
   }
 }
 

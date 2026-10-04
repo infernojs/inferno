@@ -1,6 +1,6 @@
 import type { VNode } from '../core/types';
 import { isFunction, isNull, isNullOrUndef } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { unmountSyntheticEvents } from './events/delegation';
 import {
   AnimationQueues,
@@ -34,26 +34,24 @@ export function unmount(vNode, animations: AnimationQueues): void {
     ref = vNode.ref;
     unmountRef(ref);
 
-    // Delegated handlers come from props, and $EV holds the ones the element registered.
+    // Delegated handlers come from props, and the bits of $EV are the ones the element registered.
     // Elements without props skip the read from the DOM node.
     if (!isNull(vNode.props)) {
-      const eventsObject = vNode.dom.$EV;
+      const dom = vNode.dom;
 
-      if (eventsObject) {
-        unmountSyntheticEvents(eventsObject);
+      if (dom.$EV) {
+        unmountSyntheticEvents(dom);
       }
     }
 
-    const childFlags = vNode.childFlags;
-
-    if (childFlags & ChildFlags.MultipleChildren) {
-      if (childFlags === ChildFlags.HasKeyedChildren) {
+    if (flags & VNodeFlags.MultipleChildren) {
+      if (flags & VNodeFlags.HasKeyedChildren) {
         if (activeMoveAnimations !== null) {
           activeMoveAnimations.unmountList(vNode);
         }
       }
       unmountAllChildren(children, animations);
-    } else if (childFlags === ChildFlags.HasVNodeChildren) {
+    } else if (flags & VNodeFlags.HasVNodeChildren) {
       unmount(children as VNode, animations);
     }
   } else if (children) {
@@ -119,10 +117,10 @@ export function unmount(vNode, animations: AnimationQueues): void {
     } else if (flags & VNodeFlags.Portal) {
       remove(children as VNode, vNode.ref, animations);
     } else if (flags & VNodeFlags.Fragment) {
-      if (vNode.childFlags & ChildFlags.MultipleChildren) {
+      if (flags & VNodeFlags.MultipleChildren) {
         if (
           activeMoveAnimations !== null &&
-          vNode.childFlags === ChildFlags.HasKeyedChildren
+          (flags & VNodeFlags.HasKeyedChildren) !== 0
         ) {
           activeMoveAnimations.unmountList(vNode);
         }

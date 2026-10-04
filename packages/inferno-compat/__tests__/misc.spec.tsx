@@ -172,6 +172,33 @@ describe('MISC', () => {
     });
   });
 
+  // JSX compiles a tag held in a variable to a component vNode, compat turns it into an element
+  describe('tag in a variable', () => {
+    it('should patch its children when they change', () => {
+      const Tag: any = 'div';
+
+      render(<Tag className="tag" />, container);
+      expect(container.innerHTML).toBe('<div class="tag"></div>');
+
+      render(<Tag className="tag">text</Tag>, container);
+      expect(container.innerHTML).toBe('<div class="tag">text</div>');
+
+      render(
+        <Tag className="tag">
+          <span />
+          <b />
+        </Tag>,
+        container,
+      );
+      expect(container.innerHTML).toBe(
+        '<div class="tag"><span></span><b></b></div>',
+      );
+
+      render(<Tag className="tag" />, container);
+      expect(container.innerHTML).toBe('<div class="tag"></div>');
+    });
+  });
+
   describe('Component', () => {
     it('should be exported', () => {
       expect(React.Component).toEqual(Component);

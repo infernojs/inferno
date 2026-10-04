@@ -1,12 +1,12 @@
 import {
   type Component,
-  createComponentVNode,
-  createFragment,
-  createVNode,
   getFlagsForElementVnode,
   type Inferno,
   type InfernoNode,
   type Key,
+  newComponentVNode,
+  newFragment,
+  newVNode,
   type Ref,
   type RefObject,
   type Refs,
@@ -18,7 +18,7 @@ import {
   isString,
   isUndefined,
 } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 // The props that createElement handles itself, the ref receives T
 export interface CreateElementProps<T> {
@@ -146,25 +146,17 @@ export function createElement<P>(
       }
     }
 
-    return createComponentVNode(flags, type, newProps, key, ref);
+    return newComponentVNode(flags, type, newProps, key, ref);
   }
 
+  // The flags have no child bit, the children are normalized
   if (flags & VNodeFlags.Fragment) {
-    return createFragment(
+    return newFragment(
+      VNodeFlags.Fragment,
       childLen === 1 ? [definedChildren] : definedChildren,
-      ChildFlags.UnknownChildren,
       key,
     );
   }
 
-  return createVNode(
-    flags,
-    type,
-    className,
-    definedChildren,
-    ChildFlags.UnknownChildren,
-    newProps,
-    key,
-    ref,
-  );
+  return newVNode(flags, type, className, definedChildren, newProps, key, ref);
 }

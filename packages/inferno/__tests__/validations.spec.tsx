@@ -1,5 +1,14 @@
-import { createTextVNode, forwardRef, render } from 'inferno';
-import { ChildFlags } from 'inferno-vnode-flags';
+import {
+  createTextVNode,
+  createVNode,
+  directClone,
+  forwardRef,
+  newComponentVNode,
+  newFragment,
+  newVNode,
+  render,
+} from 'inferno';
+import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
 describe('Development warnings', () => {
   let container;
@@ -141,6 +150,46 @@ describe('Development warnings', () => {
             'Encountered two children with same key: {dup}. Location: \n>> <em>\n>> <span class="parentNode">\n',
           ),
         );
+      });
+
+      // Keys of non-keyed children are not used, nested lists are checked like the outermost one
+      it('Should not check keys of non-keyed children inside another element', () => {
+        const children = [<span key="a" />, <span key="a" />];
+
+        render(
+          <div>
+            <div $ChildFlag={ChildFlags.HasNonKeyedChildren}>
+              {children as any}
+            </div>
+          </div>,
+          container,
+        );
+        expect(container.firstChild.firstChild.childNodes.length).toBe(2);
+      });
+
+      it('Should not mark an object that is not a vNode as validated', () => {
+        const children = [<span key="a" />, <span key="b" />];
+        const vNode = <div>{children}</div>;
+        const object = {};
+
+        // The children change after the vNode was created, so its factory did not see the object
+        (vNode.children as any[]).push(object);
+        expect(() => {
+          render(vNode, container);
+        }).toThrow(
+          constructInfernoError(
+            'Encountered child without key during keyed algorithm. If this error points to Array make sure children is flat list. Location: \n>> Object({})\n>> <div>\n',
+          ),
+        );
+        expect('flags' in object).toBe(false);
+      });
+
+      it('Should validate a clone of a validated vNode again', () => {
+        const vNode = <div>{[<span key="a" />]}</div>;
+
+        render(vNode, container);
+        expect(vNode.flags & VNodeFlags.Validated).toBe(VNodeFlags.Validated);
+        expect(directClone(vNode).flags & VNodeFlags.Validated).toBe(0);
       });
     });
 
@@ -384,6 +433,32 @@ describe('Development warnings', () => {
         }).not.toThrow();
       });
 
+      it('ChildFlags.HasVNodeChildren should throw for text children', () => {
+        expect(() => {
+          render(<div $HasVNodeChildren>{'foo'}</div>, container);
+        }).toThrow(
+          constructInfernoError(
+            'ChildFlags.HasVNodeChildren expects children to be a VNode. Location: \n>> Text(foo)\n>> <div>\n',
+          ),
+        );
+      });
+
+      it('ChildFlags.HasKeyedChildren should throw for children that are not an array', () => {
+        expect(() => {
+          createVNode(
+            VNodeFlags.HtmlElement,
+            'div',
+            null,
+            <span key="a" />,
+            ChildFlags.HasKeyedChildren,
+          );
+        }).toThrow(
+          constructInfernoError(
+            'ChildFlags.HasKeyedChildren expects children to be an array of VNodes. Location: \n>> <span>\n>> <div>\n',
+          ),
+        );
+      });
+
       it('ChildFlags.HasNonKeyedChildren not should throw for keyed children its simply ignored', () => {
         const children = [<span key="a" />];
         const errorNode = (
@@ -471,6 +546,119 @@ describe('Development warnings', () => {
       expect(() => {
         render(<img>foobar</img>, container);
       }).toThrow(constructInfernoError("img elements can't have children."));
+    });
+  });
+
+  describe('Packed flags of the new factories', () => {
+    function Com() {
+      return null;
+    }
+
+    it('newVNode should throw for component flags', () => {
+      expect(() =>
+        newVNode(
+          VNodeFlags.ComponentFunction | VNodeFlags.HasInvalidChildren,
+          'div',
+        ),
+      ).toThrow(
+        constructInfernoError(
+          'Creating Component vNodes using newVNode is not allowed. Use Inferno.newComponentVNode method.',
+        ),
+      );
+    });
+
+    it('newVNode should throw for flags with two child bits', () => {
+      expect(() =>
+        newVNode(
+          VNodeFlags.HtmlElement |
+            VNodeFlags.HasKeyedChildren |
+            VNodeFlags.HasTextChildren,
+          'div',
+          null,
+          'text',
+        ),
+      ).toThrow(
+        constructInfernoError(
+          'VNode flags must have exactly one child bit, they have the ChildFlags bits 24. Location: \n>> <div>\n',
+        ),
+      );
+    });
+
+    it('createVNode should throw for a combination of ChildFlags', () => {
+      expect(() =>
+        createVNode(
+          VNodeFlags.HtmlElement,
+          'div',
+          null,
+          [<span key="a" />],
+          ChildFlags.MultipleChildren,
+        ),
+      ).toThrow(
+        constructInfernoError(
+          'VNode flags must have exactly one child bit, they have the ChildFlags bits 12. Location: \n>> <div>\n',
+        ),
+      );
+    });
+
+    it('newComponentVNode should throw for element flags', () => {
+      expect(() => newComponentVNode(VNodeFlags.HtmlElement, Com)).toThrow(
+        constructInfernoError(
+          'Creating element vNodes using newComponentVNode is not allowed. Use Inferno.newVNode method.',
+        ),
+      );
+    });
+
+    it('newComponentVNode should throw for known component flags without HasInvalidChildren', () => {
+      expect(() =>
+        newComponentVNode(VNodeFlags.ComponentFunction, Com),
+      ).toThrow(
+        constructInfernoError(
+          'newComponentVNode flags of a known component type must have VNodeFlags.HasInvalidChildren as their only child bit.',
+        ),
+      );
+      expect(() =>
+        newComponentVNode(
+          VNodeFlags.ComponentClass | VNodeFlags.HasKeyedChildren,
+          Com,
+        ),
+      ).toThrow(
+        constructInfernoError(
+          'newComponentVNode flags of a known component type must have VNodeFlags.HasInvalidChildren as their only child bit.',
+        ),
+      );
+    });
+
+    it('newFragment should throw for flags without the Fragment bit', () => {
+      expect(() =>
+        newFragment(VNodeFlags.HasKeyedChildren, [<span key="a" />]),
+      ).toThrow(
+        constructInfernoError(
+          'newFragment flags must include VNodeFlags.Fragment.',
+        ),
+      );
+    });
+
+    it('createVNode should validate keys when the flags are copied from a validated vNode', () => {
+      const validated = <div>{[<span key="a" />]}</div>;
+
+      render(validated, container);
+      expect(validated.flags & VNodeFlags.Validated).toBe(VNodeFlags.Validated);
+      // Without InUse the vNode is not cloned, a clone would be validated again anyway
+      const copy = createVNode(
+        validated.flags & VNodeFlags.ClearInUse,
+        'div',
+        null,
+        [<span key="a" />, <span key="a" />],
+        ChildFlags.HasKeyedChildren,
+      );
+
+      expect(() => {
+        render(copy, container);
+      }).toThrow(
+        constructInfernoError(
+          'Encountered two children with same key: {a}. Location: \n>> <span>\n>> <div>\n',
+        ),
+      );
     });
   });
 });

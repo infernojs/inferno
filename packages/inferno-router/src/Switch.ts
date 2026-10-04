@@ -1,7 +1,8 @@
-import { Component, createComponentVNode, type VNode } from 'inferno';
+import { Component, newComponentVNode, type VNode } from 'inferno';
 import { matchPath } from './matchPath';
 import { invariant, warning } from './utils';
 import { isArray, isInvalid, isStringOrNumber } from 'inferno-shared';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { type IRouteProps, type Match } from './Route';
 import { type RouterContext } from './Router';
 
@@ -132,8 +133,9 @@ export class Switch extends Component<IRouteProps, SwitchState> {
 
     if (match) {
       location ??= context.router.route.location;
-      return createComponentVNode(
-        _child.flags,
+      return newComponentVNode(
+        // The flags are copied from the matched child, its children's shape and validation do not apply
+        (_child.flags & VNodeFlags.ClearOnCopy) | VNodeFlags.HasInvalidChildren,
         _child.type,
         {
           ..._child.props,

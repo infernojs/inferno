@@ -26,6 +26,10 @@ import {
   type InfernoNode,
   linkEvent,
   type MouseEventHandler,
+  newComponentVNode,
+  newFragment,
+  newTextVNode,
+  newVNode,
   normalizeProps,
   options,
   rerender,
@@ -288,7 +292,10 @@ options.createVNode = (vNode: VNode) => {
   }
   if (vNode.flags & VNodeFlags.Component) {
     if (isString(vNode.type)) {
-      vNode.flags = getFlagsForElementVnode(vNode.type);
+      // The children shape bits are kept, normalizeProps changes them when props have children
+      vNode.flags =
+        getFlagsForElementVnode(vNode.type) |
+        (vNode.flags & VNodeFlags.ChildFlagsMask);
       if (props) {
         normalizeProps(vNode);
       }
@@ -367,8 +374,8 @@ class WrapperComponent<P, S> extends Component<P & ContextProps, S> {
 function unstable_renderSubtreeIntoContainer<
   T extends JSX.ElementClass = Component,
 >(parentComponent, vNode, container, callback?: (this: T) => void): T {
-  const wrapperVNode: VNode = createComponentVNode(
-    VNodeFlags.ComponentClass,
+  const wrapperVNode: VNode = newComponentVNode(
+    VNodeFlags.ComponentClass | VNodeFlags.HasInvalidChildren,
     WrapperComponent,
     {
       children: vNode,
@@ -459,6 +466,10 @@ if (
     hydrate,
     isValidElement,
     linkEvent,
+    newComponentVNode,
+    newFragment,
+    newTextVNode,
+    newVNode,
     normalizeProps,
     options,
     render,
@@ -509,6 +520,10 @@ export {
   hydrate,
   isValidElement,
   linkEvent,
+  newComponentVNode,
+  newFragment,
+  newTextVNode,
+  newVNode,
   normalizeProps,
   options,
   render,
@@ -555,6 +570,10 @@ export default {
   hydrate,
   isValidElement,
   linkEvent,
+  newComponentVNode,
+  newFragment,
+  newTextVNode,
+  newVNode,
   normalizeProps,
   options,
   render,

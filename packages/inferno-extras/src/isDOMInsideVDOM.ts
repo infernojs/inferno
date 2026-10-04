@@ -1,5 +1,5 @@
-import type { Component, VNode } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { type Component, type VNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 export function isDOMInsideVNode(DOM: Element, vNode: VNode): boolean {
   const stack = [vNode];
@@ -21,18 +21,14 @@ export function isDOMInsideVNode(DOM: Element, vNode: VNode): boolean {
       stack.push(children.$LI);
     } else if (flags & VNodeFlags.ComponentFunction) {
       stack.push(children);
-    } else {
-      flags = _vNode.childFlags;
+    } else if (flags & VNodeFlags.MultipleChildren) {
+      let i = children.length;
 
-      if (flags & ChildFlags.MultipleChildren) {
-        let i = children.length;
-
-        while (i--) {
-          stack.push(children[i]);
-        }
-      } else if (flags & ChildFlags.HasVNodeChildren) {
-        stack.push(children);
+      while (i--) {
+        stack.push(children[i]);
       }
+    } else if (flags & VNodeFlags.HasVNodeChildren) {
+      stack.push(children);
     }
   }
 

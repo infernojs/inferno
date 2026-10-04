@@ -30,6 +30,20 @@ npm install --save inferno-vnode-flags
 - `VNodeFlags.InUse`
 - `VnodeFlags.ForwardRef`
 - `VNodeFlags.Normalized`
+- `VNodeFlags.Validated` development only, the keys of the vNode's children have been validated
+
+**ChildFlags in VNodeFlags:**
+
+A vNode keeps the shape of its children in bits of `flags`: the `ChildFlags` value shifted left by `VNodeFlags.ChildFlagsShift`. Exactly one of these bits is set, test it with `vNode.flags & VNodeFlags.HasKeyedChildren`. `newVNode`, `newComponentVNode` and `newFragment` from `inferno` take the bit in their `flags`, for example `VNodeFlags.HtmlElement | VNodeFlags.HasKeyedChildren`; flags without a child bit make them normalize the children. The deprecated `createVNode` and `createFragment` take a separate `ChildFlags` value. `getChildFlags(vNode)` from `inferno` converts the bits back to a `ChildFlags` value, for passing them to those.
+
+- `VNodeFlags.HasInvalidChildren`
+- `VNodeFlags.HasVNodeChildren`
+- `VNodeFlags.HasNonKeyedChildren`
+- `VNodeFlags.HasKeyedChildren`
+- `VNodeFlags.HasTextChildren`
+- `VNodeFlags.MultipleChildren` - Mask of the keyed and non-keyed bits
+- `VNodeFlags.ChildFlagsShift` - The ChildFlags are stored shifted left by this many bits
+- `VNodeFlags.ChildFlagsMask` - Bits that hold the ChildFlags
 
 **VNodeFlags Masks:**
 
@@ -40,6 +54,8 @@ npm install --save inferno-vnode-flags
 - `VNodeFlags.DOMRef` - Bit set when vNode holds DOM reference
 - `VNodeFlags.InUseOrNormalized` - VNode is used somewhere else or came from normalization process
 - `VNodeFlags.ClearInUseNormalized` - Opposite mask of InUse or Normalized
+- `VNodeFlags.IgnoredByPatch` - Bits that don't make two vNodes different types: Normalized, ChildFlags and Validated
+- `VNodeFlags.ClearOnCopy` - Clears the ChildFlags and Validated bits of flags copied from another vNode, before a new child bit is added
 
 **ChildFlags**
 
@@ -55,3 +71,15 @@ npm install --save inferno-vnode-flags
 - `ChildFlags.MultipleChildren` Is Array
 
 You can easily combine multiple flags, by using bitwise operators. A common use case is an element that has keyed children:
+
+```js
+import { newVNode } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
+
+const list = newVNode(
+  VNodeFlags.HtmlElement | VNodeFlags.HasKeyedChildren,
+  'ul',
+  null,
+  items, // vNodes with keys
+);
+```

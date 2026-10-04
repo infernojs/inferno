@@ -1290,4 +1290,28 @@ describe('Fragments', () => {
     expect(unmountSpy).toHaveBeenCalledTimes(1);
     expect(portalContainer.innerHTML).toBe('');
   });
+
+  it('Should move keyed fragments that have one child', () => {
+    const view = (order: string[]) => (
+      <div>
+        {order.map((id) =>
+          createFragment(<span>{id}</span>, ChildFlags.HasVNodeChildren, id),
+        )}
+      </div>
+    );
+
+    render(view(['a', 'b', 'c', 'd']), container);
+    const [a, b, c, d] = Array.from(container.querySelectorAll('span'));
+
+    render(view(['d', 'a', 'c', 'b']), container);
+    expect(container.innerHTML).toBe(
+      '<div><span>d</span><span>a</span><span>c</span><span>b</span></div>',
+    );
+    // The fragments' elements move, nothing is created again
+    const spans = Array.from(container.querySelectorAll('span'));
+    expect(spans[0]).toBe(d);
+    expect(spans[1]).toBe(a);
+    expect(spans[2]).toBe(c);
+    expect(spans[3]).toBe(b);
+  });
 });

@@ -1,4 +1,4 @@
-import { createComponentVNode, type Inferno, type VNode } from 'inferno';
+import { type Inferno, newComponentVNode, type VNode } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
 import { isFunction } from 'inferno-shared';
 import { Route } from './Route';
@@ -55,23 +55,31 @@ export function NavLink({
 
     const style = isFunction(styleProp) ? styleProp(isActive) : styleProp;
 
-    return createComponentVNode(VNodeFlags.ComponentFunction, Link, {
-      'aria-current': ((isActive && ariaCurrent) || null) as any,
-      className: isActive
-        ? [className, activeClassName].filter(filter).join(' ')
-        : className,
-      onClick,
-      style: isActive ? { ...style, ...activeStyle } : style,
-      to,
-      ...rest,
-    });
+    return newComponentVNode(
+      VNodeFlags.ComponentFunction | VNodeFlags.HasInvalidChildren,
+      Link,
+      {
+        'aria-current': ((isActive && ariaCurrent) || null) as any,
+        className: isActive
+          ? [className, activeClassName].filter(filter).join(' ')
+          : className,
+        onClick,
+        style: isActive ? { ...style, ...activeStyle } : style,
+        to,
+        ...rest,
+      },
+    );
   }
 
-  return createComponentVNode(VNodeFlags.ComponentClass, Route, {
-    children: linkComponent as any,
-    exact,
-    location: linkLocation,
-    path: typeof to === 'object' ? to.pathname : to,
-    strict,
-  });
+  return newComponentVNode(
+    VNodeFlags.ComponentClass | VNodeFlags.HasInvalidChildren,
+    Route,
+    {
+      children: linkComponent as any,
+      exact,
+      location: linkLocation,
+      path: typeof to === 'object' ? to.pathname : to,
+      strict,
+    },
+  );
 }

@@ -1,5 +1,5 @@
 import { isArray, isNullOrUndef, isNumber } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { EMPTY_OBJ } from '../utils/common';
 import { createWrappedFunction } from './wrapper';
 import { attachEvent } from '../events/attachEvent';
@@ -17,9 +17,9 @@ function updateChildOptions(vNode: VNode, value): void {
       updateChildOptions((children as Component).$LI, value);
     } else if ((flags & VNodeFlags.ComponentFunction) !== 0) {
       updateChildOptions(children as VNode, value);
-    } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+    } else if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
       updateChildOptions(children as VNode, value);
-    } else if ((vNode.childFlags & ChildFlags.MultipleChildren) !== 0) {
+    } else if ((flags & VNodeFlags.MultipleChildren) !== 0) {
       for (let i = 0, len = (children as VNode[]).length; i < len; ++i) {
         const child = (children as VNode[])[i];
         updateChildOptions(child, value);
@@ -71,9 +71,7 @@ export function applyValueSelect(
   if (index === -1) {
     dom.selectedIndex = -1;
   }
-  const childFlags = vNode.childFlags;
-
-  if (childFlags !== ChildFlags.HasInvalidChildren) {
+  if ((vNode.flags & VNodeFlags.HasInvalidChildren) === 0) {
     let value = nextPropsOrEmpty.value;
     if (isNumber(index) && index > -1 && !isNullOrUndef(dom.options[index])) {
       value = dom.options[index].value;

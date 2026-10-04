@@ -1,7 +1,7 @@
 import {
   Component,
-  createComponentVNode,
   type InfernoNode,
+  newComponentVNode,
   type VNode,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
@@ -23,11 +23,15 @@ export class HashRouter extends Component<IHashRouterProps, any> {
   }
 
   public render(): VNode {
-    return createComponentVNode(VNodeFlags.ComponentClass, Router, {
-      children: this.props.children,
-      history: this.history,
-      getUserConfirmation: this.props.getUserConfirmation,
-    });
+    return newComponentVNode(
+      VNodeFlags.ComponentClass | VNodeFlags.HasInvalidChildren,
+      Router,
+      {
+        children: this.props.children,
+        history: this.history,
+        getUserConfirmation: this.props.getUserConfirmation,
+      },
+    );
   }
 }
 

@@ -8,7 +8,7 @@ import {
   isString,
   throwError,
 } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { Readable } from 'stream';
 import { renderStyleAttribute } from './prop-renderers';
 import {
@@ -301,7 +301,6 @@ export class RenderQueueStream extends Readable {
         // Regular element with content
       } else {
         // Element has children, build them in
-        const childFlags = vNode.childFlags;
         const childSelectValue = getChildSelectValue(type, props, selectValue);
 
         // The html wins over children, as on the client
@@ -309,7 +308,7 @@ export class RenderQueueStream extends Readable {
           this.addToQueue(renderedString + html + '</' + type + '>', position);
           return;
         }
-        if (childFlags === ChildFlags.HasVNodeChildren) {
+        if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
           this.addToQueue(renderedString, position);
           this.renderVNodeToQueue(
             children,
@@ -319,7 +318,7 @@ export class RenderQueueStream extends Readable {
           );
           this.addToQueue('</' + type + '>', position);
           return;
-        } else if (childFlags === ChildFlags.HasTextChildren) {
+        } else if ((flags & VNodeFlags.HasTextChildren) !== 0) {
           this.addToQueue(renderedString, position);
           this.addToQueue(
             children === '' ? ' ' : escapeText(children + ''),
@@ -327,7 +326,7 @@ export class RenderQueueStream extends Readable {
           );
           this.addToQueue('</' + type + '>', position);
           return;
-        } else if (childFlags & ChildFlags.MultipleChildren) {
+        } else if ((flags & VNodeFlags.MultipleChildren) !== 0) {
           this.addToQueue(renderedString, position);
           for (let i = 0, len = children.length; i < len; ++i) {
             const child = children[i];
@@ -351,7 +350,7 @@ export class RenderQueueStream extends Readable {
     } else if ((flags & VNodeFlags.Fragment) !== 0) {
       if (isEmptyFragment(vNode)) {
         this.addToQueue('<!--!-->', position);
-      } else if (vNode.childFlags === ChildFlags.HasVNodeChildren) {
+      } else if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
         this.renderVNodeToQueue(children, context, position, selectValue);
       } else {
         for (let i = 0, len = children.length; i < len; ++i) {

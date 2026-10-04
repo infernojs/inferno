@@ -1,10 +1,10 @@
 import {
-  createComponentVNode,
-  createFragment,
-  createVNode,
   Fragment,
   getFlagsForElementVnode,
   type InfernoNode,
+  newComponentVNode,
+  newFragment,
+  newVNode,
   type VNode,
 } from 'inferno';
 import {
@@ -13,7 +13,7 @@ import {
   isStringOrNumber,
   isUndefined,
 } from 'inferno-shared';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 const classIdSplit = /([.#]?[a-zA-Z0-9_:-]+)/;
 const notClassId = /^\.|#/;
@@ -129,24 +129,20 @@ export function h(
       newProps.id = id;
     }
 
+    // The flags have no child bit, the children are normalized
     if (flags & VNodeFlags.Fragment) {
-      return createFragment(
-        _children || children,
-        ChildFlags.UnknownChildren,
-        key,
-      );
+      return newFragment(VNodeFlags.Fragment, _children || children, key);
     }
 
     if (newProps.contenteditable !== void 0) {
       flags |= VNodeFlags.ContentEditable;
     }
 
-    return createVNode(
+    return newVNode(
       flags,
       tag as string,
       className,
       _children || children,
-      ChildFlags.UnknownChildren,
       newProps,
       key,
       ref,
@@ -157,7 +153,7 @@ export function h(
     newProps.children = children || _children;
   }
 
-  return createComponentVNode(
+  return newComponentVNode(
     VNodeFlags.ComponentUnknown,
     tag as any,
     newProps,

@@ -2,7 +2,7 @@ import type { VNode } from '../core/types';
 import { namespaces } from './constants';
 import { isNull, isNullOrUndef, isString, warning } from 'inferno-shared';
 import { handleSyntheticEvent, syntheticEvents } from './events/delegation';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { VNodeFlags } from 'inferno-vnode-flags';
 import { isSameInnerHTML } from './utils/innerHTML';
 import {
   isLastValueSameLinkEvent,
@@ -84,10 +84,12 @@ function patchDangerInnerHTML(lastValue, nextValue, lastVNode, dom): boolean {
   if (lastHtml !== nextHtml) {
     if (!isNullOrUndef(nextHtml) && !isSameInnerHTML(dom, nextHtml)) {
       if (!isNull(lastVNode)) {
+        const lastFlags = lastVNode.flags;
+
         // innerHTML replaces the children at once: their leave hooks have nothing to animate
-        if (lastVNode.childFlags & ChildFlags.MultipleChildren) {
+        if (lastFlags & VNodeFlags.MultipleChildren) {
           unmountAllChildren(lastVNode.children as VNode[], NO_ANIMATIONS);
-        } else if (lastVNode.childFlags === ChildFlags.HasVNodeChildren) {
+        } else if (lastFlags & VNodeFlags.HasVNodeChildren) {
           unmount(lastVNode.children, NO_ANIMATIONS);
         }
       }
@@ -199,7 +201,7 @@ export function patchProp(
         const delegatedEvent = syntheticEvents[prop];
 
         if (delegatedEvent !== undefined) {
-          handleSyntheticEvent(delegatedEvent, prop, lastValue, nextValue, dom);
+          handleSyntheticEvent(delegatedEvent, lastValue, nextValue, dom);
         } else {
           patchEvent(prop, lastValue, nextValue, dom);
         }

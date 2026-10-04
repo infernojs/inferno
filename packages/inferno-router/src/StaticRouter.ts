@@ -1,7 +1,7 @@
 import {
   Component,
-  createComponentVNode,
   type InfernoNode,
+  newComponentVNode,
   type Props,
 } from 'inferno';
 import { VNodeFlags } from 'inferno-vnode-flags';
@@ -85,21 +85,28 @@ export class StaticRouter<P, S> extends Component<
   }: Readonly<
     { children: InfernoNode } & P & IStaticRouterProps<any>
   >): InfernoNode {
-    return createComponentVNode(VNodeFlags.ComponentClass, Router, {
-      ...props,
-      history: {
-        action: Action.Pop,
-        block: this.handleBlock,
-        createHref: this.createHref,
-        go: staticHandler('go'),
-        back: staticHandler('goBack'),
-        forward: staticHandler('goForward'),
-        listen: this.handleListen,
-        location: stripBasename(basename, createLocation(location)) as Location,
-        push: this.handlePush,
-        replace: this.handleReplace,
+    return newComponentVNode(
+      VNodeFlags.ComponentClass | VNodeFlags.HasInvalidChildren,
+      Router,
+      {
+        ...props,
+        history: {
+          action: Action.Pop,
+          block: this.handleBlock,
+          createHref: this.createHref,
+          go: staticHandler('go'),
+          back: staticHandler('goBack'),
+          forward: staticHandler('goForward'),
+          listen: this.handleListen,
+          location: stripBasename(
+            basename,
+            createLocation(location),
+          ) as Location,
+          push: this.handlePush,
+          replace: this.handleReplace,
+        },
       },
-    }) as InfernoNode;
+    ) as InfernoNode;
   }
 }
 
