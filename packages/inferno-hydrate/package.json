@@ -1,6 +1,6 @@
 {
   "name": "inferno-hydrate",
-  "version": "10.0.0-alpha.0",
+  "version": "10.0.0",
   "license": "MIT",
   "type": "module",
   "description": "Hydrate plugin to inferno. This package can be used to reuse server side rendered html",
