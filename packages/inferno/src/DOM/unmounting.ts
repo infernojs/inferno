@@ -38,9 +38,10 @@ export function unmount(vNode, animations: AnimationQueues): void {
     // Elements without props skip the read from the DOM node.
     if (!isNull(vNode.props)) {
       const dom = vNode.dom;
+      const bits = dom.$EV;
 
-      if (dom.$EV) {
-        unmountSyntheticEvents(dom);
+      if (bits) {
+        unmountSyntheticEvents(dom, bits);
       }
     }
 

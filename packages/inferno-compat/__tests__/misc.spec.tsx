@@ -3,6 +3,7 @@ import React, {
   cloneElement,
   Component,
   createElement,
+  Fragment,
   hydrate,
   PropTypes,
   render,
@@ -264,6 +265,84 @@ describe('MISC', () => {
     });
   });
 
+  // React code picks a wrapper at run time, and Fragment stands for no wrapper
+  describe('a variable tag that holds Fragment', () => {
+    const Tag: any = Fragment;
+
+    it('should render its children', () => {
+      render(
+        <Tag>
+          <span>a</span>
+          <span>b</span>
+        </Tag>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<span>a</span><span>b</span>');
+    });
+
+    it('should render one child, text and no children', () => {
+      render(
+        <Tag>
+          <span>a</span>
+        </Tag>,
+        container,
+      );
+      expect(container.innerHTML).toBe('<span>a</span>');
+
+      render(<Tag>text</Tag>, container);
+      expect(container.innerHTML).toBe('text');
+
+      // An empty fragment keeps an empty text node in the DOM, like any other
+      render(<Tag />, container);
+      expect(container.innerHTML).toBe('');
+      expect(container.childNodes.length).toBe(1);
+    });
+
+    it('should move the elements of keyed children', () => {
+      const view = (ids: string[]) => (
+        <Tag>
+          {ids.map((id) => (
+            <span key={id}>{id}</span>
+          ))}
+        </Tag>
+      );
+      render(view(['a', 'b', 'c']), container);
+      const [a, b, c] = Array.from(container.childNodes);
+
+      render(view(['c', 'a', 'b']), container);
+      expect(container.innerHTML).toBe(
+        '<span>c</span><span>a</span><span>b</span>',
+      );
+      const nodes = Array.from(container.childNodes);
+      expect(nodes[0]).toBe(c);
+      expect(nodes[1]).toBe(a);
+      expect(nodes[2]).toBe(b);
+    });
+
+    it('should switch between Fragment and an element', () => {
+      function Wrapper({ wrap }: { wrap: boolean }) {
+        const Wrap: any = wrap ? 'div' : Fragment;
+
+        return (
+          <Wrap>
+            <span>a</span>
+            <span>b</span>
+          </Wrap>
+        );
+      }
+      render(<Wrapper wrap={false} />, container);
+      expect(container.innerHTML).toBe('<span>a</span><span>b</span>');
+
+      render(<Wrapper wrap />, container);
+      expect(container.innerHTML).toBe(
+        '<div><span>a</span><span>b</span></div>',
+      );
+
+      render(<Wrapper wrap={false} />, container);
+      expect(container.innerHTML).toBe('<span>a</span><span>b</span>');
+    });
+  });
+
   describe('unstable_renderSubtreeIntoContainer', () => {
     class Inner extends Component {
       render() {
@@ -329,6 +408,38 @@ describe('MISC', () => {
       const root = document.createElement('div');
       const app = render<App>(<App />, root)!;
       expect(isFunction(app.inner.getNode)).toEqual(true);
+    });
+
+    it('should return the instance of a clone of a mounted vNode', () => {
+      class Label extends Component<{ text: string }> {
+        render() {
+          return <b>{this.props.text}</b>;
+        }
+      }
+      const mounted = <Label text="1" />;
+      const wrapper = document.createElement('div');
+      const root = document.createElement('div');
+      let label: Label | null = null;
+
+      class App extends Component {
+        render() {
+          return null;
+        }
+
+        componentDidMount() {
+          label = unstable_renderSubtreeIntoContainer<Label>(
+            this,
+            cloneElement(mounted, { text: '2' }),
+            wrapper,
+          );
+        }
+      }
+      render(mounted, container);
+      render(<App />, root);
+      expect(label).toBeInstanceOf(Label);
+      expect(wrapper.innerHTML).toBe('<b>2</b>');
+      render(null, wrapper);
+      render(null, root);
     });
   });
 });

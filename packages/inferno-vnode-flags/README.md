@@ -56,7 +56,7 @@ A vNode keeps the shape of its children in bits of `flags`. Exactly one of these
 - `VNodeFlags.InUseOrNormalized` - VNode is used somewhere else or came from normalization process
 - `VNodeFlags.ClearInUseNormalized` - Opposite mask of InUse or Normalized
 - `VNodeFlags.IgnoredByPatch` - Bits that don't make two vNodes different types: Normalized, ChildFlags and Validated
-- `VNodeFlags.ClearOnCopy` - Clears the ChildFlags and Validated bits of flags copied from another vNode, before a new child bit is added
+- `VNodeFlags.ClearOnCopy` - Clears the ChildFlags, Validated, InUse and Normalized bits of flags copied from another vNode, before a new child bit is added
 
 **ChildFlags**
 

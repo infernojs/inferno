@@ -8,6 +8,7 @@ import {
   render,
   type VNode,
 } from 'inferno';
+import { VNodeFlags } from 'inferno-vnode-flags';
 
 describe('cloneVNode (JSX)', () => {
   let container;
@@ -743,5 +744,62 @@ the clone</span></div><div name="Henry"><span>A child that should render after t
 
     expect(container.innerHTML).toBe('<div><b>one</b><b>two</b></div>');
     expect(shared).toEqual({ id: 'x' });
+  });
+
+  // A vNode in use is mounted through a clone of its own, so a clone that took that state would
+  // never get its DOM or its instance
+  describe('of a mounted vNode', () => {
+    let other;
+
+    beforeEach(function () {
+      other = document.createElement('div');
+    });
+
+    afterEach(function () {
+      render(null, container);
+      render(null, other);
+    });
+
+    it('should not take its InUse and Normalized bits', () => {
+      const items = [
+        <div key="a" className="a">
+          x
+        </div>,
+      ];
+      render(<section>{items}</section>, container);
+      expect(items[0].flags & VNodeFlags.InUseOrNormalized).toBe(
+        VNodeFlags.InUseOrNormalized,
+      );
+
+      expect(cloneVNode(items[0]).flags & VNodeFlags.InUseOrNormalized).toBe(0);
+    });
+
+    it('should mount the clone itself', () => {
+      const mounted = <div className="a">x</div>;
+      render(mounted, container);
+      const clone = cloneVNode(mounted);
+
+      render(clone, other);
+      expect(other.innerHTML).toBe('<div class="a">x</div>');
+      expect(clone.dom).toBe(other.firstChild);
+      render(clone, other);
+      expect(other.$V).toBe(clone);
+    });
+
+    it('should mount the clone of a component itself', () => {
+      class Label extends Component<{ text: string }> {
+        public render() {
+          return <i>{this.props.text}</i>;
+        }
+      }
+      const mounted = <Label text="1" />;
+      render(mounted, container);
+      const clone = cloneVNode(mounted, { text: '2' });
+
+      render(clone, other);
+      expect(other.innerHTML).toBe('<i>2</i>');
+      expect(clone.children).toBeInstanceOf(Label);
+      expect(other.$V).toBe(clone);
+    });
   });
 });

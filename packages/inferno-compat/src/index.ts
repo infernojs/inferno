@@ -292,13 +292,21 @@ options.createVNode = (vNode: VNode) => {
   }
   if (vNode.flags & VNodeFlags.Component) {
     if (isString(vNode.type)) {
-      // The children shape bits are kept, normalizeProps changes them when props have children
-      vNode.flags =
-        getFlagsForElementVnode(vNode.type) |
-        (vNode.flags & VNodeFlags.ChildFlagsMask);
-      if (props) {
-        normalizeProps(vNode);
+      const elementFlags = getFlagsForElementVnode(vNode.type);
+
+      if (elementFlags === VNodeFlags.Fragment) {
+        // A variable tag that holds Fragment: the children are in props, and they get the shape
+        // newFragment gives them, which mounting relies on
+        const fragment = newFragment(VNodeFlags.Fragment, props.children, null);
+
+        vNode.type = fragment.type;
+        vNode.children = fragment.children;
+        vNode.flags = fragment.flags;
+      } else {
+        // The children shape bits are kept, normalizeProps changes them when props have children
+        vNode.flags = elementFlags | (vNode.flags & VNodeFlags.ChildFlagsMask);
       }
+      normalizeProps(vNode);
     }
   }
 

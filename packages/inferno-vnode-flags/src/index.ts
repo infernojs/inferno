@@ -56,8 +56,9 @@ export const enum VNodeFlags {
   ClearOnClone = ~(InUse | Validated),
   MultipleChildren = HasNonKeyedChildren | HasKeyedChildren,
   ClearChildFlags = ~ChildFlagsMask,
-  // A new vNode made from another vNode's flags must not take its children's shape or its validation
-  ClearOnCopy = ~(ChildFlagsMask | Validated),
+  // A new vNode made from another vNode's flags must not take its children's shape, its validation or
+  // the state of its mounted copy: a copy with InUse would be mounted through a clone of its own
+  ClearOnCopy = ~(ChildFlagsMask | Validated | InUse | Normalized),
   // Patching ignores these bits when it compares the types of two vNodes, children change in place
   IgnoredByPatch = Normalized | ChildFlagsMask | Validated,
   ComponentKnown = ComponentFunction | ComponentClass,

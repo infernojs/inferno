@@ -98,7 +98,7 @@ newFragment(VNodeFlags.Fragment | VNodeFlags.HasKeyedChildren, children, key);
 
 - Flags without a child bit mean the shape of the children is unknown: `newVNode` and `newFragment` normalize them, like `ChildFlags.UnknownChildren` did. `createVNode` and `createFragment` treat an omitted `childFlags` as `ChildFlags.HasInvalidChildren` and ignore the children.
 - `newComponentVNode` finds out whether the type of a `VNodeFlags.ComponentUnknown` vNode is a class, a function or a forwardRef. Flags of a known type, `ComponentClass` or `ComponentFunction`, must include `VNodeFlags.HasInvalidChildren`.
-- Flags copied from another vNode have its children's shape and its development-only `Validated` bit. Clear them with `flags & VNodeFlags.ClearOnCopy` before adding the new child bit.
+- Flags copied from another vNode have its children's shape, its development-only `Validated` bit and the `InUse` and `Normalized` bits of a mounted vNode. Clear them with `flags & VNodeFlags.ClearOnCopy` before adding the new child bit.
 - The development build throws when the flags have more than one child bit, when known component flags lack `HasInvalidChildren` and when `newFragment` flags lack `VNodeFlags.Fragment`.
 - `newTextVNode` turns `null`, `undefined` and booleans into an empty string, like `createTextVNode`.
 

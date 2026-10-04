@@ -1,9 +1,11 @@
 import {
+  createComponentVNode,
   createFragment,
   createTextVNode,
   createVNode,
   getChildFlags,
   render,
+  type VNode,
 } from 'inferno';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 
@@ -135,6 +137,44 @@ describe('ChildFlags in vNode flags', () => {
     expect(getChildFlags(text)).toBe(ChildFlags.HasTextChildren);
     render(text, container);
     expect(container.innerHTML).toBe('<div>text</div>');
+  });
+
+  it('should not take the InUse and Normalized bits of flags copied from a mounted vNode', () => {
+    function Italic() {
+      return <i />;
+    }
+    const items = [<span key="a" />, <Italic key="b" />];
+    render(<div>{items}</div>, container);
+    expect(items[0].flags & VNodeFlags.InUseOrNormalized).toBe(
+      VNodeFlags.InUseOrNormalized,
+    );
+    expect(items[1].flags & VNodeFlags.InUseOrNormalized).toBe(
+      VNodeFlags.InUseOrNormalized,
+    );
+
+    const element = createVNode(
+      items[0].flags,
+      'span',
+      null,
+      null,
+      ChildFlags.HasInvalidChildren,
+    );
+    const component = createComponentVNode(items[1].flags, Italic);
+    expect(element.flags & VNodeFlags.InUseOrNormalized).toBe(0);
+    expect(component.flags & VNodeFlags.InUseOrNormalized).toBe(0);
+
+    // Rendering mounts them, not clones of them
+    render(
+      <p>
+        {element}
+        {component}
+      </p>,
+      container,
+    );
+    expect(element.dom).toBe(container.querySelector('span'));
+    expect((component.children as VNode).dom).toBe(
+      container.querySelector('i'),
+    );
   });
 
   it('should patch an element in place when the shape of its children changes', () => {

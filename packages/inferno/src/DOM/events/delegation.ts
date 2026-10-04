@@ -65,7 +65,7 @@ export const syntheticEvents: Record<string, DelegatedEvent | undefined> =
   Object.create(null);
 
 // The same records in bit order, for walking the bits of an $EV
-export const delegatedEvents: DelegatedEvent[] = [];
+const delegatedEvents: DelegatedEvent[] = [];
 
 for (let i = 0, len = delegatedEventNames.length; i < len; ++i) {
   const name = delegatedEventNames[i];
@@ -84,8 +84,8 @@ for (let i = 0, len = delegatedEventNames.length; i < len; ++i) {
  * An element keeps its handlers in its own properties, $onClick and so on, and its $EV has a bit
  * set for each event it registered. The element has no spare in-object slots, so the first added
  * property allocates a property array with room for three: $EV and one or two handlers fit there,
- * and the element needs no object of its own for them. Node.prototype has defaults for all of
- * these properties, see rendering.ts.
+ * and the element needs no object of its own for them. A handler property is read only when its
+ * bit is set, so only $EV needs a default on Node.prototype, see rendering.ts.
  */
 function updateOrAddSyntheticEvent(
   event: DelegatedEvent,
@@ -123,20 +123,17 @@ function unmountSyntheticEvent(event: DelegatedEvent, dom): void {
   }
 }
 
-// Releases the handlers an unmounted element registered, the caller checks that its $EV is not 0
-export function unmountSyntheticEvents(dom): void {
-  let bits: number = dom.$EV;
-
+// Releases the handlers an unmounted element registered, bits is its $EV and not 0
+export function unmountSyntheticEvents(dom, bits: number): void {
   dom.$EV = 0;
-  for (let i = 0, len = delegatedEvents.length; i < len && bits !== 0; ++i) {
-    const event = delegatedEvents[i];
+  // Only the set bits, lowest first: bits & -bits is the lowest one, and clz32 gives its index
+  do {
+    const event = delegatedEvents[31 - Math.clz32(bits & -bits)];
 
-    if ((bits & event.bit) !== 0) {
-      bits &= ~event.bit;
-      releaseDelegatedEvent(event);
-      dom[event.prop] = null;
-    }
-  }
+    bits &= bits - 1;
+    releaseDelegatedEvent(event);
+    dom[event.prop] = null;
+  } while (bits !== 0);
 }
 
 export function handleSyntheticEvent(
@@ -167,6 +164,7 @@ function getTargetNode(event): any {
 function dispatchEvents(
   event: SemiSyntheticEvent<any>,
   isClick: boolean,
+  bit: number,
   prop: string,
   eventData: IEventData,
 ): void {
@@ -178,9 +176,11 @@ function dispatchEvents(
     if (isClick && dom.disabled) {
       return;
     }
-    const currentEvent = dom[prop];
+    // Nodes without handlers get $EV from Node.prototype. The handler is read only when the bit is
+    // set, and then it is a function or a linkEvent object
+    if ((dom.$EV & bit) !== 0) {
+      const currentEvent = dom[prop];
 
-    if (currentEvent) {
       // linkEvent object
       eventData.dom = dom;
       if (currentEvent.event) {
@@ -238,9 +238,10 @@ function rootEvent(
 ): (event: SemiSyntheticEvent<any>) => void {
   const type = delegatedEvent.type;
   const isClick = type === 'click' || type === 'dblclick';
+  const bit = delegatedEvent.bit;
   const prop = delegatedEvent.prop;
   return function (event: SemiSyntheticEvent<any>) {
-    dispatchEvents(event, isClick, prop, extendEventProperties(event));
+    dispatchEvents(event, isClick, bit, prop, extendEventProperties(event));
   };
 }
 

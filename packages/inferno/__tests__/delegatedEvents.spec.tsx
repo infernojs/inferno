@@ -181,6 +181,44 @@ describe('Delegated events', () => {
       expect(calls(removeSpy, 'touchend').length).toBe(1);
     });
 
+    it('should release handlers at both ends of the event table when the element unmounts', () => {
+      const click = jasmine.createSpy('click');
+      const touchStart = jasmine.createSpy('touchStart');
+
+      render(<span onClick={click} onTouchStart={touchStart} />, container);
+      const span = container.firstChild;
+
+      span.dispatchEvent(new Event('click', { bubbles: true }));
+      span.dispatchEvent(new Event('touchstart', { bubbles: true }));
+      expect(click.calls.count()).toBe(1);
+      expect(touchStart.calls.count()).toBe(1);
+
+      render(null, container);
+      expect(calls(addSpy, 'click').length).toBe(1);
+      expect(calls(removeSpy, 'click').length).toBe(1);
+      expect(calls(addSpy, 'touchstart').length).toBe(1);
+      expect(calls(removeSpy, 'touchstart').length).toBe(1);
+    });
+
+    it('should dispatch to the elements that registered the event and skip those that registered another', () => {
+      const outer = jasmine.createSpy('outer');
+      const middle = jasmine.createSpy('middle');
+      const inner = jasmine.createSpy('inner');
+
+      render(
+        <div onTouchMove={outer}>
+          <p onTouchEnd={middle}>
+            <span onTouchMove={inner} />
+          </p>
+        </div>,
+        container,
+      );
+      touchMove(container.querySelector('span'));
+      expect(inner.calls.count()).toBe(1);
+      expect(middle).not.toHaveBeenCalled();
+      expect(outer.calls.count()).toBe(1);
+    });
+
     it('should not keep the handlers of an unmounted element', () => {
       render(<span onTouchMove={() => {}} onTouchEnd={() => {}} />, container);
       const span = container.firstChild;
