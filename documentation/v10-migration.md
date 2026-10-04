@@ -25,8 +25,32 @@ createFragment(children, getChildFlags(vNode));
 ```
 
 - Don't write `vNode.flags` from constants. Combine the new bits with `vNode.flags & VNodeFlags.ChildFlagsMask` so the children keep their shape.
-- `vNode.flags` can have bits above `VNodeFlags.Normalized` set. Test it with masks and never compare the whole value to a constant.
+- `vNode.flags` also has bits for the shape of the children and for Inferno's own state. Test it with masks and never compare the whole value to a constant.
 - The development-only `vNode.isValidated` property is the `VNodeFlags.Validated` bit now.
+
+### `VNodeFlags` have new values
+
+The JSX plugins write the flags of each vNode into the compiled code as one number, so the bits they emit most have the smallest values. The bits of elements keep their v9 values:
+
+| Flag                                                                               | v9                  | v10                   |
+| ---------------------------------------------------------------------------------- | ------------------- | --------------------- |
+| `HtmlElement`                                                                      | 1                   | 1                     |
+| `SvgElement`, `InputElement`, `TextareaElement`, `SelectElement`                   | 32, 64, 128, 256    | 32, 64, 128, 256      |
+| `ReCreate`, `ContentEditable`, `Fragment`                                          | 2048, 4096, 8192    | 2048, 4096, 8192      |
+| `HasTextChildren`, `HasNonKeyedChildren`, `HasVNodeChildren`, `HasInvalidChildren` | -                   | 2, 4, 8, 16           |
+| `HasKeyedChildren`                                                                 | -                   | 512                   |
+| `ComponentUnknown`                                                                 | 2                   | 0                     |
+| `ComponentClass`                                                                   | 4                   | 1024                  |
+| `ComponentFunction`                                                                | 8                   | 16384                 |
+| `Text`                                                                             | 16                  | 32768                 |
+| `InUse`, `Normalized`, `ForwardRef`                                                | 16384, 65536, 32768 | 65536, 131072, 262144 |
+| `Portal`                                                                           | 1024                | 524288                |
+| `Validated` (development only)                                                     | -                   | 1048576               |
+
+- Code compiled by the v9 JSX plugins keeps working. It calls the deprecated factories with the flags of elements, which have not changed, and with `ComponentUnknown` for components, which `createComponentVNode` resolves whatever value it has.
+- `VNodeFlags` is a `const enum`, so code compiled against v9 `inferno-vnode-flags` has the old numbers in it. Rebuild code that reads `vNode.flags`, for example to test `VNodeFlags.Text` or `VNodeFlags.ComponentClass`.
+- `ComponentUnknown` has no bit: `newComponentVNode` replaces it with the type it finds, so a vNode never has it. `VNodeFlags.Component` is `ComponentClass | ComponentFunction`.
+- The child bits are not in the order of `ChildFlags`, so a `ChildFlags` value can't be shifted into place. Use the `VNodeFlags` bit of the same name.
 
 ### Delegated event handlers are stored on the element
 
@@ -80,10 +104,13 @@ newFragment(VNodeFlags.Fragment | VNodeFlags.HasKeyedChildren, children, key);
 
 ### JSX plugins
 
-The JSX plugins know the children's shape at compile time, so they can emit the packed flags as one number. A plugin that targets the new factories emits:
+The JSX plugins know the children's shape at compile time, so they emit the packed flags as one number. From version 10 the plugins emit:
 
-- `newVNode(flags | childBit, type, className, children, props, key, ref)`, without the `childFlags` argument. Emit `VNodeFlags.HasInvalidChildren` for an element without children; a missing bit costs a normalization pass. Leave the bit out only for children of unknown shape.
+- `newVNode(flags | childBit, type, className, children, props, key, ref)`, without the `childFlags` argument. An element without children gets `VNodeFlags.HasInvalidChildren`, because a missing bit costs a normalization pass. Only children of unknown shape, such as `{expression}`, get no bit.
 - `newComponentVNode(VNodeFlags.ComponentUnknown, type, props, key, ref)`, `newTextVNode(text)` and `newFragment(VNodeFlags.Fragment | childBit, children, key)`.
-- For runtime expressions, `$ChildFlag={expr}` becomes `flags | (expr << VNodeFlags.ChildFlagsShift)`, and `$Flags={expr}` becomes `expr | childBit`. On a component it becomes `expr | VNodeFlags.HasInvalidChildren`.
+- `$Flags={expr}` becomes `expr | childBit`, and `expr | VNodeFlags.HasInvalidChildren` on a component.
+- `$ChildFlag={expr}` is a `ChildFlags` value that is only known at runtime, so an element with it is still compiled to the deprecated `createVNode` or `createFragment`, which turn the value into its bit.
 
-`ChildFlagsShift` is 17, so the child bits are `HasInvalidChildren` 131072, `HasVNodeChildren` 262144, `HasNonKeyedChildren` 524288, `HasKeyedChildren` 1048576 and `HasTextChildren` 2097152.
+For example `<div>text</div>` compiles to `newVNode(3, "div", null, "text")`: `HtmlElement` 1 and `HasTextChildren` 2.
+
+Code compiled by the v9 plugins keeps working with Inferno v10, but the v10 plugins need Inferno v10.

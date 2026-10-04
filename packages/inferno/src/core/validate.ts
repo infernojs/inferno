@@ -301,11 +301,26 @@ export function validateChildFlags(vNode: VNode): void {
       }
       return;
     }
-    default:
+    default: {
       // A vNode with unknown children has no child bit and is normalized instead of validated
+      const names: string[] = [];
+      const bits: Array<[VNodeFlags, string]> = [
+        [VNodeFlags.HasInvalidChildren, 'HasInvalidChildren'],
+        [VNodeFlags.HasVNodeChildren, 'HasVNodeChildren'],
+        [VNodeFlags.HasNonKeyedChildren, 'HasNonKeyedChildren'],
+        [VNodeFlags.HasKeyedChildren, 'HasKeyedChildren'],
+        [VNodeFlags.HasTextChildren, 'HasTextChildren'],
+      ];
+
+      for (let i = 0, len = bits.length; i < len; ++i) {
+        if (childFlags & bits[i][0]) {
+          names.push('VNodeFlags.' + bits[i][1]);
+        }
+      }
       throwError(
-        `VNode flags must have exactly one child bit, they have the ChildFlags bits ${childFlags >>> VNodeFlags.ChildFlagsShift}. Location: \n${parentTag}`,
+        `VNode flags must have exactly one child bit, they have ${names.join(' | ')}. Location: \n${parentTag}`,
       );
+    }
   }
 }
 

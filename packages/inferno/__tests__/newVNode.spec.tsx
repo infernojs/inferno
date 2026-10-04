@@ -295,12 +295,23 @@ describe('New vNode factories', () => {
       }
     }
 
+    // The VNodeFlags child bit of the same name, an omitted ChildFlags is HasInvalidChildren
     function packed(childFlags: ChildFlags | undefined): VNodeFlags {
-      return (
-        (childFlags === undefined
-          ? ChildFlags.HasInvalidChildren
-          : childFlags) << VNodeFlags.ChildFlagsShift
-      );
+      switch (childFlags) {
+        case undefined:
+        case ChildFlags.HasInvalidChildren:
+          return VNodeFlags.HasInvalidChildren;
+        case ChildFlags.HasVNodeChildren:
+          return VNodeFlags.HasVNodeChildren;
+        case ChildFlags.HasNonKeyedChildren:
+          return VNodeFlags.HasNonKeyedChildren;
+        case ChildFlags.HasKeyedChildren:
+          return VNodeFlags.HasKeyedChildren;
+        case ChildFlags.HasTextChildren:
+          return VNodeFlags.HasTextChildren;
+        default:
+          return VNodeFlags.Unknown;
+      }
     }
 
     it('createVNode should give the flags of newVNode', () => {

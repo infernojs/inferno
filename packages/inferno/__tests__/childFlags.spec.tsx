@@ -22,40 +22,49 @@ describe('ChildFlags in vNode flags', () => {
     document.body.removeChild(container);
   });
 
-  it('should have a VNodeFlags child bit for each ChildFlags value', () => {
-    const shift = VNodeFlags.ChildFlagsShift;
+  it('should have one VNodeFlags child bit for each ChildFlags value', () => {
+    const bits = [
+      VNodeFlags.HasInvalidChildren,
+      VNodeFlags.HasVNodeChildren,
+      VNodeFlags.HasNonKeyedChildren,
+      VNodeFlags.HasKeyedChildren,
+      VNodeFlags.HasTextChildren,
+    ];
+    let all = 0;
 
-    expect(VNodeFlags.HasInvalidChildren).toBe(
-      ChildFlags.HasInvalidChildren << shift,
-    );
-    expect(VNodeFlags.HasVNodeChildren).toBe(
-      ChildFlags.HasVNodeChildren << shift,
-    );
-    expect(VNodeFlags.HasNonKeyedChildren).toBe(
-      ChildFlags.HasNonKeyedChildren << shift,
-    );
-    expect(VNodeFlags.HasKeyedChildren).toBe(
-      ChildFlags.HasKeyedChildren << shift,
-    );
-    expect(VNodeFlags.HasTextChildren).toBe(
-      ChildFlags.HasTextChildren << shift,
-    );
+    for (let i = 0, len = bits.length; i < len; ++i) {
+      const bit = bits[i];
+
+      // A single bit that no other child bit has
+      expect(bit & (bit - 1)).toBe(0);
+      expect(all & bit).toBe(0);
+      all |= bit;
+    }
+    expect(all).toBe(VNodeFlags.ChildFlagsMask);
     expect(VNodeFlags.MultipleChildren).toBe(
-      ChildFlags.MultipleChildren << shift,
+      VNodeFlags.HasNonKeyedChildren | VNodeFlags.HasKeyedChildren,
     );
   });
 
   it('should keep the ChildFlags given to createVNode', () => {
-    const cases: Array<[ChildFlags, unknown]> = [
-      [ChildFlags.HasInvalidChildren, null],
-      [ChildFlags.HasVNodeChildren, <span />],
-      [ChildFlags.HasNonKeyedChildren, [<span />, <span />]],
-      [ChildFlags.HasKeyedChildren, [<span key="a" />, <span key="b" />]],
-      [ChildFlags.HasTextChildren, 'text'],
+    const cases: Array<[ChildFlags, VNodeFlags, unknown]> = [
+      [ChildFlags.HasInvalidChildren, VNodeFlags.HasInvalidChildren, null],
+      [ChildFlags.HasVNodeChildren, VNodeFlags.HasVNodeChildren, <span />],
+      [
+        ChildFlags.HasNonKeyedChildren,
+        VNodeFlags.HasNonKeyedChildren,
+        [<span />, <span />],
+      ],
+      [
+        ChildFlags.HasKeyedChildren,
+        VNodeFlags.HasKeyedChildren,
+        [<span key="a" />, <span key="b" />],
+      ],
+      [ChildFlags.HasTextChildren, VNodeFlags.HasTextChildren, 'text'],
     ];
 
     for (let i = 0, len = cases.length; i < len; ++i) {
-      const [childFlags, children] = cases[i];
+      const [childFlags, bit, children] = cases[i];
       const vNode = createVNode(
         VNodeFlags.HtmlElement,
         'div',
@@ -65,9 +74,7 @@ describe('ChildFlags in vNode flags', () => {
       );
 
       expect(getChildFlags(vNode)).toBe(childFlags);
-      expect(vNode.flags & VNodeFlags.ChildFlagsMask).toBe(
-        childFlags << VNodeFlags.ChildFlagsShift,
-      );
+      expect(vNode.flags & VNodeFlags.ChildFlagsMask).toBe(bit);
       expect(vNode.flags & VNodeFlags.HtmlElement).toBe(VNodeFlags.HtmlElement);
     }
   });

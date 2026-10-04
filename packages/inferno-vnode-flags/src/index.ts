@@ -1,45 +1,55 @@
 /* If editing these values check babel-plugin-also */
+/*
+ * The JSX plugins write the flags of each vNode into the compiled code as one number, so the bits they
+ * emit most have the lowest values. The bits of elements keep their v9 values, which code compiled by
+ * older plugins passes to the deprecated factories.
+ */
 export const enum VNodeFlags {
-  /* First set of bits define shape of vNode */
   Unknown = 0,
   HtmlElement = 1,
-  ComponentUnknown = 1 << 1,
-  ComponentClass = 1 << 2,
-  ComponentFunction = 1 << 3,
-  Text = 1 << 4,
 
-  /* Special flags */
+  /*
+   * These bits hold the shape of the vNode's children, so a vNode has no field for it. A created vNode
+   * has exactly one of them set. They are the ChildFlags of the same name, at other values.
+   */
+  HasTextChildren = 1 << 1,
+  HasNonKeyedChildren = 1 << 2,
+  HasVNodeChildren = 1 << 3,
+  HasInvalidChildren = 1 << 4,
+
   SvgElement = 1 << 5,
   InputElement = 1 << 6,
   TextareaElement = 1 << 7,
   SelectElement = 1 << 8,
-  Portal = 1 << 10,
+  HasKeyedChildren = 1 << 9,
+  ComponentClass = 1 << 10,
   ReCreate = 1 << 11,
   ContentEditable = 1 << 12,
   Fragment = 1 << 13,
-  InUse = 1 << 14,
-  ForwardRef = 1 << 15,
-  Normalized = 1 << 16,
 
-  /*
-   * Bits 17-21 hold the shape of the vNode's children, so a vNode has no field for it. They are the
-   * ChildFlags shifted left by ChildFlagsShift, and a created vNode has exactly one of them set.
-   */
-  ChildFlagsShift = 17,
-  HasInvalidChildren = 1 << 17,
-  HasVNodeChildren = 1 << 18,
-  HasNonKeyedChildren = 1 << 19,
-  HasKeyedChildren = 1 << 20,
-  HasTextChildren = 1 << 21,
-  ChildFlagsMask = 31 << ChildFlagsShift,
+  /* The JSX plugins do not emit these, Inferno sets them */
+  ComponentFunction = 1 << 14,
+  Text = 1 << 15,
+  InUse = 1 << 16,
+  Normalized = 1 << 17,
+  ForwardRef = 1 << 18,
+  Portal = 1 << 19,
   /* Development only: the keys of the vNode's children have been validated */
-  Validated = 1 << 22,
+  Validated = 1 << 20,
+
+  // newComponentVNode finds out whether the type is a class, a function or a forwardRef, a vNode never keeps this
+  ComponentUnknown = Unknown,
 
   /* Masks */
+  ChildFlagsMask = HasTextChildren |
+    HasNonKeyedChildren |
+    HasVNodeChildren |
+    HasInvalidChildren |
+    HasKeyedChildren,
   ForwardRefComponent = ForwardRef | ComponentFunction,
   FormElement = InputElement | TextareaElement | SelectElement,
   Element = HtmlElement | SvgElement | FormElement,
-  Component = ComponentFunction | ComponentClass | ComponentUnknown,
+  Component = ComponentFunction | ComponentClass,
   DOMRef = Element | Text | Portal,
   InUseOrNormalized = InUse | Normalized,
   ClearInUse = ~InUse,
@@ -53,6 +63,7 @@ export const enum VNodeFlags {
   ComponentKnown = ComponentFunction | ComponentClass,
 }
 
+// The shape of the children as the deprecated createVNode and createFragment take it
 // Combinations are not possible, its bitwise only to reduce vNode size
 export const enum ChildFlags {
   UnknownChildren = 0, // When zero is passed children will be normalized

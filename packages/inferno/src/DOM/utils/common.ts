@@ -4,7 +4,13 @@ import type {
   LinkedEvent,
   VNode,
 } from './../../core/types';
-import { isFunction, isNull, isNullOrUndef, isUndefined } from 'inferno-shared';
+import {
+  isFunction,
+  isNull,
+  isNullOrUndef,
+  isUndefined,
+  throwError,
+} from 'inferno-shared';
 import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
 import { isLinkEventObject } from '../events/linkEvent';
 
@@ -16,12 +22,36 @@ export const EMPTY_OBJ = {};
 export const Fragment: Inferno.ExoticComponent<{ children?: InfernoNode }> =
   '$F';
 
+// The VNodeFlags child bit of each ChildFlags value, at the index of the value
+const childBits: VNodeFlags[] = [];
+childBits[ChildFlags.UnknownChildren] = VNodeFlags.Unknown;
+childBits[ChildFlags.HasInvalidChildren] = VNodeFlags.HasInvalidChildren;
+childBits[ChildFlags.HasVNodeChildren] = VNodeFlags.HasVNodeChildren;
+childBits[ChildFlags.HasNonKeyedChildren] = VNodeFlags.HasNonKeyedChildren;
+childBits[ChildFlags.HasKeyedChildren] = VNodeFlags.HasKeyedChildren;
+childBits[ChildFlags.HasTextChildren] = VNodeFlags.HasTextChildren;
+
+// The deprecated factories take the shape of the children as ChildFlags, an omitted value is HasInvalidChildren
+export function childFlagsToBit(
+  childFlags: ChildFlags | undefined,
+): VNodeFlags {
+  const bit =
+    childBits[
+      childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags
+    ];
+
+  if (process.env.NODE_ENV !== 'production') {
+    if (bit === void 0) {
+      throwError(`${childFlags} is not a ChildFlags value.`);
+    }
+  }
+  return bit;
+}
+
 // The shape of the children is kept in bits of flags, and code that tests it uses those bits.
-// This converts them back to the ChildFlags value that the factories take.
+// This converts them back to the ChildFlags value that the deprecated factories take.
 export function getChildFlags(vNode: VNode): ChildFlags {
-  return (
-    (vNode.flags & VNodeFlags.ChildFlagsMask) >>> VNodeFlags.ChildFlagsShift
-  );
+  return childBits.indexOf(vNode.flags & VNodeFlags.ChildFlagsMask);
 }
 
 /**

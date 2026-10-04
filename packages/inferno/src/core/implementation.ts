@@ -22,7 +22,12 @@ import {
   validateChildFlags,
   validateVNodeElementChildren,
 } from './validate';
-import { Fragment, mergeUnsetProperties, options } from './../DOM/utils/common';
+import {
+  childFlagsToBit,
+  Fragment,
+  mergeUnsetProperties,
+  options,
+} from './../DOM/utils/common';
 import { type Component, type ComponentType } from './component';
 
 const keyPrefix = '$';
@@ -105,7 +110,7 @@ export function newVNode<P>(
 }
 
 /**
- * @deprecated Use newVNode, its flags include the child bit: `flags | (childFlags << VNodeFlags.ChildFlagsShift)`.
+ * @deprecated Use newVNode, its flags include the child bit: `VNodeFlags.HasTextChildren` for `ChildFlags.HasTextChildren` and so on.
  */
 export function createVNode<P>(
   flags: VNodeFlags,
@@ -119,9 +124,7 @@ export function createVNode<P>(
 ): VNode {
   return newVNode(
     // The flags can be copied from another vNode (cloneVNode does), its children and validation do not apply
-    (flags & VNodeFlags.ClearOnCopy) |
-      ((childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags) <<
-        VNodeFlags.ChildFlagsShift),
+    (flags & VNodeFlags.ClearOnCopy) | childFlagsToBit(childFlags),
     type,
     className,
     children,
@@ -318,7 +321,7 @@ export function newFragment(
 }
 
 /**
- * @deprecated Use newFragment, its flags are `VNodeFlags.Fragment | (childFlags << VNodeFlags.ChildFlagsShift)`.
+ * @deprecated Use newFragment, its flags are `VNodeFlags.Fragment` and the child bit, `VNodeFlags.HasTextChildren` for `ChildFlags.HasTextChildren` and so on.
  */
 export function createFragment(
   children: any,
@@ -326,9 +329,7 @@ export function createFragment(
   key?: string | number | null,
 ): VNode {
   return newFragment(
-    VNodeFlags.Fragment |
-      ((childFlags === void 0 ? ChildFlags.HasInvalidChildren : childFlags) <<
-        VNodeFlags.ChildFlagsShift),
+    VNodeFlags.Fragment | childFlagsToBit(childFlags),
     children,
     key,
   );

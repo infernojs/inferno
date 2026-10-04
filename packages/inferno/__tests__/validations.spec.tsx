@@ -579,7 +579,7 @@ describe('Development warnings', () => {
         ),
       ).toThrow(
         constructInfernoError(
-          'VNode flags must have exactly one child bit, they have the ChildFlags bits 24. Location: \n>> <div>\n',
+          'VNode flags must have exactly one child bit, they have VNodeFlags.HasKeyedChildren | VNodeFlags.HasTextChildren. Location: \n>> <div>\n',
         ),
       );
     });
@@ -593,11 +593,7 @@ describe('Development warnings', () => {
           [<span key="a" />],
           ChildFlags.MultipleChildren,
         ),
-      ).toThrow(
-        constructInfernoError(
-          'VNode flags must have exactly one child bit, they have the ChildFlags bits 12. Location: \n>> <div>\n',
-        ),
-      );
+      ).toThrow(constructInfernoError('12 is not a ChildFlags value.'));
     });
 
     it('newComponentVNode should throw for element flags', () => {

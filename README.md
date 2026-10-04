@@ -589,12 +589,14 @@ newTextVNode(text, key);
 
 These factories still work, and code compiled by the JSX plugins that take a separate `childFlags` value calls them. They pack the flags and call the new factories:
 
-| Deprecated                                                       | Replacement                                                                                     |
-| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `createVNode(flags, type, className, children, childFlags, ...)` | `newVNode(flags \| (childFlags << VNodeFlags.ChildFlagsShift), type, className, children, ...)` |
-| `createComponentVNode(flags, type, props, key, ref)`             | `newComponentVNode(flags \| VNodeFlags.HasInvalidChildren, type, props, key, ref)`              |
-| `createTextVNode(text, key)`                                     | `newTextVNode(text, key)`                                                                       |
-| `createFragment(children, childFlags, key)`                      | `newFragment(VNodeFlags.Fragment \| (childFlags << VNodeFlags.ChildFlagsShift), children, key)` |
+| Deprecated                                                                       | Replacement                                                                        |
+| -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `createVNode(flags, type, className, children, ChildFlags.HasTextChildren, ...)` | `newVNode(flags \| VNodeFlags.HasTextChildren, type, className, children, ...)`    |
+| `createComponentVNode(flags, type, props, key, ref)`                             | `newComponentVNode(flags \| VNodeFlags.HasInvalidChildren, type, props, key, ref)` |
+| `createTextVNode(text, key)`                                                     | `newTextVNode(text, key)`                                                          |
+| `createFragment(children, ChildFlags.HasKeyedChildren, key)`                     | `newFragment(VNodeFlags.Fragment \| VNodeFlags.HasKeyedChildren, children, key)`   |
+
+Each `ChildFlags` value has a `VNodeFlags` child bit of the same name, for example `ChildFlags.HasTextChildren` becomes `VNodeFlags.HasTextChildren`. `ChildFlags.UnknownChildren` becomes no child bit.
 
 `createVNode` and `createFragment` treat an omitted `childFlags` as `ChildFlags.HasInvalidChildren`, so they ignore the children. Flags without a child bit make `newVNode` and `newFragment` normalize the children instead.
 

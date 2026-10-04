@@ -14,36 +14,37 @@ npm install --save inferno-vnode-flags
 
 **VNodeFlags:**
 
-- `VNodeFlags.HtmlElement`
-- `VNodeFlags.ComponentUnknown`
-- `VNodeFlags.ComponentClass`
-- `VNodeFlags.ComponentFunction`
-- `VNodeFlags.Text`
-- `VNodeFlags.SvgElement`
-- `VNodeFlags.InputElement`
-- `VNodeFlags.TextareaElement`
-- `VNodeFlags.SelectElement`
-- `VNodeFlags.Portal`
-- `VNodeFlags.ReCreate` (JSX **$ReCreate**) always re-creates the vNode
-- `VNodeFlags.ContentEditable`
-- `VNodeFlags.Fragment`
-- `VNodeFlags.InUse`
-- `VnodeFlags.ForwardRef`
-- `VNodeFlags.Normalized`
-- `VNodeFlags.Validated` development only, the keys of the vNode's children have been validated
+The JSX plugins write the flags into the compiled code as one number, so the flags they emit have the smallest values.
+
+- `VNodeFlags.HtmlElement` (1)
+- `VNodeFlags.SvgElement` (32)
+- `VNodeFlags.InputElement` (64)
+- `VNodeFlags.TextareaElement` (128)
+- `VNodeFlags.SelectElement` (256)
+- `VNodeFlags.ComponentClass` (1024)
+- `VNodeFlags.ReCreate` (2048, JSX **$ReCreate**) always re-creates the vNode
+- `VNodeFlags.ContentEditable` (4096)
+- `VNodeFlags.Fragment` (8192)
+- `VNodeFlags.ComponentFunction` (16384)
+- `VNodeFlags.Text` (32768)
+- `VNodeFlags.InUse` (65536)
+- `VNodeFlags.Normalized` (131072)
+- `VnodeFlags.ForwardRef` (262144)
+- `VNodeFlags.Portal` (524288)
+- `VNodeFlags.Validated` (1048576) development only, the keys of the vNode's children have been validated
+- `VNodeFlags.ComponentUnknown` (0) `newComponentVNode` finds out whether the type is a class, a function or a forwardRef
 
 **ChildFlags in VNodeFlags:**
 
-A vNode keeps the shape of its children in bits of `flags`: the `ChildFlags` value shifted left by `VNodeFlags.ChildFlagsShift`. Exactly one of these bits is set, test it with `vNode.flags & VNodeFlags.HasKeyedChildren`. `newVNode`, `newComponentVNode` and `newFragment` from `inferno` take the bit in their `flags`, for example `VNodeFlags.HtmlElement | VNodeFlags.HasKeyedChildren`; flags without a child bit make them normalize the children. The deprecated `createVNode` and `createFragment` take a separate `ChildFlags` value. `getChildFlags(vNode)` from `inferno` converts the bits back to a `ChildFlags` value, for passing them to those.
+A vNode keeps the shape of its children in bits of `flags`. Exactly one of these bits is set, test it with `vNode.flags & VNodeFlags.HasKeyedChildren`. `newVNode`, `newComponentVNode` and `newFragment` from `inferno` take the bit in their `flags`, for example `VNodeFlags.HtmlElement | VNodeFlags.HasKeyedChildren`; flags without a child bit make them normalize the children. The deprecated `createVNode` and `createFragment` take a separate `ChildFlags` value, which has the same name as its bit but another value. `getChildFlags(vNode)` from `inferno` converts the bits back to a `ChildFlags` value, for passing them to those.
 
-- `VNodeFlags.HasInvalidChildren`
-- `VNodeFlags.HasVNodeChildren`
-- `VNodeFlags.HasNonKeyedChildren`
-- `VNodeFlags.HasKeyedChildren`
-- `VNodeFlags.HasTextChildren`
+- `VNodeFlags.HasTextChildren` (2)
+- `VNodeFlags.HasNonKeyedChildren` (4)
+- `VNodeFlags.HasVNodeChildren` (8)
+- `VNodeFlags.HasInvalidChildren` (16)
+- `VNodeFlags.HasKeyedChildren` (512)
 - `VNodeFlags.MultipleChildren` - Mask of the keyed and non-keyed bits
-- `VNodeFlags.ChildFlagsShift` - The ChildFlags are stored shifted left by this many bits
-- `VNodeFlags.ChildFlagsMask` - Bits that hold the ChildFlags
+- `VNodeFlags.ChildFlagsMask` - Bits that hold the shape of the children
 
 **VNodeFlags Masks:**
 
