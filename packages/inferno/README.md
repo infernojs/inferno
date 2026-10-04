@@ -17,11 +17,12 @@ The main objective of the InfernoJS project is to provide the fastest possible *
 
 The performance is achieved through multiple optimizations, for example:
 
-- Inferno's own JSX compilers creates monomorphic `createVNode` calls, instead of `createElement` calls.
+- Inferno's own JSX compilers creates monomorphic `newVNode` calls, instead of `createElement` calls.
   Optimizing runtime performance of the application.
   - [SWC plugin inferno](https://github.com/infernojs/swc-plugin-inferno) is a plugin for [SWC](https://swc.rs/). It can compile TSX and JSX
   - [Babel plugin inferno](https://github.com/infernojs/babel-plugin-inferno) is a plugin for [BabelJs](https://babeljs.io/). It can compile JSX.
   - [TS plugin inferno](https://github.com/infernojs/ts-plugin-inferno) is a plugin for [TSC](https://www.typescriptlang.org/). It can compile TSX.
+  - Inferno 10 needs version 10 of these plugins, and JSX compiled by older versions does not work with it. From version 10 on, the major version of each plugin matches the major version of Inferno. See the [v10 migration guide](https://github.com/infernojs/inferno/blob/master/documentation/v10-migration.md).
 - Inferno's diff process uses bitwise flags to memoize the shape of objects
 - Child nodes are normalized only when needed
 - Special JSX flags can be used during compile time to optimize runtime performance at application level
@@ -590,7 +591,7 @@ newTextVNode(text, key);
 
 ### Deprecated `createVNode`, `createComponentVNode`, `createTextVNode` and `createFragment` (package: 'inferno')
 
-These factories still work, and code compiled by the JSX plugins that take a separate `childFlags` value calls them. They pack the flags and call the new factories:
+These factories still work for code that creates vNodes by hand. Inferno 10 needs JSX compiled by version 10 of the JSX plugins, which call the new factories; they call `createVNode` and `createFragment` only for a `$ChildFlag` that is known at runtime. JSX compiled by older plugin versions does not work with Inferno 10. The deprecated factories take a separate `childFlags` value, turn it into its child bit and call the new factories:
 
 | Deprecated                                                                       | Replacement                                                                        |
 | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -842,7 +843,6 @@ If Component has rendered fragment it returns the first element.
 - `VNodeFlags.TextareaElement`
 - `VNodeFlags.SelectElement`
 - `VNodeFlags.Portal`
-- `VNodeFlags.ReCreate` (JSX **$ReCreate**) always re-creates the vNode
 - `VNodeFlags.ContentEditable`
 - `VNodeFlags.Fragment`
 - `VNodeFlags.InUse`

@@ -141,20 +141,21 @@ describe('patching routine', () => {
     expect(childelem).toBe(container.firstElementChild.firstElementChild);
   });
 
-  it('Should always unmount/mount if ReCreate flag is set', () => {
+  // ReCreate was removed in v10, a new key re-creates the element the same way
+  it('Should unmount and mount an element again when its key changes', () => {
     const spyObj = { fn: () => {} };
     const spyObj2 = { fn: () => {} };
     const spy1 = spyOn(spyObj, 'fn');
     const spy2 = spyOn(spyObj2, 'fn');
 
     const div = createVNode(
-      VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
+      VNodeFlags.HtmlElement,
       'div',
       null,
       createTextVNode('1'),
       ChildFlags.HasVNodeChildren,
       null,
-      null,
+      '1',
       spy1,
     );
 
@@ -168,13 +169,13 @@ describe('patching routine', () => {
     expect(spy1.calls.argsFor(0)[0]).toEqual(firstDiv);
 
     const div2 = createVNode(
-      VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
+      VNodeFlags.HtmlElement,
       'div',
       null,
       createTextVNode('1'),
       ChildFlags.HasVNodeChildren,
       null,
-      null,
+      '2',
       spy2,
     );
 

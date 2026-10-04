@@ -91,8 +91,7 @@ export function patch(
     // Normalized flag and the children shape bits are not part of the vNode type
     ((lastVNode.flags ^ nextFlags) & ~VNodeFlags.IgnoredByPatch) !== 0 ||
     lastVNode.type !== nextVNode.type ||
-    lastVNode.key !== nextVNode.key ||
-    nextFlags & VNodeFlags.ReCreate
+    lastVNode.key !== nextVNode.key
   ) {
     if (lastVNode.flags & VNodeFlags.InUse) {
       replaceWithNewNode(

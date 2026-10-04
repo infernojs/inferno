@@ -14,14 +14,15 @@ describe('patching routine (JSX)', () => {
     document.body.removeChild(container);
   });
 
-  it('Should always unmount/mount if ReCreate flag is set', () => {
+  // ReCreate was removed in v10, a new key re-creates the element the same way
+  it('Should unmount and mount an element again when its key changes', () => {
     const spyObj = { fn: () => {} };
     const spyObj2 = { fn: () => {} };
     const spy1 = spyOn(spyObj, 'fn');
     const spy2 = spyOn(spyObj2, 'fn');
 
     const div = (
-      <div $ReCreate ref={spy1}>
+      <div key="1" ref={spy1}>
         1
       </div>
     );
@@ -36,7 +37,7 @@ describe('patching routine (JSX)', () => {
     expect(spy1.calls.argsFor(0)[0]).toEqual(firstDiv);
 
     const div2 = (
-      <div $ReCreate ref={spy2}>
+      <div key="2" ref={spy2}>
         1
       </div>
     );

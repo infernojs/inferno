@@ -196,11 +196,12 @@ describe('Development warnings', () => {
     describe('Warning key missing', () => {
       it('Should throw error if key is missing', () => {
         expect(() => {
-          const errorNode = (
-            <div $HasKeyedChildren>
-              <div key="1">2</div>
-              <div>1</div>
-            </div>
+          // Built without JSX, the JSX plugins reject a child flag that the children cannot have
+          const errorNode = newVNode(
+            VNodeFlags.HtmlElement | VNodeFlags.HasKeyedChildren,
+            'div',
+            null,
+            [<div key="1">2</div>, <div>1</div>],
           );
           render(errorNode, container);
         }).toThrow(
@@ -262,13 +263,13 @@ describe('Development warnings', () => {
       });
 
       it('Should print nice stack of key missing', () => {
-        const FooBar = () => (
-          <span className="parentNode" $HasKeyedChildren>
-            <div key={'dup'} />
-            {2}
-            <em key={'dup'} />
-          </span>
-        );
+        const FooBar = () =>
+          newVNode(
+            VNodeFlags.HtmlElement | VNodeFlags.HasKeyedChildren,
+            'span',
+            'parentNode',
+            [<div key={'dup'} />, 2, <em key={'dup'} />],
+          );
 
         const foobar = (
           // @ts-expect-error Foobar has no children defined
@@ -308,11 +309,11 @@ describe('Development warnings', () => {
     describe('Invalid nodes', () => {
       it('Should throw error if key is missing', () => {
         expect(() => {
-          const errorNode = (
-            <div $HasKeyedChildren>
-              <div key="1">2</div>
-              {null}
-            </div>
+          const errorNode = newVNode(
+            VNodeFlags.HtmlElement | VNodeFlags.HasKeyedChildren,
+            'div',
+            null,
+            [<div key="1">2</div>, null],
           );
           render(errorNode, container);
         }).toThrow(
@@ -435,7 +436,15 @@ describe('Development warnings', () => {
 
       it('ChildFlags.HasVNodeChildren should throw for text children', () => {
         expect(() => {
-          render(<div $HasVNodeChildren>{'foo'}</div>, container);
+          render(
+            newVNode(
+              VNodeFlags.HtmlElement | VNodeFlags.HasVNodeChildren,
+              'div',
+              null,
+              'foo',
+            ),
+            container,
+          );
         }).toThrow(
           constructInfernoError(
             'ChildFlags.HasVNodeChildren expects children to be a VNode. Location: \n>> Text(foo)\n>> <div>\n',

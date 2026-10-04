@@ -435,18 +435,13 @@ export function directClone(vNodeToClone: VNode): VNode {
  * vNode can be referenced outside of render and passed to Inferno again,
  * but it holds the state of its mounted position, so it can be mounted only once.
  * lastVNode is the vNode previously mounted in the same position, or null when mounting.
- * When they are the same, vNode can be patched against itself, unless it needs to be re-created.
+ * When they are the same, vNode can be patched against itself.
  */
 export function mustCloneVNode(
   vNode: VNode,
   lastVNode: VNode | null | undefined,
 ): boolean {
-  const flags = vNode.flags;
-
-  return (
-    (flags & VNodeFlags.InUse) !== 0 &&
-    (vNode !== lastVNode || (flags & VNodeFlags.ReCreate) !== 0)
-  );
+  return (vNode.flags & VNodeFlags.InUse) !== 0 && vNode !== lastVNode;
 }
 
 export function createVoidVNode(): VNode {

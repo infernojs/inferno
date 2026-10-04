@@ -14,24 +14,23 @@ npm install --save inferno-vnode-flags
 
 **VNodeFlags:**
 
-The JSX plugins write the flags into the compiled code as one number, so the flags they emit have the smallest values.
+The JSX plugins write the flags into the compiled code as one number, so the flags that compiled apps and Inferno use most have the smallest values. The values changed in Inferno 10, so compile JSX with the v10 plugins.
 
 - `VNodeFlags.HtmlElement` (1)
-- `VNodeFlags.SvgElement` (32)
-- `VNodeFlags.InputElement` (64)
-- `VNodeFlags.TextareaElement` (128)
-- `VNodeFlags.SelectElement` (256)
-- `VNodeFlags.ComponentClass` (1024)
-- `VNodeFlags.ReCreate` (2048, JSX **$ReCreate**) always re-creates the vNode
-- `VNodeFlags.ContentEditable` (4096)
-- `VNodeFlags.Fragment` (8192)
-- `VNodeFlags.ComponentFunction` (16384)
-- `VNodeFlags.Text` (32768)
+- `VNodeFlags.SvgElement` (64)
+- `VNodeFlags.ComponentClass` (128)
+- `VNodeFlags.Fragment` (256)
+- `VNodeFlags.InputElement` (512)
+- `VNodeFlags.Text` (1024)
+- `VNodeFlags.TextareaElement` (2048)
+- `VNodeFlags.SelectElement` (4096)
+- `VNodeFlags.ComponentFunction` (8192)
+- `VNodeFlags.Portal` (16384)
+- `VnodeFlags.ForwardRef` (32768)
 - `VNodeFlags.InUse` (65536)
-- `VNodeFlags.Normalized` (131072)
-- `VnodeFlags.ForwardRef` (262144)
-- `VNodeFlags.Portal` (524288)
-- `VNodeFlags.Validated` (1048576) development only, the keys of the vNode's children have been validated
+- `VNodeFlags.ContentEditable` (131072)
+- `VNodeFlags.Validated` (262144) development only, the keys of the vNode's children have been validated
+- `VNodeFlags.Normalized` (524288)
 - `VNodeFlags.ComponentUnknown` (0) `newComponentVNode` finds out whether the type is a class, a function or a forwardRef
 
 **ChildFlags in VNodeFlags:**
@@ -42,7 +41,7 @@ A vNode keeps the shape of its children in bits of `flags`. Exactly one of these
 - `VNodeFlags.HasNonKeyedChildren` (4)
 - `VNodeFlags.HasVNodeChildren` (8)
 - `VNodeFlags.HasInvalidChildren` (16)
-- `VNodeFlags.HasKeyedChildren` (512)
+- `VNodeFlags.HasKeyedChildren` (32)
 - `VNodeFlags.MultipleChildren` - Mask of the keyed and non-keyed bits
 - `VNodeFlags.ChildFlagsMask` - Bits that hold the shape of the children
 

@@ -1,8 +1,8 @@
 /* If editing these values check babel-plugin-also */
 /*
- * The JSX plugins write the flags of each vNode into the compiled code as one number, so the bits they
- * emit most have the lowest values. The bits of elements keep their v9 values, which code compiled by
- * older plugins passes to the deprecated factories.
+ * The JSX plugins write the flags of each vNode into the compiled code as one number, and Inferno's own code
+ * tests them with numbers too. The bits that compiled apps and Inferno use most have the lowest values.
+ * The values changed in v10, so JSX must be compiled by the v10 plugins.
  */
 export const enum VNodeFlags {
   Unknown = 0,
@@ -16,26 +16,23 @@ export const enum VNodeFlags {
   HasNonKeyedChildren = 1 << 2,
   HasVNodeChildren = 1 << 3,
   HasInvalidChildren = 1 << 4,
+  HasKeyedChildren = 1 << 5,
 
-  SvgElement = 1 << 5,
-  InputElement = 1 << 6,
-  TextareaElement = 1 << 7,
-  SelectElement = 1 << 8,
-  HasKeyedChildren = 1 << 9,
-  ComponentClass = 1 << 10,
-  ReCreate = 1 << 11,
-  ContentEditable = 1 << 12,
-  Fragment = 1 << 13,
-
-  /* The JSX plugins do not emit these, Inferno sets them */
-  ComponentFunction = 1 << 14,
-  Text = 1 << 15,
+  SvgElement = 1 << 6,
+  ComponentClass = 1 << 7,
+  Fragment = 1 << 8,
+  InputElement = 1 << 9,
+  Text = 1 << 10,
+  TextareaElement = 1 << 11,
+  SelectElement = 1 << 12,
+  ComponentFunction = 1 << 13,
+  Portal = 1 << 14,
+  ForwardRef = 1 << 15,
   InUse = 1 << 16,
-  Normalized = 1 << 17,
-  ForwardRef = 1 << 18,
-  Portal = 1 << 19,
+  ContentEditable = 1 << 17,
   /* Development only: the keys of the vNode's children have been validated */
-  Validated = 1 << 20,
+  Validated = 1 << 18,
+  Normalized = 1 << 19,
 
   // newComponentVNode finds out whether the type is a class, a function or a forwardRef, a vNode never keeps this
   ComponentUnknown = Unknown,

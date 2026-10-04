@@ -2,12 +2,11 @@ import {
   Component,
   createFragment,
   createPortal,
-  createVNode,
   Fragment,
   render,
   type VNode,
 } from 'inferno';
-import { ChildFlags, VNodeFlags } from 'inferno-vnode-flags';
+import { ChildFlags } from 'inferno-vnode-flags';
 
 // vNode holds the state of the position it is rendered in (dom, component instance, key),
 // so a vNode referenced outside of render must be cloned when it is placed in a second position.
@@ -1327,38 +1326,6 @@ describe('vNode reuse', () => {
 
       expect(container.$V.children[1]).toBe(nested);
       expect(container.innerHTML).toBe('<ul><li>a</li><li>n</li></ul>');
-    });
-
-    it('Should still re-create the same vNode when it is flagged with ReCreate', () => {
-      const hoisted = createVNode(
-        VNodeFlags.HtmlElement | VNodeFlags.ReCreate,
-        'span',
-        null,
-        'x',
-        ChildFlags.HasTextChildren,
-      );
-      let instance;
-
-      class Parent extends Component {
-        constructor(props) {
-          super(props);
-          instance = this;
-        }
-
-        public render() {
-          return hoisted;
-        }
-      }
-
-      render(<Parent />, container);
-
-      for (let i = 0; i < 3; ++i) {
-        const lastDom = container.firstChild;
-
-        instance.forceUpdate();
-        expect(container.firstChild).not.toBe(lastDom);
-        expect(container.innerHTML).toBe('<span>x</span>');
-      }
     });
   });
 });

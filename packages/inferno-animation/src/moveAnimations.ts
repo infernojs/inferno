@@ -328,8 +328,7 @@ function isRetained(child: VNode, next: VNode | undefined): boolean {
     !(
       (next.flags ^ child.flags) &
       ~(VNodeFlags.InUse | VNodeFlags.IgnoredByPatch)
-    ) &&
-    !(next.flags & VNodeFlags.ReCreate)
+    )
   );
 }
 

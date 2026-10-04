@@ -306,7 +306,6 @@ export declare namespace Inferno {
   interface Attributes {
     key?: Key;
 
-    $ReCreate?: boolean;
     $HasVNodeChildren?: boolean;
     $HasNonKeyedChildren?: boolean;
     $HasKeyedChildren?: boolean;

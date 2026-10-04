@@ -2,11 +2,27 @@
 
 ## Breaking changes
 
+### Use version 10 of the JSX plugins
+
+Inferno 10 needs JSX compiled by version 10 of its JSX plugins:
+
+| Plugin                 | Inferno 9 and older | Inferno 10 |
+| ---------------------- | ------------------- | ---------- |
+| `babel-plugin-inferno` | 7.x                 | 10.x       |
+| `ts-plugin-inferno`    | 7.x                 | 10.x       |
+| `swc-plugin-inferno`   | 3.x                 | 10.x       |
+
+- **JSX compiled by an older plugin does not work with Inferno 10.** The vNode flags have new values (see [below](#vnodeflags-have-new-values)), so elements such as `<svg>`, `<input>`, `<select>` and `<textarea>` would render wrong. Compile all JSX again with the v10 plugins. Dependencies that ship precompiled JSX need versions built for Inferno 10 too.
+- The v10 plugins compile JSX to the new factories `newVNode`, `newComponentVNode`, `newFragment` and `newTextVNode`, see [below](#jsx-plugins).
+- The v10 plugins have `inferno` `^10.0.0` as a peer dependency, so package managers report a peer dependency conflict when they are installed with an older Inferno.
+- The v10 plugins report JSX that Inferno 10 would render wrong as a build error that shows the source code: `$ReCreate`, a `ref` without a value, and a child flag that the children cannot have, such as `$HasVNodeChildren` on several children.
+- **From version 10 on, the major version of each JSX plugin matches the major version of Inferno.** Use plugin 10.x with Inferno 10.x, plugin 11.x with Inferno 11.x, and so on.
+
 ### `vNode.childFlags` and `vNode.isValidated` have been removed
 
 A vNode has one field less: its `ChildFlags` are stored in bits of `vNode.flags`. Each vNode is 4 bytes smaller in Chrome and 32 bytes smaller in Firefox, where the object drops to a smaller size class.
 
-The deprecated `create*` factories still take `childFlags` as an argument, so they and code compiled by the current JSX plugins work as before. The new `new*` factories take the child bit in `flags`, see [below](#the-vnode-factories-take-the-child-bit-in-flags). Code that read the property tests the matching bit of `flags` instead. `getChildFlags` gives the `ChildFlags` value, for passing it on to a deprecated factory:
+The deprecated `createVNode` and `createFragment` still take a separate `childFlags` argument. It is a `ChildFlags` value as in v9, while their `flags` argument has the `VNodeFlags` values of v10 (see [below](#vnodeflags-have-new-values)). The new `new*` factories take the child bit in `flags`, see [below](#the-vnode-factories-take-the-child-bit-in-flags). Code that read the property tests the matching bit of `flags` instead. `getChildFlags` gives the `ChildFlags` value, for passing it on to a deprecated factory:
 
 ```js
 import { createFragment, getChildFlags, newFragment } from 'inferno';
@@ -30,27 +46,56 @@ createFragment(children, getChildFlags(vNode));
 
 ### `VNodeFlags` have new values
 
-The JSX plugins write the flags of each vNode into the compiled code as one number, so the bits they emit most have the smallest values. The bits of elements keep their v9 values:
+The JSX plugins write the flags of each vNode into the compiled code as one number, and Inferno's own code tests them with numbers too, so the bits that compiled apps and Inferno use most have the smallest values.
 
-| Flag                                                                               | v9                  | v10                   |
-| ---------------------------------------------------------------------------------- | ------------------- | --------------------- |
-| `HtmlElement`                                                                      | 1                   | 1                     |
-| `SvgElement`, `InputElement`, `TextareaElement`, `SelectElement`                   | 32, 64, 128, 256    | 32, 64, 128, 256      |
-| `ReCreate`, `ContentEditable`, `Fragment`                                          | 2048, 4096, 8192    | 2048, 4096, 8192      |
-| `HasTextChildren`, `HasNonKeyedChildren`, `HasVNodeChildren`, `HasInvalidChildren` | -                   | 2, 4, 8, 16           |
-| `HasKeyedChildren`                                                                 | -                   | 512                   |
-| `ComponentUnknown`                                                                 | 2                   | 0                     |
-| `ComponentClass`                                                                   | 4                   | 1024                  |
-| `ComponentFunction`                                                                | 8                   | 16384                 |
-| `Text`                                                                             | 16                  | 32768                 |
-| `InUse`, `Normalized`, `ForwardRef`                                                | 16384, 65536, 32768 | 65536, 131072, 262144 |
-| `Portal`                                                                           | 1024                | 524288                |
-| `Validated` (development only)                                                     | -                   | 1048576               |
+**JSX compiled by the v9 plugins does not work with Inferno 10.** Compile it again with the [v10 plugins](#use-version-10-of-the-jsx-plugins). This includes packages on npm that ship JSX compiled for Inferno 9.
 
-- Code compiled by the v9 JSX plugins keeps working. It calls the deprecated factories with the flags of elements, which have not changed, and with `ComponentUnknown` for components, which `createComponentVNode` resolves whatever value it has.
-- `VNodeFlags` is a `const enum`, so code compiled against v9 `inferno-vnode-flags` has the old numbers in it. Rebuild code that reads `vNode.flags`, for example to test `VNodeFlags.Text` or `VNodeFlags.ComponentClass`.
+| Flag                           | v9    | v10     |
+| ------------------------------ | ----- | ------- |
+| `ComponentUnknown`             | 2     | 0       |
+| `HtmlElement`                  | 1     | 1       |
+| `HasTextChildren`              | -     | 2       |
+| `HasNonKeyedChildren`          | -     | 4       |
+| `HasVNodeChildren`             | -     | 8       |
+| `HasInvalidChildren`           | -     | 16      |
+| `HasKeyedChildren`             | -     | 32      |
+| `SvgElement`                   | 32    | 64      |
+| `ComponentClass`               | 4     | 128     |
+| `Fragment`                     | 8192  | 256     |
+| `InputElement`                 | 64    | 512     |
+| `Text`                         | 16    | 1024    |
+| `TextareaElement`              | 128   | 2048    |
+| `SelectElement`                | 256   | 4096    |
+| `ComponentFunction`            | 8     | 8192    |
+| `Portal`                       | 1024  | 16384   |
+| `ForwardRef`                   | 32768 | 32768   |
+| `InUse`                        | 16384 | 65536   |
+| `ContentEditable`              | 4096  | 131072  |
+| `Validated` (development only) | -     | 262144  |
+| `Normalized`                   | 65536 | 524288  |
+| `ReCreate`                     | 2048  | removed |
+
+- Code that creates vNodes or reads `vNode.flags` by name, for example to test `VNodeFlags.Text` or `VNodeFlags.ComponentClass`, must use `inferno-vnode-flags` 10. How it gets the values depends on how it is compiled:
+  - `tsc` replaces the names of a `const enum` with their numbers, so code compiled against `inferno-vnode-flags` 9 has the old numbers in it. Compile it again against version 10.
+  - Babel, SWC, esbuild and other compilers that see one file at a time import `VNodeFlags` at runtime. The code gets the new values once it depends on `inferno-vnode-flags` `^10.0.0`, without a rebuild, but an older nested copy of the package keeps the old values.
+- Never write flag numbers by hand; they can change between major versions.
+- `ChildFlags` keep their values, so the deprecated `createVNode` and `createFragment` take the same `childFlags` as before.
 - `ComponentUnknown` has no bit: `newComponentVNode` replaces it with the type it finds, so a vNode never has it. `VNodeFlags.Component` is `ComponentClass | ComponentFunction`.
 - The child bits are not in the order of `ChildFlags`, so a `ChildFlags` value can't be shifted into place. Use the `VNodeFlags` bit of the same name.
+
+### `$ReCreate` and `VNodeFlags.ReCreate` have been removed
+
+A new key re-creates an element the same way: when the key of a vNode changes, Inferno unmounts the old element and mounts a new one.
+
+```jsx
+// v9
+<div $ReCreate>{content}</div>
+
+// v10: change the key whenever the element must be re-created
+<div key={version}>{content}</div>
+```
+
+The v10 JSX plugins throw an error for `$ReCreate`.
 
 ### Delegated event handlers are stored on the element
 
@@ -60,7 +105,7 @@ This only matters to tools that read Inferno's internal DOM properties. An eleme
 
 ### The vNode factories take the child bit in `flags`
 
-`newVNode`, `newComponentVNode`, `newTextVNode` and `newFragment` replace `createVNode`, `createComponentVNode`, `createTextVNode` and `createFragment`. The new factories take flags that already hold the children's shape, as one of the bits `VNodeFlags.HasInvalidChildren`, `HasVNodeChildren`, `HasNonKeyedChildren`, `HasKeyedChildren` and `HasTextChildren`. They use the flags as given. The deprecated factories shift `childFlags` into place and clear the bits that flags copied from another vNode bring along. They then call the new factories, so they keep working.
+`newVNode`, `newComponentVNode`, `newTextVNode` and `newFragment` replace `createVNode`, `createComponentVNode`, `createTextVNode` and `createFragment`. The new factories take flags that already hold the children's shape, as one of the bits `VNodeFlags.HasInvalidChildren`, `HasVNodeChildren`, `HasNonKeyedChildren`, `HasKeyedChildren` and `HasTextChildren`. They use the flags as given. The deprecated factories turn `childFlags` into its bit and clear the bits that flags copied from another vNode bring along. They then call the new factories, so they keep working.
 
 ```js
 import {
@@ -113,4 +158,4 @@ The JSX plugins know the children's shape at compile time, so they emit the pack
 
 For example `<div>text</div>` compiles to `newVNode(3, "div", null, "text")`: `HtmlElement` 1 and `HasTextChildren` 2.
 
-Code compiled by the v9 plugins keeps working with Inferno v10, but the v10 plugins need Inferno v10.
+The v10 plugins need Inferno 10, and Inferno 10 needs JSX compiled by the v10 plugins, see [Use version 10 of the JSX plugins](#use-version-10-of-the-jsx-plugins).
