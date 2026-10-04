@@ -1,6 +1,6 @@
 {
   "name": "inferno-extras",
-  "version": "9.1.0",
+  "version": "10.0.0-alpha.0",
   "license": "MIT",
   "type": "module",
   "description": "Collection of utilities for InfernoJS",
