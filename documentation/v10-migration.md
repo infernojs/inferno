@@ -101,6 +101,37 @@ The v10 JSX plugins throw an error for `$ReCreate`.
 
 This only matters to tools that read Inferno's internal DOM properties. An element's `$EV` is now a number with a bit set for each delegated event the element registered, and the handler itself is in a property of the element: `$onClick`, `$onKeyDown` and so on. In v9 `$EV` was an object that held the handlers. Without that object, an element with one delegated handler takes 16 bytes less in Chrome.
 
+### Move hooks need `inferno-animation`
+
+The reconciler no longer runs move animations itself. Importing `inferno-animation` installs the move engine, and custom `componentWillMove` and `onComponentWillMove` hooks are only called when the app has imported it before rendering. Apps that use `AnimatedMoveComponent`, `AnimatedAllComponent` or the exported hook helpers already import it.
+
+```js
+// Once, before the first render, when the app has its own move hooks
+import 'inferno-animation';
+```
+
+The hooks are also called at a different time:
+
+- v9 called a move hook only for an item that was moved, after the list had already been partly changed. v10 calls it for every item that a keyed update keeps, before the list's container properties or children are patched, also when the keys stay in order. The hook sees the existing DOM and the props from before the update.
+- A hook should measure or schedule work, and never move or remove DOM nodes.
+- A class component has a move hook when `componentWillMove` exists by the end of its mount: in the class, or assigned in the constructor, `componentWillMount` or `componentDidMount`. A hook assigned later is not called.
+- A function component has a move hook when its hooks include `onComponentWillMove`, also when a re-render adds it. Don't mutate a hooks object in place.
+- Appear, leave and move hooks target the first element the component renders. A component whose root is only text or empty gets no hook. In v9 the hook could get a text node, which crashed the helpers.
+
+See [Keyed-list layout animations](../packages/inferno-animation/readme.md#keyed-list-layout-animations) for the full description.
+
+### The CommonJS and UMD bundles use modern syntax
+
+All packages are compiled for Chrome 107, Edge 107, Firefox 84 (KaiOS 3) and Safari 16. v9 compiled the CommonJS (`index.cjs`, `dist/index.cjs`, `dist/index.min.cjs`) and UMD (`dist/<package>.js`, `dist/<package>.min.js`) bundles down to ES5 syntax. v10 keeps `const`, `let`, arrow functions, spread and classes in them, like the ES module bundles. To run Inferno in an older browser, compile it again with your own build, for example by letting `babel-loader` process `node_modules/inferno*`.
+
+`Component` is a native class in every bundle now. In v9 the CommonJS and UMD bundles had it as an ES5 constructor function, so a component class that your compiler turned into an ES5 function could extend it. Such a class throws in v10:
+
+```
+TypeError: Class constructor Component cannot be invoked without 'new'
+```
+
+Compile your components to ES2015 or newer: TypeScript `target` `ES2015` or later, or Babel targets that don't need `@babel/plugin-transform-classes`. The ES module bundles had a native class in v9 already.
+
 ## Deprecations
 
 ### The vNode factories take the child bit in `flags`

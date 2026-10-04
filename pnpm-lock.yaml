@@ -230,8 +230,8 @@ importers:
         specifier: ^8.71.0
         version: 8.71.0(eslint@10.12.0(supports-color@8.1.1))(supports-color@8.1.1)(typescript@6.0.3)
       babel-plugin-inferno:
-        specifier: ^7.1.0
-        version: 7.1.0(@babel/core@8.0.6)
+        specifier: ^10.0.0
+        version: 10.0.0(@babel/core@8.0.6)
       cli-table:
         specifier: ^0.3.11
         version: 0.3.11
@@ -311,11 +311,11 @@ importers:
         specifier: ^0.2.7
         version: 0.2.7(@swc/core@1.16.13(@swc/helpers@0.5.23))(webpack@5.111.1(@swc/core@1.16.13(@swc/helpers@0.5.23))(esbuild@0.28.2)(lightningcss@1.33.0))
       swc-plugin-inferno:
-        specifier: ^3.1.0
-        version: 3.1.0
+        specifier: ^10.0.0
+        version: 10.0.0
       ts-plugin-inferno:
-        specifier: ^7.0.0
-        version: 7.0.0
+        specifier: ^10.0.0
+        version: 10.0.0
       typescript:
         specifier: ^6.0.3
         version: 6.0.3
@@ -429,8 +429,8 @@ importers:
         specifier: ^7.0.2
         version: 7.0.2
       saucelabs:
-        specifier: 9.2.0
-        version: 9.2.0
+        specifier: 9.3.0
+        version: 9.3.0
       selenium-webdriver:
         specifier: ^4.50.0
         version: 4.50.0
@@ -3161,6 +3161,10 @@ packages:
       webpack:
         optional: true
 
+  babel-plugin-inferno@10.0.0:
+    resolution: {integrity: sha512-q0tvkJrh6P+vbdEf/kb2LpHLB5funE9pqW1I0Adi9BUP5IDY1QCCxXw3f8KKuq5SidznpMIrw8t/SUxBREqL5Q==}
+    engines: {node: '>=24'}
+
   babel-plugin-inferno@7.1.0:
     resolution: {integrity: sha512-8hlpPH382TZF6rvdMx87XON0khn9wbHoiqkJkxnKJuVkGkknV1/k+bkYlx+EEs14mTmKbgV0NaO4CvAxzf3tbw==}
     engines: {node: '>=24'}
@@ -5169,8 +5173,8 @@ packages:
     engines: {node: '>=20.19.0'}
     hasBin: true
 
-  saucelabs@9.2.0:
-    resolution: {integrity: sha512-ARZ3mN8kOkWVSo8+etmAaFQkRQ7qiVrZAi0JOA+vwvEMH/MFzVqjyC9zFyA6tIWa4kMsdHQDeD5+Be2Y3kQ3RA==}
+  saucelabs@9.3.0:
+    resolution: {integrity: sha512-dyaYMKaB57jiC4t0NhK/rQd3gKAr69PEs9dxp4J2oggocVD9qdOfauUOWfl+zsb7AdmegZf0w/gjcD13M25Wmg==}
     engines: {node: '>=22.19.0'}
     hasBin: true
 
@@ -5391,8 +5395,8 @@ packages:
       '@swc/core': ^1.2.147
       webpack: '>=2'
 
-  swc-plugin-inferno@3.1.0:
-    resolution: {integrity: sha512-Miq/BWOrRUgP8SQyOA91FRK2IcC65w6N665ONufwBVhMwGWe7p1YuXHzz758eegXuwD8TGy6w8VPQalS2sbGow==}
+  swc-plugin-inferno@10.0.0:
+    resolution: {integrity: sha512-zGMHYYVjHV//U1rtmYGCGW6gKqk3GodFzIFI3+4s8IwJWRXk1A7jhejZ/5IPxX4Kc7jQ0XHkOXzNCZv9jhx2Eg==}
 
   synckit@0.11.13:
     resolution: {integrity: sha512-eNRKgb3z66Yp3D2CixVujOUvXLFUTij/zVnV8KRyvFdQwpz7I5DS8UfRkTeLzb64u+dkzDSdelE24izu+zSSUg==}
@@ -5450,10 +5454,6 @@ packages:
     resolution: {integrity: sha512-exgYmnmL/sJpR3upZfXG5PoatXQii55xAiXGXzY+sROLZ/Y+SLcp9PgJNI9Vz37HpQ74WvDcLT8eqm+kV3FzrA==}
     engines: {node: '>=16'}
 
-  tr46@6.0.0:
-    resolution: {integrity: sha512-bLVMLPtstlZ4iMQHpFHTR7GAGj2jxi8Dg0s2h2MafAE4uSWF98FC/3MomU51iQAMf8/qDUbKWf5GxuvvVcXEhw==}
-    engines: {node: '>=20'}
-
   tr46@7.0.0:
     resolution: {integrity: sha512-BcDSDW+SIGWVOns1Zm6Yg91q9AEj7eaID0QDY9oIqJD1A8dscNwMcl9Sms2DeuWCNov1X0/oXanHGYQBSLwZsg==}
     engines: {node: ^22.14.0 || >=24.0.0}
@@ -5475,8 +5475,8 @@ packages:
       loader-utils:
         optional: true
 
-  ts-plugin-inferno@7.0.0:
-    resolution: {integrity: sha512-1Gui0liejfzbgKqiY7gXKfiIbNas+NiZth/CztxbjjnuiOatrTjXT/Xuv5PBYWyI9sfVDSqSo+VbE9sWC6wDHA==}
+  ts-plugin-inferno@10.0.0:
+    resolution: {integrity: sha512-oVwOInr8nwwMeAL61sCiP8Jtj0Z0d1CkQIHjW78/R0bVMdzMIB3Ohw+CL8lq7O84bEj59ZVW25l6oH3VuEfV1g==}
     engines: {node: '>=24'}
 
   tsconfig-paths@3.15.0:
@@ -5657,10 +5657,6 @@ packages:
   whatwg-mimetype@5.0.0:
     resolution: {integrity: sha512-sXcNcHOC51uPGF0P/D4NVtrkjSU2fNsm9iog4ZvZJsL3rjoDAzXZhkm2MWt1y+PUdggKAYVoMAIYcs78wJ51Cw==}
     engines: {node: '>=20'}
-
-  whatwg-url@17.1.2:
-    resolution: {integrity: sha512-TEZA+Zqxin7Jjsm2cjRohCmen5awh+hT6Zi3VZdqZlNRk7zvOI/9WpBFg/DWlA56bWnzwm6DuB8NS0EsxQH9uQ==}
-    engines: {node: ^22.14.0 || >=24.0.0}
 
   whatwg-url@17.2.0:
     resolution: {integrity: sha512-IhLIHNcBrzIixC5XXsbr4DxdjajyA5vQ5RwGZMtrUp+GbtE5Nrsge9QKau7jXrC0aTXLYGV0xiW7Tb4YS2aomw==}
@@ -8516,6 +8512,13 @@ snapshots:
     optionalDependencies:
       webpack: 5.111.1(@swc/core@1.16.13(@swc/helpers@0.5.23))(esbuild@0.28.2)(lightningcss@1.33.0)
 
+  babel-plugin-inferno@10.0.0(@babel/core@8.0.6):
+    dependencies:
+      '@babel/plugin-syntax-jsx': 8.0.1(@babel/core@8.0.6)
+      '@babel/types': 8.0.6
+    transitivePeerDependencies:
+      - '@babel/core'
+
   babel-plugin-inferno@7.1.0(@babel/core@8.0.6):
     dependencies:
       '@babel/plugin-syntax-jsx': 8.0.1(@babel/core@8.0.6)
@@ -8839,7 +8842,7 @@ snapshots:
   data-urls@8.0.0:
     dependencies:
       whatwg-mimetype: 5.0.0
-      whatwg-url: 17.1.2
+      whatwg-url: 17.2.0
     transitivePeerDependencies:
       - '@noble/hashes'
 
@@ -10918,7 +10921,7 @@ snapshots:
     optionalDependencies:
       '@parcel/watcher': 2.6.0
 
-  saucelabs@9.2.0:
+  saucelabs@9.3.0:
     dependencies:
       change-case: 4.1.2
       compressing: 1.10.6
@@ -11180,7 +11183,7 @@ snapshots:
       '@swc/counter': 0.1.3
       webpack: 5.111.1(@swc/core@1.16.13(@swc/helpers@0.5.23))(esbuild@0.28.2)(lightningcss@1.33.0)
 
-  swc-plugin-inferno@3.1.0: {}
+  swc-plugin-inferno@10.0.0: {}
 
   synckit@0.11.13:
     dependencies:
@@ -11242,10 +11245,6 @@ snapshots:
     dependencies:
       tldts: 7.4.16
 
-  tr46@6.0.0:
-    dependencies:
-      punycode: 2.3.1
-
   tr46@7.0.0:
     dependencies:
       punycode: 2.3.1
@@ -11262,7 +11261,7 @@ snapshots:
       typescript: 6.0.3
       webpack: 5.111.1(@swc/core@1.16.13(@swc/helpers@0.5.23))(esbuild@0.28.2)(lightningcss@1.33.0)
 
-  ts-plugin-inferno@7.0.0:
+  ts-plugin-inferno@10.0.0:
     dependencies:
       typescript: 6.0.3
 
@@ -11511,14 +11510,6 @@ snapshots:
       - uglify-js
 
   whatwg-mimetype@5.0.0: {}
-
-  whatwg-url@17.1.2:
-    dependencies:
-      '@exodus/bytes': 1.16.0
-      tr46: 6.0.0
-      webidl-conversions: 8.0.1
-    transitivePeerDependencies:
-      - '@noble/hashes'
 
   whatwg-url@17.2.0:
     dependencies:

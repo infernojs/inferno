@@ -1,3 +1,7 @@
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+
 export default {
   collectCoverageFrom: [
     "packages/*/src/**/*.ts",
@@ -37,7 +41,9 @@ export default {
         },
         "experimental": {
           "plugins": [
-            ["swc-plugin-inferno", {
+            // @swc/jest's cache key ignores Wasm plugins. The resolved pnpm path
+            // contains the plugin version, so an upgrade invalidates the cache.
+            [require.resolve("swc-plugin-inferno"), {
               "pure": false,
               "uselessFlags": "off"
             }]
