@@ -83,6 +83,58 @@ Above all, code should be clean and readable, and commented where necessary. If 
 
 Before you commit your changes, please run `pnpm run prettier` to format code correctly
 
+Sauce Labs pull request checks
+-----------------------------
+
+The `Tests` workflow runs without Sauce credentials. The separate `Sauce Labs`
+workflow runs the complete browser matrix automatically for same-repository pull
+requests and pushes to `master`. Fork and Dependabot pull requests require a
+maintainer-triggered run because GitHub does not provide Actions secrets to those
+pull request workflows.
+
+Before approving a run, a maintainer with repository write access must review the
+exact PR head commit, including dependencies, installation scripts, and test code:
+the approved code will run with the Sauce credentials during the browser test
+step. Obtain the current head with:
+
+```sh
+gh pr view PR_NUMBER --repo infernojs/inferno --json headRefOid --jq .headRefOid
+```
+
+After reviewing that commit, open **Actions → Sauce Labs → Run workflow**, select
+`master`, and enter `pr_number` and the full reviewed `head_sha`. Alternatively:
+
+```sh
+gh workflow run sauce-labs.yml --repo infernojs/inferno --ref master \
+  -f pr_number=PR_NUMBER -f head_sha=REVIEWED_40_CHARACTER_SHA
+```
+
+The workflow rejects stale approvals, closed PRs, and unresolved merge conflicts.
+It pins and verifies the test merge of the approved head and current base before
+installing dependencies. A later PR push needs a new review and dispatch. Running
+the workflow from another branch is rejected; rerunning the ordinary `CI`
+workflow does not grant Sauce credentials to a fork.
+
+The `Sauce Labs` **commit status** links to the browser run and is reported on both
+the reviewed head and tested merge commit. Browser failures, missing credentials,
+and cancelled runs cannot satisfy it. If reporting is interrupted, the status
+stays pending; dispatch the reviewed revision again. The informational approval
+job and the manual workflow's own job checks do not satisfy this required status.
+
+When first deploying this workflow, merge the workflow and its helpers into
+`master` before dispatching it: validation and reporting always use trusted
+helpers from `master`. Verify an automatic run and a reviewed fork run, then add
+the exact `Sauce Labs` commit status from **GitHub Actions** to `master`'s required
+checks. Preserve `Tests`, `coverage/coveralls`, the requirement to be up to date,
+and all other branch-protection settings. No job should be named `Sauce Labs`,
+because a skipped job with that name could interfere with the required status.
+
+Controller regression tests can be run without Sauce credentials:
+
+```sh
+node --test scripts/ci/sauce-workflow.test.mjs
+```
+
 Small print
 -----------
 

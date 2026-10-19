@@ -1,0 +1,175 @@
+name: Sauce Labs
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+    branches: ['**']
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number reviewed by the maintainer
+        required: true
+        type: string
+      head_sha:
+        description: Full 40-character head SHA reviewed by the maintainer
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: sauce-${{ github.event.pull_request.number || inputs.pr_number || github.ref }}-${{ github.event.pull_request.head.sha || inputs.head_sha || github.sha }}
+  cancel-in-progress: false
+
+jobs:
+  approval-needed:
+    name: Maintainer approval needed
+    if: >-
+      github.event_name == 'pull_request' &&
+      (github.event.pull_request.head.repo.full_name != github.repository ||
+       github.actor == 'dependabot[bot]' ||
+       github.event.pull_request.user.login == 'dependabot[bot]')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Explain how to request browser tests
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          echo '::notice::Sauce Labs requires a maintainer to review this commit and dispatch the workflow from master.'
+          # Markdown backticks are literal text in the summary.
+          # shellcheck disable=SC2016
+          {
+            printf 'A maintainer must review PR #%s at `%s`, including installation and test scripts.\n\n' "$PR_NUMBER" "$HEAD_SHA"
+            printf 'Then run the [Sauce Labs workflow](%s/%s/actions/workflows/sauce-labs.yml) from `master` with these inputs.\n\n' "$GITHUB_SERVER_URL" "$GITHUB_REPOSITORY"
+            printf -- '- `pr_number`: `%s`\n- `head_sha`: `%s`\n\n' "$PR_NUMBER" "$HEAD_SHA"
+            printf 'The required `Sauce Labs` commit status is satisfied only by a successful browser run.\n'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+  prepare:
+    name: Validate browser run
+    if: >-
+      !github.event.repository.fork &&
+      (github.event_name != 'pull_request' ||
+       (github.event.pull_request.head.repo.full_name == github.repository &&
+        github.actor != 'dependabot[bot]' &&
+        github.event.pull_request.user.login != 'dependabot[bot]'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
+      statuses: write
+    outputs:
+      control_sha: ${{ steps.controller.outputs.sha }}
+      head_sha: ${{ steps.target.outputs.head_sha }}
+      base_sha: ${{ steps.target.outputs.base_sha }}
+      test_sha: ${{ steps.target.outputs.test_sha }}
+    steps:
+      - name: Require manual approval from master
+        if: github.event_name == 'workflow_dispatch' && github.ref != 'refs/heads/master'
+        run: |
+          echo '::error::Dispatch the Sauce Labs workflow from master.'
+          exit 1
+
+      # Never load status-writing code from the pull request being tested.
+      - name: Checkout trusted workflow helpers
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: master
+          persist-credentials: false
+
+      - name: Pin workflow helpers for the remaining jobs
+        id: controller
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+
+      - name: Validate approval and publish pending status
+        id: target
+        run: node scripts/ci/sauce-workflow.mjs prepare
+        env:
+          GH_TOKEN: ${{ github.token }}
+
+  browsers:
+    name: Browser matrix
+    needs: prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout trusted verification helper
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.control_sha }}
+          path: ci-control
+          persist-credentials: false
+
+      - name: Checkout approved test revision
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.test_sha }}
+          fetch-depth: 2
+          path: source
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+
+      - name: Verify checkout before executing PR code
+        run: node ci-control/scripts/ci/sauce-workflow.mjs verify-checkout
+        env:
+          SOURCE_DIRECTORY: source
+          HEAD_SHA: ${{ needs.prepare.outputs.head_sha }}
+          BASE_SHA: ${{ needs.prepare.outputs.base_sha }}
+          TEST_SHA: ${{ needs.prepare.outputs.test_sha }}
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      # The root postinstall builds the workspace packages.
+      - name: Install dependencies and build packages
+        working-directory: source
+        run: pnpm install --frozen-lockfile
+
+      - name: Run browser tests on Sauce Labs
+        working-directory: source
+        run: pnpm run test:browser:sauce
+        env:
+          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
+          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
+
+  report:
+    name: Report browser result
+    needs: [prepare, browsers]
+    if: always() && needs.prepare.result == 'success'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      statuses: write
+    steps:
+      - name: Checkout trusted reporting helper
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.prepare.outputs.control_sha }}
+          persist-credentials: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version: 24.x
+
+      - name: Publish commit status
+        run: node scripts/ci/sauce-workflow.mjs report
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ needs.prepare.outputs.head_sha }}
+          TEST_SHA: ${{ needs.prepare.outputs.test_sha }}
+          BROWSER_RESULT: ${{ needs.browsers.result }}

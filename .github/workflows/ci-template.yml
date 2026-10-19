@@ -20,6 +20,9 @@ jobs:
       - name: Enable Corepack
         run: corepack enable
 
+      - name: Test CI workflow helpers
+        run: node --test scripts/ci/sauce-workflow.test.mjs
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
@@ -40,9 +43,3 @@ jobs:
 
       - name: Upload coverage to Coveralls
         uses: coverallsapp/github-action@8d6379e14d29928660c4ba802d8e85393440b329 # v2.3.8
-
-      - name: Run browser tests on SauceLabs
-        run: pnpm run test:browser:sauce
-        env:
-          SAUCE_USERNAME: ${{ secrets.SAUCE_USERNAME }}
-          SAUCE_ACCESS_KEY: ${{ secrets.SAUCE_ACCESS_KEY }}
