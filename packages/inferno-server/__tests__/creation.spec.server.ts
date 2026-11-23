@@ -89,6 +89,15 @@ describe('SSR Creation (non-JSX)', () => {
         '<div style=" onmouseover=&quot;alert(document.domain)&quot;&lt;script&gt;alert(1)&lt;/script&gt;"></div>',
     },
     {
+      description: 'should escape css style object values to prevent XSS injection',
+      template: () =>
+        createElement('div', {
+          style: { color: 'red" onmouseover="alert(1)' },
+        }),
+      result:
+        '<div style="color:red&quot; onmouseover=&quot;alert(1);"></div>',
+    },
+    {
       description: 'should render div with text children',
       template: () => createElement('div', null, 'Hello', ' world'),
       result: '<div>Hello world</div>',
