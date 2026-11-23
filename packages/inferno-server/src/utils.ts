@@ -1,5 +1,12 @@
 import { EMPTY_OBJ, type InfernoNode, newFragment, type VNode } from 'inferno';
-import { isArray, isFunction, isNullOrUndef, throwError } from 'inferno-shared';
+import {
+  isArray,
+  isFunction,
+  isNullOrUndef,
+  isNumber,
+  isString,
+  throwError,
+} from 'inferno-shared';
 import { VNodeFlags } from 'inferno-vnode-flags';
 
 const rxUnescaped = /["'&<>]/;
@@ -125,6 +132,28 @@ export function isAttributeNameSafe(attributeName: string): boolean {
     console.log('Invalid attribute name: ' + attributeName);
   }
   return false;
+}
+
+// These attributes have no boolean form: the client writes "true" and "false" for them,
+// and a valueless attribute means an empty string, which is not the same
+const rxStringBooleanAttribute =
+  /^(?:aria-|data-)|^(?:draggable|spellcheck|contenteditable)$/i;
+
+// Returns the attribute for a prop of an element, or an empty string when it has none
+export function renderAttribute(prop: string, value: unknown): string {
+  if (isString(value)) {
+    return ` ${prop}="${escapeText(value)}"`;
+  }
+  if (isNumber(value)) {
+    return ` ${prop}="${value}"`;
+  }
+  if (value === true) {
+    return rxStringBooleanAttribute.test(prop) ? ` ${prop}="true"` : ` ${prop}`;
+  }
+  if (value === false && rxStringBooleanAttribute.test(prop)) {
+    return ` ${prop}="false"`;
+  }
+  return '';
 }
 
 export const voidElements = new Set([

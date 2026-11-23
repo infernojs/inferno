@@ -20,6 +20,7 @@ import {
   isAttributeNameSafe,
   isEmptyFragment,
   isSelectedOption,
+  renderAttribute,
   renderFunctionalComponent,
   usesNewAPI,
   validateTagName,
@@ -152,13 +153,7 @@ function renderVNodeToString(vNode, context, selectValue?: unknown): string {
             break;
           default:
             if (isAttributeNameSafe(prop)) {
-              if (isString(value)) {
-                renderedString += ` ${prop}="${escapeText(value)}"`;
-              } else if (isNumber(value)) {
-                renderedString += ` ${prop}="${value}"`;
-              } else if (value === true) {
-                renderedString += ` ${prop}`;
-              }
+              renderedString += renderAttribute(prop, value);
             }
 
             break;

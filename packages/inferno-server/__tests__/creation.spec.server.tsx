@@ -329,6 +329,20 @@ describe('SSR Creation (JSX)', () => {
         '<div>Hello world &lt;img src=&quot;x&quot; onerror=&quot;alert(&#039;&amp;XSS&amp;&#039;)&quot;&gt;</div>',
     },
     {
+      description: 'Should render true and false of aria attributes as strings',
+      template: () => (
+        <button aria-expanded={false} aria-hidden={true} draggable={false} />
+      ),
+      result:
+        '<button aria-expanded="false" aria-hidden="true" draggable="false"></button>',
+    },
+    {
+      description:
+        'Should keep a valueless attribute for true of other attributes',
+      template: () => <input disabled={true} readOnly={false} hidden={false} />,
+      result: '<input disabled>',
+    },
+    {
       description: 'Should render opacity from a style object',
       template: () => <div style={{ opacity: 0.8 }} />,
       result: '<div style="opacity:0.8;"></div>',
