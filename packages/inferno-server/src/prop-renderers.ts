@@ -10,7 +10,7 @@ function parseStyleAsString(styles: string | object): string {
       const value = styles[styleName];
 
       if (isStringOrNumber(value)) {
-        renderedString += `${styleName}:${value};`;
+        renderedString += `${escapeText(styleName)}:${escapeText(String(value))};`;
       }
     }
     return renderedString;
