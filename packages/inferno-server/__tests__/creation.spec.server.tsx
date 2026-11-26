@@ -343,6 +343,44 @@ describe('SSR Creation (JSX)', () => {
       result: '<input disabled>',
     },
     {
+      description: 'Should render true and false of data attributes as strings',
+      template: () => <div data-open={true} data-hidden={false} />,
+      result: '<div data-open="true" data-hidden="false"></div>',
+    },
+    {
+      description: 'Should render true of draggable as a string',
+      template: () => <div draggable={true} />,
+      result: '<div draggable="true"></div>',
+    },
+    {
+      description: 'Should render true and false of spellcheck as strings',
+      template: () => (
+        <div>
+          <textarea spellcheck={true} />
+          <textarea spellcheck={false} />
+        </div>
+      ),
+      result:
+        '<div><textarea spellcheck="true"></textarea><textarea spellcheck="false"></textarea></div>',
+    },
+    {
+      description: 'Should render true and false of contenteditable as strings',
+      template: () => (
+        <div>
+          <p contenteditable={true} />
+          <p contenteditable={false} />
+        </div>
+      ),
+      result:
+        '<div><p contenteditable="true"></p><p contenteditable="false"></p></div>',
+    },
+    {
+      description:
+        'Should render the camelCase spellCheck and contentEditable props as strings',
+      template: () => <div spellCheck={false} contentEditable={true} />,
+      result: '<div spellcheck="false" contentEditable="true"></div>',
+    },
+    {
       description: 'Should render opacity from a style object',
       template: () => <div style={{ opacity: 0.8 }} />,
       result: '<div style="opacity:0.8;"></div>',
