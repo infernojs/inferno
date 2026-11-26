@@ -462,6 +462,18 @@ describe('SSR Creation Streams - (non-JSX)', () => {
         '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
     },
     {
+      description:
+        'should render the option without a value prop selected by its text',
+      template: () => (
+        <select value="dog">
+          <option>cat</option>
+          <option> dog </option>
+        </select>
+      ),
+      result:
+        '<select value="dog"><option>cat</option><option selected> dog </option></select>',
+    },
+    {
       description: 'should prefer the select value to its defaultValue',
       template: () => (
         <select value="cat" defaultValue="dog">
