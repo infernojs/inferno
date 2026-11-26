@@ -84,16 +84,43 @@ export function getTextareaContent(props): string | undefined {
   return isNullOrUndef(value) ? undefined : escapeText(String(value));
 }
 
+// Without a value prop the option has its text as the value (whitespace collapsed), as in the browser
+function getOptionText(vNode: VNode): string {
+  const children = vNode.children as any;
+  const flags = vNode.flags;
+
+  if ((flags & VNodeFlags.HasTextChildren) !== 0) {
+    return String(children);
+  }
+  if ((flags & VNodeFlags.Text) !== 0) {
+    return String(children);
+  }
+  if ((flags & VNodeFlags.HasVNodeChildren) !== 0) {
+    return getOptionText(children);
+  }
+  if ((flags & VNodeFlags.MultipleChildren) !== 0) {
+    let text = '';
+    for (let i = 0; i < children.length; ++i) {
+      text += getOptionText(children[i]);
+    }
+    return text;
+  }
+  return '';
+}
+
 // selectValue is the value of the nearest <select>, which selects the options that have the same value.
 // An array value of a multiple select selects every option in it, as on the client.
-export function isSelectedOption(type, props, selectValue): boolean {
-  if (type !== 'option' || typeof props.value === 'undefined') {
+export function isSelectedOption(type, props, selectValue, vNode): boolean {
+  if (type !== 'option') {
     return false;
   }
+  const value = isNullOrUndef(props?.value)
+    ? getOptionText(vNode).trim().replace(/\s+/g, ' ')
+    : props.value;
 
   return (
-    props.value === selectValue ||
-    (isArray(selectValue) && selectValue.includes(props.value))
+    value === selectValue ||
+    (isArray(selectValue) && selectValue.includes(value))
   );
 }
 
