@@ -248,12 +248,12 @@ export class RenderStream extends Readable {
             }
         }
       }
-      if (isSelectedOption(type, props, selectValue)) {
-        renderedString += ` selected`;
-      }
       if (isTextarea) {
         html = getTextareaContent(props) ?? html;
       }
+    }
+    if (isSelectedOption(type, props, selectValue, vNode)) {
+      renderedString += ` selected`;
     }
 
     renderedString += `>`;

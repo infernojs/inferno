@@ -234,6 +234,74 @@ describe('SSR Creation (JSX)', () => {
         '<select value="dog"><option value="cat">A cat</option><option value="dog" selected>A dog</option></select>',
     },
     {
+      description:
+        'should render the option without a value prop selected by its text',
+      template: () => (
+        <select value="dog">
+          <option>cat</option>
+          <option> dog </option>
+        </select>
+      ),
+      result:
+        '<select value="dog"><option>cat</option><option selected> dog </option></select>',
+    },
+    {
+      description:
+        'should select the option without a value prop by text from several children',
+      template: () => (
+        <select value="hot dog">
+          <option>hot {'cat'}</option>
+          <option>
+            {'hot'}
+            {'\n  dog'}
+          </option>
+        </select>
+      ),
+      result:
+        '<select value="hot dog"><option>hot cat</option><option selected>hot\n  dog</option></select>',
+    },
+    {
+      description:
+        'should select the option without a value prop by the text of an element child',
+      template: () => (
+        <select value="dog">
+          <option>
+            <b>cat</b>
+          </option>
+          <option>
+            <b>dog</b>
+          </option>
+        </select>
+      ),
+      result:
+        '<select value="dog"><option><b>cat</b></option><option selected><b>dog</b></option></select>',
+    },
+    {
+      description:
+        'should select the option without a value prop or children by an empty value',
+      template: () => (
+        <select value="">
+          <option>cat</option>
+          <option />
+        </select>
+      ),
+      result:
+        '<select value=""><option>cat</option><option selected></option></select>',
+    },
+    {
+      description:
+        'should select the options without a value prop by text in a multiple select',
+      template: () => (
+        <select multiple value={['cat', 'dog']}>
+          <option>cat</option>
+          <option>bird</option>
+          <option>dog</option>
+        </select>
+      ),
+      result:
+        '<select multiple><option selected>cat</option><option>bird</option><option selected>dog</option></select>',
+    },
+    {
       description: 'should prefer the select value to its defaultValue',
       template: () => (
         <select value="cat" defaultValue="dog">
